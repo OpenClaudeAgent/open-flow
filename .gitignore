@@ -21,3 +21,6 @@ opencode.local.json
 
 # Backups (stored in ~/.opencode-backups)
 backups/
+
+# Vendor - external source code for reference
+vendor/
