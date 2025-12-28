@@ -236,27 +236,41 @@ L'application est lancee. Voici les scenarios a tester :
 - Recupere ses changements dans ton worktree si necessaire
 - **Invoque l'agent Quality pour validation** (voir section suivante)
 
-### Validation Quality apres modifications de tests
+### Validation Quality (Code Review + Tests Review)
 
-Apres chaque intervention de l'agent Tester, tu DOIS demander une validation a l'agent Quality :
+Apres chaque intervention de l'agent Tester, tu DOIS demander une validation a l'agent Quality.
 
-1. **Invoquer Quality** : `/quality Valider les changements de tests effectues par l'agent Tester pour la feature X. Verifier qu'il n'y a pas de regression potentielle.`
+**Quality effectue une double review** :
+1. **Code Review** : Analyse du code source (src/) avec le skill `code-review`
+2. **Tests Review** : Validation des changements de tests (tests/)
 
-2. **Attendre le rapport** : L'agent Quality analysera :
-   - Les changements de tests par rapport a l'historique
-   - Les regressions potentielles
-   - La coherence avec les fonctionnalites existantes
+**Comment invoquer Quality** :
+```
+/quality Valider la feature X. 
+- Code modifie : [liste fichiers src/]
+- Tests ajoutes par Tester : [liste fichiers tests/]
+```
 
-3. **Rapporter a l'utilisateur** : Presente le rapport de Quality a l'utilisateur :
-   ```
-   ## Rapport Quality - Validation des tests
-   
-   L'agent Quality a analyse les changements de tests :
-   
-   [Resume du rapport]
-   
-   Voulez-vous continuer ?
-   ```
+**Attendre le rapport** : L'agent Quality analysera :
+- La qualite du code (principes, lisibilite, maintenabilite)
+- Les changements de tests par rapport a l'historique
+- Les regressions potentielles
+- La coherence avec les fonctionnalites existantes
+
+**Rapporter a l'utilisateur** : Presente le rapport de Quality :
+```
+## Rapport Quality - Code Review + Tests Review
+
+L'agent Quality a analyse les changements :
+
+### Code Review
+[Resume]
+
+### Tests Review
+[Resume]
+
+Voulez-vous continuer ?
+```
 
 4. **Si Quality detecte un probleme** :
    - Presente le probleme a l'utilisateur

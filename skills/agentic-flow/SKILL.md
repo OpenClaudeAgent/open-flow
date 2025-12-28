@@ -5,64 +5,126 @@ description: Workflow agentique - Cycle de vie feature, isolation worktrees, col
 
 # Skill Agentic Flow
 
-Ce skill decrit le workflow de developpement assiste par agents specialises, leurs responsabilites et leurs interactions.
+Ce skill decrit le workflow de developpement assiste par agents specialises.
 
 ---
 
-## Vue d'ensemble
-
-Cinq agents specialises, chacun dans son worktree isole :
+## Feature Lifecycle
 
 ```
-                        UTILISATEUR
-                             |
-     +----------+-----+------+------+-----+----------+
-     |          |           |             |          |
-     v          v           v             v          v
-  Roadmap   Executeur    Quality      Tester    Refactoring
-  (Plan)    (Implem)     (Strat)      (Tests)   (Testab.)
-     |          |           |             |          |
-     v          v           v             v          v
-  roadmap/    src/      quality/      tests/      src/
+┌─────────────────────────────────────────────────────────────────┐
+│                        FEATURE LIFECYCLE                         │
+└─────────────────────────────────────────────────────────────────┘
+
+  1. IDEATION
+     │
+     │  Utilisateur exprime le besoin
+     │
+     ▼
+  2. PLANIFICATION ─────────────────► ROADMAP
+     │                                   │
+     │                                   ├── Output: roadmap/plan-XX.md
+     │                                   │
+     ▼◄──────────────────────────────────┘
+  3. IMPLEMENTATION ────────────────► EXECUTEUR
+     │                                   │
+     │                                   ├── Skills: ui-design-principles, qml, qt-cpp
+     │                                   ├── Output: src/
+     │                                   │
+     ▼◄──────────────────────────────────┘
+  4. TESTS ─────────────────────────► TESTER (invoque par Executeur)
+     │                                   │
+     │                                   ├── Skill: functional-testing
+     │                                   ├── Si non testable → REFACTORING
+     │                                   │                        └── Skill: testability-patterns
+     │                                   ├── Output: tests/
+     │                                   │
+     ▼◄──────────────────────────────────┘
+  5. QUALITY ───────────────────────► QUALITY (invoque par Executeur)
+     │                                   │
+     │                                   ├── Skills: code-review
+     │                                   ├── Phase 1: Code review (src/)
+     │                                   ├── Phase 2: Tests review (tests/)
+     │                                   ├── Output: quality/validation-XX.md
+     │                                   │
+     ▼◄──────────────────────────────────┘
+  6. VALIDATION UTILISATEUR ────────► EXECUTEUR
+     │                                   │
+     │                                   ├── Genere scenarios de test
+     │                                   ├── Lance app (make run &)
+     │                                   ├── 🔔 MCP ask_user "Validation requise"
+     │                                   ├── Itere si probleme
+     │                                   │
+     ▼◄──────────────────────────────────┘
+  7. MERGE ─────────────────────────► EXECUTEUR
+     │                                   │
+     │                                   ├── 🔔 MCP ask_user "Je merge ?"
+     │                                   ├── Skill: git-conventions
+     │                                   ├── Commit + Tag version
+     │                                   │
+     ▼◄──────────────────────────────────┘
+  8. RELEASE
+     │
+     └── Utilisateur publie
 ```
 
 ---
 
-## Responsabilites
+## Agents et responsabilites
 
-| Agent | Role | Produit | Scope |
-|-------|------|---------|-------|
-| **Roadmap** | Planification | Plans fonctionnels | `roadmap/` |
-| **Executeur** | Implementation | Code source | `src/` |
-| **Quality** | Strategie QA | Plans de test manuels | `quality/` |
-| **Tester** | Tests auto | Tests unitaires/E2E | `tests/` |
-| **Refactoring** | Testabilite | Code refactorise | `src/` |
-
----
-
-## Cycle de vie d'une feature
-
-```
-1. IDEATION        → Utilisateur exprime le besoin
-       ↓
-2. PLANIFICATION   → Roadmap cree le plan (comportements, criteres)
-       ↓
-3. IMPLEMENTATION  → Executeur code selon le plan
-       ↓
-4. VALIDATION      → Utilisateur teste avec checklist
-       ↓
-5. MERGE           → Utilisateur merge sur main + tag
-       ↓
-6. QUALITE         → Quality (manuel) + Tester (auto) en parallele
-       ↓
-7. RELEASE         → Utilisateur publie
-```
+| Agent | Role | Scope | Skills |
+|-------|------|-------|--------|
+| **Roadmap** | Planification | `roadmap/` | - |
+| **Executeur** | Implementation | `src/` | ui-design-principles, qml, qt-cpp, git-conventions |
+| **Tester** | Tests auto | `tests/` | functional-testing |
+| **Quality** | QA + Code Review | `quality/` | code-review |
+| **Refactoring** | Testabilite | `src/` | testability-patterns |
 
 ---
 
-## Principes fondamentaux
+## Points de notification MCP
 
-### Isolation des agents
+| Etape | Agent | Titre | Question |
+|-------|-------|-------|----------|
+| Validation | Executeur | "Validation requise" | "Teste les scenarios" |
+| Merge | Executeur | "Feature prete" | "Je merge sur main ?" |
+| Testabilite | Tester | "Autorisation requise" | "Invoquer Refactoring ?" |
+| Tests manuels | Quality | "Tests manuels prets" | "On commence ?" |
+
+---
+
+## Skills par phase
+
+### Phase 3 : Implementation (Executeur)
+
+| Condition | Skill a charger |
+|-----------|-----------------|
+| Fichiers `.qml` | `qml` |
+| Composants UI | `ui-design-principles` |
+| Fichiers `.cpp/.h` Qt | `qt-cpp` |
+
+### Phase 4 : Tests (Tester)
+
+| Condition | Skill a charger |
+|-----------|-----------------|
+| Toujours | `functional-testing` |
+| Code non testable | → Invoquer Refactoring avec `testability-patterns` |
+
+### Phase 5 : Quality
+
+| Condition | Skill a charger |
+|-----------|-----------------|
+| Toujours | `code-review` |
+
+### Phase 7 : Merge (Executeur)
+
+| Condition | Skill a charger |
+|-----------|-----------------|
+| Commit/Tag | `git-conventions` |
+
+---
+
+## Isolation des agents (Worktrees)
 
 Chaque agent opere dans son propre worktree Git :
 
@@ -79,17 +141,9 @@ Chaque agent opere dans son propre worktree Git :
 - Tracabilite par branche
 - `main` sous controle utilisateur
 
-### Communication inter-agents
+---
 
-Les agents ne communiquent **jamais directement**. Tout passe par :
-1. **Artefacts** : Documents dans les dossiers dedies
-2. **Utilisateur** : Orchestre et valide les transitions
-
-**Exceptions** :
-- Tandem Tester-Refactoring (avec validation utilisateur)
-- Executeur → Tester → Quality (chaine de validation tests)
-
-### Regles globales
+## Regles globales
 
 | Regle | Description |
 |-------|-------------|
@@ -97,88 +151,7 @@ Les agents ne communiquent **jamais directement**. Tout passe par :
 | Worktrees | Chaque agent dans son worktree |
 | Validation | Aucun merge sans approbation explicite |
 | Isolation | Ne pas modifier hors de son scope |
-
----
-
-## Workflows specifiques
-
-### Executeur : Cycle de validation
-
-```
-Selection → Preparation → Implementation → Tests? → Validation → Finalisation
-                                             ↓
-                                   Si echec: Tester → Quality
-```
-
-1. **Selection** : Prochaine tache selon priorites
-2. **Preparation** : Sync main, branche feature
-3. **Implementation** : Code dans `src/`
-4. **Tests** : Si echec, invoquer Tester puis Quality
-5. **Validation** : Checklist + scenarios avec utilisateur (voir detail ci-dessous)
-6. **Finalisation** : Commit, proposition merge
-
-#### Detail : Phase Validation
-
-L'executeur doit generer une **checklist de validation avec scenarios concrets** :
-
-1. **Lancer l'application** (`make run &` en arriere-plan)
-2. **Generer des scenarios de test** bases sur le plan :
-   - Scenario principal (happy path)
-   - Scenarios secondaires
-   - Cas limites (edge cases)
-3. **Chaque scenario inclut** :
-   - Actions concretes (clics, saisies, navigations)
-   - Resultat attendu visible
-4. **Notifier l'utilisateur** via MCP `ask_user`
-5. **Iterer** jusqu'a validation complete
-
-### Tandem Tester-Refactoring
-
-```
-Tester identifie code non testable
-       ↓
-Demande autorisation utilisateur
-       ↓
-Refactoring cree commit dans worktree/refactoring
-       ↓
-Tester cherry-pick ou applique patch
-       ↓
-Tester ecrit les tests
-```
-
-**Regles** :
-- Validation utilisateur avant chaque invocation
-- Pas de merge direct sur main
-- Communication par commits (cherry-pick ou patches)
-
-### Quality : Consolidation
-
-```
-Phase 1: Consolidation          Phase 2: Impacts
-         ↓                              ↓
-Extraire checklists plans      Identifier composants partages
-         ↓                              ↓
-Verifier obsolescence          Matrice d'impact
-         ↓                              ↓
-Liste consolidee               Checks de regression
-```
-
----
-
-## Matrice des interactions
-
-| Source → Dest | Action |
-|---------------|--------|
-| Utilisateur → Roadmap | Idees, besoins |
-| Roadmap → `roadmap/` | Plans, specs |
-| Executeur ← `roadmap/` | Lit plans |
-| Executeur → `src/` | Implementation |
-| Quality ← `roadmap/` | Lit pour analyse |
-| Quality → `quality/` | Plans de test |
-| Tester ← `src/` | Lit code source |
-| Tester → `tests/` | Tests automatises |
-| Tester → Refactoring | Demande testabilite |
-| Refactoring → `src/` | Code refactorise |
+| MCP | Utiliser `ask_user` selon instructions agent |
 
 ---
 
@@ -195,12 +168,30 @@ make sync-worktrees
 
 ---
 
-## Avantages
+## Workflows specifiques
 
-| Aspect | Benefice |
-|--------|----------|
-| Parallelisation | Agents travaillent simultanement |
-| Tracabilite | Contributions isolees et identifiables |
-| Reversibilite | Retour arriere facile |
-| Controle | Validation explicite a chaque etape |
-| Transparence | Role clair de chaque agent |
+### Tandem Tester-Refactoring
+
+```
+Tester identifie code non testable
+       ↓
+🔔 ask_user "Autorisation requise"
+       ↓
+Refactoring (skill: testability-patterns)
+       ↓
+Tester ecrit les tests
+```
+
+### Quality : Double review
+
+```
+Executeur invoque Quality
+       ↓
+Quality charge skill: code-review
+       ↓
+Phase 1: Review code (src/)
+       ↓
+Phase 2: Review tests (tests/)
+       ↓
+Rapport consolide → Executeur
+```

@@ -66,11 +66,12 @@ Five specialized agents collaborate through isolated worktrees:
 ### Feature Lifecycle
 
 1. **Ideation** : User expresses need
-2. **Planning** : Roadmap agent creates functional plan
+2. **Planning** : Roadmap creates functional plan
 3. **Implementation** : Executeur codes according to plan
-4. **Validation** : User tests with scenarios checklist
-5. **Merge** : User merges to main + tags version
-6. **Quality** : Quality (manual) + Tester (auto) in parallel
+4. **Tests** : Tester writes automated tests (invoked by Executeur)
+5. **Quality** : Quality does code review + tests review (invoked by Executeur)
+6. **Validation** : User tests with scenarios checklist
+7. **Merge** : Executeur merges to main + tags version (after user approval)
 
 ### Validation Phase
 
@@ -99,7 +100,7 @@ Example validation output:
 |-------|------|-------|--------------|
 | **Executeur** | Implementation | `src/` | Validation scenarios, MCP notifications |
 | **Roadmap** | Planning | `roadmap/` | Functional specs, no code |
-| **Quality** | QA Strategy | `quality/` | Manual test plans, regression checks |
+| **Quality** | Code Review + QA | `quality/` | Code review, tests review, manual test plans |
 | **Tester** | Automated tests | `tests/` | Unit/E2E tests, coverage |
 | **Refactoring** | Testability | `src/` | SOLID patterns, DI |
 
