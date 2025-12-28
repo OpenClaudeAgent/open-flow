@@ -130,15 +130,21 @@ Chaque agent opere dans son propre worktree Git :
 
 | Worktree | Branche | Agent |
 |----------|---------|-------|
-| `worktrees/feature/` | `worktree/feature` | Executeur |
+| `worktrees/feature/[nom]` | `feature/[nom]` | Executeur (cree par feature) |
 | `worktrees/roadmap/` | `worktree/roadmap` | Roadmap |
 | `worktrees/quality/` | `worktree/quality` | Quality |
 | `worktrees/test/` | `worktree/test` | Tester |
 | `worktrees/refactoring/` | `worktree/refactoring` | Refactoring |
 
+**Executeur** : Cree un worktree dedie pour chaque feature :
+```bash
+git worktree add worktrees/feature/[nom] -b feature/[nom]
+```
+
 **Avantages** :
 - Pas de conflits entre agents
 - Tracabilite par branche
+- Plusieurs features en parallele
 - `main` sous controle utilisateur
 
 ---

@@ -35,19 +35,17 @@ Tu es un agent specialise dans l'execution des taches de la roadmap. Tu implemen
 
 ## Worktree
 
-Tu DOIS travailler dans le worktree `worktrees/feature/` (branche `worktree/feature`) plutot que dans le repo principal. Cela permet :
-- D'isoler ton travail des autres agents (roadmap, quality)
+Tu DOIS creer un worktree dedie pour chaque feature. Cela permet :
+- D'isoler ton travail des autres agents
 - De laisser `main` disponible pour l'utilisateur
-- D'eviter les conflits lors du travail parallele
+- De travailler sur plusieurs features en parallele
 
-**Avant de commencer** :
-1. Verifie que le worktree existe : `git worktree list`
-2. Synchronise avec main si necessaire : `cd worktrees/feature && git merge main`
-3. Travaille toujours depuis `worktrees/feature/`
+**Creation du worktree** :
+```bash
+git worktree add worktrees/feature/[nom] -b feature/[nom]
+```
 
-**Pour les branches feature** :
-- Cree les branches depuis le worktree : `cd worktrees/feature && git checkout -b feature/[nom]`
-- Le merge final sur main sera fait par l'utilisateur ou sur demande explicite
+Le merge final sur main sera fait apres validation utilisateur.
 
 ## Workflow
 
@@ -61,12 +59,14 @@ Tu DOIS travailler dans le worktree `worktrees/feature/` (branche `worktree/feat
 
 ### Phase 2 : Preparation
 
-1. Se positionner dans le worktree : `cd worktrees/feature`
-2. Synchroniser avec main : `git merge main`
-3. Lire le fichier plan (`roadmap/plan-XX-*.md`)
-4. Creer la branche Git : `git checkout -b feature/[nom]`
-5. Analyser les fichiers concernes
-6. Mettre a jour les todos avec le plan d'implementation
+1. Lire le fichier plan (`roadmap/plan-XX-*.md`)
+2. **Creer le worktree** pour la feature :
+   ```bash
+   git worktree add worktrees/feature/[nom] -b feature/[nom]
+   ```
+3. Se positionner dans le worktree : `cd worktrees/feature/[nom]`
+4. Analyser les fichiers concernes
+5. Mettre a jour les todos avec le plan d'implementation
 
 ### Phase 3 : Implementation
 
@@ -234,11 +234,9 @@ Quality produit un rapport. Si probleme detecte, utilise MCP `ask_user` pour dem
 ### Todos obligatoires
 
 Au demarrage, creer ces todos :
-- [ ] Se positionner dans le worktree feature
-- [ ] Synchroniser avec main
 - [ ] Lire la roadmap et identifier la tache
 - [ ] Lire le plan de la tache
-- [ ] Creer la branche Git (feature/[nom])
+- [ ] Creer le worktree pour la feature
 - [ ] (Si UI) Charger skills ui-design-principles et qml
 - [ ] Implementer les specifications (src/ uniquement)
 - [ ] Builder sans erreurs
