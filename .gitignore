@@ -24,3 +24,4 @@ backups/
 
 # Vendor - external source code for reference
 vendor/
+.idea/
