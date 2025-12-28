@@ -5,11 +5,175 @@ description: Tests fonctionnels UI Qt Quick Test pour BluePlayer - Patterns, Sig
 
 # Skill Tests Fonctionnels UI
 
-Ce skill contient les patterns, conventions et scenarios pour les tests fonctionnels UI de BluePlayer avec Qt Quick Test.
+Ce skill contient les principes generaux de testing et les patterns specifiques Qt Quick Test.
 
 ---
 
-## Stack technique
+## Partie 1 : Principes Generaux de Testing
+
+### Dimensions de la Qualite des Tests
+
+#### 1. Code Coverage
+
+**Objectif** : Mesurer quelle proportion du code est executee par les tests.
+
+**Metriques** :
+- Line coverage : % de lignes executees
+- Branch coverage : % de branches (if/else) testees
+- Function coverage : % de fonctions appelees
+
+**Standards** :
+- Minimum global : 70%
+- Code critique (securite, auth, validation) : 95%
+- Nouveaux fichiers : 80% minimum
+
+**Comment ameliorer** :
+- Identifier les fichiers sans tests
+- Identifier les branches non couvertes
+- Ajouter des tests pour les cas manquants
+
+---
+
+#### 2. Qualite des Tests
+
+**Principes** :
+- **Un test = une assertion logique** : Tester une seule chose
+- **Arrange-Act-Assert** : Structure claire en 3 phases
+- **Pas de logique dans les tests** : Pas de if/for/while dans le corps du test
+- **Nommage descriptif** : Le nom decrit le scenario et le resultat attendu
+
+**Anti-patterns a eviter** :
+- Tests qui ne verifient rien (`QVERIFY(true)`)
+- Assertions tautologiques (`QVERIFY(x || !x)`)
+- Tests qui dependent de l'ordre d'execution
+- Tests qui partagent de l'etat mutable
+- Tests commentes ou desactives
+
+**Patterns recommandes** :
+- Data-driven tests pour les variations
+- Fixtures pour la configuration commune
+- Builders pour les donnees de test complexes
+- Mocks pour les dependances externes
+
+---
+
+#### 3. Maintenabilite des Tests
+
+**Objectifs** :
+- Tests faciles a comprendre
+- Tests faciles a modifier
+- Pas de duplication
+
+**Strategies** :
+- **DRY mais pas au detriment de la clarte** : La lisibilite prime
+- **Helpers et utilitaires partages** : Factoriser le code commun
+- **Conventions de nommage coherentes** : Pattern uniforme
+- **Documentation des cas complexes** : Expliquer le pourquoi
+
+**Refactoring des tests** :
+- Consolider les tests redondants
+- Extraire les patterns communs en helpers
+- Utiliser des tests parametres (data-driven)
+- Supprimer les tests obsoletes
+
+---
+
+### Types de Tests
+
+#### Pyramide des tests
+
+```
+        /\
+       /  \      E2E (5%)
+      /----\     
+     /      \    Integration (15%)
+    /--------\   
+   /          \  Unit (80%)
+  --------------
+```
+
+#### Unit tests
+
+- Testent une seule unite (classe, fonction)
+- Rapides (< 100ms chacun)
+- Isoles (pas de dependances externes)
+- Deterministes
+
+#### Integration tests
+
+- Testent l'interaction entre composants
+- Peuvent utiliser de vraies dependances
+- Plus lents mais plus realistes
+
+#### E2E tests
+
+- Testent le systeme complet
+- Simulent l'utilisateur
+- Les plus lents, les plus fragiles
+
+---
+
+### Property-Based Testing
+
+**Objectif** : Tester des proprietes invariantes avec des donnees generees.
+
+**Quand utiliser** :
+- Fonctions pures
+- Serialisation/deserialisation (roundtrip)
+- Parsers et transformations
+- Operations mathematiques
+
+**Proprietes courantes** :
+- Idempotence : `f(f(x)) == f(x)`
+- Roundtrip : `decode(encode(x)) == x`
+- Invariants : conditions toujours vraies
+
+---
+
+### Contract Testing
+
+**Objectif** : Verifier que les APIs externes respectent leur contrat.
+
+**Elements a tester** :
+- Schema des requetes/reponses
+- Codes d'erreur
+- Format des donnees
+
+**Strategies** :
+- Enregistrer des reponses reelles comme reference
+- Valider contre des schemas
+- Mock servers bases sur les contrats
+
+---
+
+### Metriques de Succes
+
+| Metrique | Minimum | Cible |
+|----------|---------|-------|
+| Line coverage | 70% | 85% |
+| Branch coverage | 60% | 75% |
+| Test/code ratio | 0.5:1 | 1:1 |
+| Flaky tests | 0 | 0 |
+| Test execution time | < 2min | < 1min |
+
+---
+
+### Standards de Code Test
+
+Les tests doivent respecter les memes standards que le code production :
+- Pas de code duplique
+- Nommage clair et coherent
+- Pas de magic numbers (utiliser des constantes)
+- Pas de code commente
+- Formatage uniforme
+
+Un test bien ecrit sert aussi de documentation du comportement attendu.
+
+---
+
+## Partie 2 : Qt Quick Test Specifique
+
+### Stack technique
 
 | Technologie | Role |
 |-------------|------|
@@ -20,7 +184,7 @@ Ce skill contient les patterns, conventions et scenarios pour les tests fonction
 
 ---
 
-## Structure des fichiers
+### Structure des fichiers
 
 ```
 tests/functional/
@@ -34,15 +198,15 @@ tests/functional/
 
 ---
 
-## Convention de nommage
+### Convention de nommage
 
-### Fichiers de test
+#### Fichiers de test
 
 ```
 tst_<ComponentName>.qml
 ```
 
-### Fonctions de test
+#### Fonctions de test
 
 ```qml
 function test_<element>_<action>_<expectedResult>() { }
@@ -55,7 +219,7 @@ Exemples :
 
 ---
 
-## Pattern AAA (Arrange-Act-Assert)
+### Pattern AAA (Arrange-Act-Assert)
 
 Chaque test DOIT suivre cette structure :
 
@@ -76,7 +240,7 @@ function test_volumeButton_click_togglesMute() {
 
 ---
 
-## Structure d'un fichier de test complet
+### Structure d'un fichier de test complet
 
 ```qml
 import QtQuick 2.15
@@ -124,9 +288,9 @@ TestCase {
 
 ---
 
-## Patterns recommandes
+### Patterns recommandes
 
-### 1. SignalSpy pour capturer les signaux
+#### 1. SignalSpy pour capturer les signaux
 
 ```qml
 // Declaration dans le TestCase
@@ -151,7 +315,7 @@ function test_signal_emitted() {
 }
 ```
 
-### 2. createTemporaryObject pour l'isolation
+#### 2. createTemporaryObject pour l'isolation
 
 ```qml
 function init() {
@@ -163,7 +327,7 @@ function init() {
 // Pas besoin de cleanup explicite !
 ```
 
-### 3. waitForRendering pour la synchronisation
+#### 3. waitForRendering pour la synchronisation
 
 ```qml
 function test_stateChange_updatesVisual() {
@@ -177,7 +341,7 @@ function test_stateChange_updatesVisual() {
 }
 ```
 
-### 4. findChild pour localiser les elements
+#### 4. findChild pour localiser les elements
 
 ```qml
 function test_nestedElement() {
@@ -199,7 +363,7 @@ Rectangle {
 }
 ```
 
-### 5. Tests data-driven
+#### 5. Tests data-driven
 
 Pour tester plusieurs variantes avec le meme code :
 
@@ -232,9 +396,9 @@ function test_speedChange(data) {
 
 ---
 
-## Gestion de l'asynchrone
+### Gestion de l'asynchrone
 
-### tryCompare pour les valeurs asynchrones
+#### tryCompare pour les valeurs asynchrones
 
 ```qml
 function test_asyncValue() {
@@ -245,7 +409,7 @@ function test_asyncValue() {
 }
 ```
 
-### tryVerify pour les conditions asynchrones
+#### tryVerify pour les conditions asynchrones
 
 ```qml
 function test_asyncCondition() {
@@ -258,7 +422,7 @@ function test_asyncCondition() {
 }
 ```
 
-### wait() en dernier recours
+#### wait() en dernier recours
 
 ```qml
 function test_animation() {
@@ -273,9 +437,9 @@ function test_animation() {
 
 ---
 
-## Anti-patterns a eviter
+### Anti-patterns a eviter
 
-### 1. Tests qui dependent de l'ordre
+#### 1. Tests qui dependent de l'ordre
 
 ```qml
 // MAUVAIS
@@ -292,7 +456,7 @@ function init() {
 }
 ```
 
-### 2. Assertions vides ou tautologiques
+#### 2. Assertions vides ou tautologiques
 
 ```qml
 // MAUVAIS
@@ -302,7 +466,7 @@ function test_nothing() {
 }
 ```
 
-### 3. Magic numbers
+#### 3. Magic numbers
 
 ```qml
 // MAUVAIS
@@ -316,7 +480,7 @@ controlBar.duration = oneHour
 controlBar.position = halfwayPoint
 ```
 
-### 4. Delais fixes (sleep)
+#### 4. Delais fixes (sleep)
 
 ```qml
 // MAUVAIS - Fragile et lent
@@ -333,7 +497,7 @@ function test_async() {
 }
 ```
 
-### 5. Tests trop longs
+#### 5. Tests trop longs
 
 ```qml
 // MAUVAIS - Un test qui fait tout
@@ -352,9 +516,9 @@ function test_volumeButton_click() { ... }
 
 ---
 
-## Actions de test disponibles
+### Actions de test disponibles
 
-### Souris
+#### Souris
 
 ```qml
 mouseClick(item)                    // Clic simple
@@ -366,7 +530,7 @@ mouseMove(item, x, y)               // Deplacer
 mouseDrag(item, x1, y1, dx, dy)     // Glisser
 ```
 
-### Clavier
+#### Clavier
 
 ```qml
 keyClick(Qt.Key_Space)              // Touche simple
@@ -375,7 +539,7 @@ keyRelease(Qt.Key_Shift)            // Relacher
 keySequence("Ctrl+S")               // Sequence
 ```
 
-### Assertions
+#### Assertions
 
 ```qml
 verify(condition, message)          // Condition booleenne
@@ -389,9 +553,9 @@ skip(message)                       // Ignorer le test
 
 ---
 
-## Scenarios BluePlayer
+### Scenarios BluePlayer
 
-### IDs de scenarios par composant
+#### IDs de scenarios par composant
 
 | Prefixe | Composant |
 |---------|-----------|
@@ -409,7 +573,7 @@ skip(message)                       // Ignorer le test
 | NAV | Navigation |
 | KEY | Keyboard shortcuts |
 
-### Scenarios prioritaires (Haute)
+#### Scenarios prioritaires (Haute)
 
 | ID | Scenario |
 |----|----------|
@@ -426,9 +590,9 @@ skip(message)                       // Ignorer le test
 
 ---
 
-## Debugging
+### Debugging
 
-### Logs de debug
+#### Logs de debug
 
 ```qml
 function test_example() {
@@ -443,7 +607,7 @@ function test_example() {
 }
 ```
 
-### Execution
+#### Execution
 
 ```bash
 # Mode verbose
@@ -459,7 +623,7 @@ function test_example() {
 ./build/tests/test_functional_ui -o results.xml,junitxml
 ```
 
-### Problemes courants
+#### Problemes courants
 
 | Probleme | Solution |
 |----------|----------|
@@ -469,7 +633,7 @@ function test_example() {
 
 ---
 
-## Checklist avant commit
+### Checklist avant commit
 
 - [ ] Le test suit le pattern AAA (Arrange-Act-Assert)
 - [ ] Le nommage est descriptif (`test_element_action_result`)
@@ -485,7 +649,7 @@ function test_example() {
 
 ---
 
-## Metriques cibles
+### Metriques cibles Qt Quick Test
 
 | Metrique | Cible |
 |----------|-------|
