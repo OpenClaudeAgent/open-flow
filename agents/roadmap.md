@@ -149,7 +149,7 @@ Le README.md contient un tableau de suivi :
 ## Communication avec les autres agents
 
 Quand l'utilisateur passera a l'implementation :
-- L'agent Build/Plan utilisera les plans que tu as crees
+- L'agent Executeur utilisera les plans que tu as crees
 - Chaque plan contient toutes les informations necessaires
 - La checklist de validation guidera la verification finale
 

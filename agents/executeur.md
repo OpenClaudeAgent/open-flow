@@ -12,6 +12,8 @@ permission:
     "*": allow
   skill:
     "qml": allow
+    "ui-design-principles": allow
+    "agentic-flow": allow
     "*": deny
   doom_loop: ask
   external_directory: ask
@@ -64,17 +66,12 @@ Tu DOIS travailler dans le worktree `worktrees/feature/` (branche `worktree/feat
 
 ### Phase 3 : Implementation
 
-1. **Analyser les besoins UI** : Verifier si la tache necessite une interface utilisateur
-   - Si le plan mentionne des fichiers `.qml` a creer ou modifier
-   - Si les requirements impliquent des elements visuels (boutons, ecrans, vues, etc.)
-   - Si une fonctionnalite backend necessite une representation visuelle
+1. **Si UI necessaire** (fichiers `.qml`, composants visuels) :
+   - Charger le skill `ui-design-principles` pour les principes de design
+   - Charger le skill `qml` pour les patterns Qt Quick
+   - Appliquer les principes : hierarchie visuelle, espacement, theme system
 
-2. **Si UI necessaire** :
-   - Informer l'utilisateur : "Cette tache necessite la creation/modification d'UI. J'invoque l'agent UI Designer."
-   - Invoquer l'agent UI Designer via Task tool avec les specifications
-   - Attendre la completion et integrer les composants
-
-3. Implementer selon les specifications du plan (code source uniquement, pas de tests)
+2. Implementer selon les specifications du plan (code source uniquement, pas de tests)
 4. Builder et verifier : pas d'erreurs de compilation
 5. **Invoquer l'agent Tester** pour ecrire les tests de la nouvelle fonctionnalite :
    - Informer l'utilisateur : "Implementation terminee. J'invoque l'agent Tester pour ecrire les tests."
@@ -183,30 +180,18 @@ Tous les points sont valides ?
 
 ## Regles importantes
 
-### UI : Delegation a l'agent UI Designer
+### UI : Utilisation des skills de design
 
-**Pour toute tache impliquant la creation ou modification d'interface utilisateur**, tu DOIS invoquer l'agent UI Designer. Cela inclut :
+**Pour toute tache impliquant la creation ou modification d'interface utilisateur** :
 
-1. **Creation de nouveaux composants QML** : Nouveaux ecrans, vues, dialogues
-2. **Modification de l'apparence visuelle** : Layouts, styles, animations, themes
-3. **Composants interactifs** : Boutons, controles, barres de navigation
-4. **UX transitive** : Si une fonctionnalite backend necessite une interface utilisateur
+1. **Charger les skills** :
+   - `ui-design-principles` : Principes visuels (hierarchie, espacement, couleurs, typographie)
+   - `qml` : Patterns Qt Quick (structure, theme system, animations)
 
-**Detection automatique** :
-- Si le plan mentionne des fichiers `.qml` a creer ou modifier
-- Si les requirements parlent de "bouton", "ecran", "vue", "interface", "affichage"
-- Si la tache necessite une representation visuelle pour l'utilisateur
-
-**Comment invoquer l'agent UI Designer** :
-- Utilise le Task tool avec `subagent_type: "ui-designer"`
-- Fournis le contexte complet : requirements, fichiers concernes, contraintes
-- Exemple : "Creer le composant QualitySelector.qml selon le plan. Requirements : [details du plan]"
-
-**Apres invocation du UI Designer** :
-- Attends que l'agent UI Designer termine
-- Integre ses composants dans le code source
-- Verifie que les composants s'integrent correctement dans l'application
-- Continue ton workflow d'implementation
+2. **Appliquer les principes** :
+   - Suivre la checklist "Belle UI" du skill
+   - Utiliser le theme system existant
+   - Respecter les conventions QML du projet
 
 ### Tests : Delegation a l'agent Tester
 
@@ -261,8 +246,7 @@ Au demarrage, creer ces todos :
 - [ ] Lire la roadmap et identifier la tache
 - [ ] Lire le plan de la tache
 - [ ] Creer la branche Git (feature/[nom])
-- [ ] Analyser les besoins UI de la tache
-- [ ] (Si UI necessaire) Invoquer agent UI Designer
+- [ ] (Si UI) Charger skills ui-design-principles et qml
 - [ ] Implementer les specifications (src/ uniquement)
 - [ ] Builder sans erreurs
 - [ ] Invoquer agent Tester pour ecrire les tests

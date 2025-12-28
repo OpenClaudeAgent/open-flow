@@ -1,6 +1,6 @@
 ---
 description: Agent de qualite - Genere des plans de tests manuels, valide les changements de tests, et maintient l'historique qualite du projet
-mode: all
+mode: subagent
 color: "#43A047"
 temperature: 0.1
 permission:
