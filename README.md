@@ -2,6 +2,17 @@
 
 Configuration repository for OpenCode agents, skills, MCP servers, and workflows.
 
+## Quick Start
+
+```bash
+# Clone the repository
+git clone <your-repo-url> ~/Projects/open-flow
+cd ~/Projects/open-flow
+
+# Install everything (agents, skills, MCP servers)
+./install.sh
+```
+
 ## Structure
 
 ```
@@ -20,7 +31,6 @@ open-flow/
 │   ├── git-conventions/SKILL.md     # Git conventions
 │   ├── notify/SKILL.md              # Notification tool usage
 │   ├── qml/SKILL.md                 # QML best practices
-│   ├── qml-blueplayer/SKILL.md      # QML BluePlayer specifics
 │   ├── qt-cpp/SKILL.md              # Qt/C++ patterns
 │   ├── testability-patterns/SKILL.md # Testability patterns
 │   └── ui-design-principles/SKILL.md # UI design principles
@@ -36,29 +46,72 @@ open-flow/
 └── AGENTS.md                        # Global agent rules
 ```
 
-## Quick Start
+## Agentic Workflow
 
-```bash
-# Clone the repository
-git clone <your-repo-url> ~/Projects/open-flow
-cd ~/Projects/open-flow
+Five specialized agents collaborate through isolated worktrees:
 
-# Install everything (agents, skills, MCP servers)
-./install.sh
+```
+                    UTILISATEUR
+                         |
+     +----------+--------+--------+----------+
+     |          |        |        |          |
+     v          v        v        v          v
+  Roadmap   Executeur  Quality  Tester  Refactoring
+   (Plan)   (Implem)   (QA)    (Tests)  (Testab.)
+     |          |        |        |          |
+     v          v        v        v          v
+  roadmap/    src/    quality/  tests/     src/
 ```
 
-## Commands
+### Feature Lifecycle
 
-| Command | Description |
-|---------|-------------|
-| `./install.sh` | Install all (agents, skills, MCP servers) |
-| `./install.sh agents` | Install only agents |
-| `./install.sh skills` | Install only skills |
-| `./install.sh mcp` | Configure MCP servers only |
-| `./install.sh status` | Show current installation |
-| `./install.sh diff` | Compare with installed versions |
-| `./install.sh backup` | Create backup of current config |
-| `./install.sh restore` | Restore from backup |
+1. **Ideation** : User expresses need
+2. **Planning** : Roadmap agent creates functional plan
+3. **Implementation** : Executeur codes according to plan
+4. **Validation** : User tests with scenarios checklist
+5. **Merge** : User merges to main + tags version
+6. **Quality** : Quality (manual) + Tester (auto) in parallel
+
+### Validation Phase
+
+When Executeur completes implementation, it:
+1. Launches the application (`make run &`)
+2. Generates **test scenarios** with concrete actions
+3. Presents a validation checklist to the user
+4. Notifies via **MCP `ask_user`**
+5. Iterates until all scenarios pass
+
+Example validation output:
+```
+### Scenario 1 : [Main behavior]
+1. Click on [element]
+2. Enter [value] in field
+3. **Expected** : [visible result]
+
+### Scenario 2 : [Edge case]
+1. [concrete action]
+2. **Expected** : [expected behavior]
+```
+
+## Agents
+
+| Agent | Role | Scope | Key Features |
+|-------|------|-------|--------------|
+| **Executeur** | Implementation | `src/` | Validation scenarios, MCP notifications |
+| **Roadmap** | Planning | `roadmap/` | Functional specs, no code |
+| **Quality** | QA Strategy | `quality/` | Manual test plans, regression checks |
+| **Tester** | Automated tests | `tests/` | Unit/E2E tests, coverage |
+| **Refactoring** | Testability | `src/` | SOLID patterns, DI |
+
+### How to invoke
+
+```
+/executeur    # Execute next roadmap task
+/roadmap      # Plan a new feature
+/quality      # Generate manual test plan
+/tester       # Write automated tests
+/refactoring  # Improve code testability
+```
 
 ## MCP Servers
 
@@ -92,40 +145,35 @@ This will:
 2. Install dependencies (`mcp`, `pyobjc`)
 3. Configure `~/.config/opencode/opencode.json`
 
-## Agents
-
-### Executeur Agent
-Executes roadmap tasks - implements, validates with user, updates and merges.
-
-### Quality Agent
-Generates manual test plans, validates test changes, and maintains quality history.
-
-### Roadmap Agent
-Planning agent - creates and manages task plans without touching code.
-
-### Tester Agent
-Improves test coverage, quality, and maintainability.
-
-### Refactoring Agent
-Improves testability and maintainability via recognized patterns.
-
 ## Skills
 
-Skills provide specialized knowledge and step-by-step guidance for specific tasks.
+Skills provide specialized knowledge loaded via `/skill <name>`.
 
 | Skill | Description |
 |-------|-------------|
-| `agentic-flow` | Agentic workflow patterns |
-| `clean-code` | Clean code principles |
-| `code-review` | Code review checklist |
+| `agentic-flow` | Agent collaboration and workflow patterns |
+| `clean-code` | Clean code principles (naming, DRY, KISS) |
+| `code-review` | Code review checklist and feedback |
 | `functional-testing` | Qt Quick Test patterns |
-| `git-conventions` | Git commit conventions |
+| `git-conventions` | Conventional commits, branching |
 | `notify` | When to use ask_user tool |
-| `qml` | QML best practices |
-| `qml-blueplayer` | QML for BluePlayer project |
-| `qt-cpp` | Qt/C++ patterns |
-| `testability-patterns` | SOLID, DI patterns |
-| `ui-design-principles` | UI/UX guidelines |
+| `qml` | QML/Qt Quick best practices |
+| `qt-cpp` | Qt/C++ patterns and conventions |
+| `testability-patterns` | SOLID, dependency injection |
+| `ui-design-principles` | Visual hierarchy, spacing, colors |
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `./install.sh` | Install all (agents, skills, MCP servers) |
+| `./install.sh agents` | Install only agents |
+| `./install.sh skills` | Install only skills |
+| `./install.sh mcp` | Configure MCP servers only |
+| `./install.sh status` | Show current installation |
+| `./install.sh diff` | Compare with installed versions |
+| `./install.sh backup` | Create backup of current config |
+| `./install.sh restore` | Restore from backup |
 
 ## Installation Paths
 
@@ -135,26 +183,6 @@ Skills provide specialized knowledge and step-by-step guidance for specific task
 | Skills | `~/.config/opencode/skill/` |
 | Config | `~/.config/opencode/opencode.json` |
 | Backups | `~/.opencode-backups/` |
-
-## Backup System
-
-Backups are automatically created before each installation:
-```
-~/.opencode-backups/
-├── agents-YYYYMMDD_HHMMSS/
-├── skills-YYYYMMDD_HHMMSS/
-└── config-YYYYMMDD_HHMMSS/
-```
-
-Maximum backup size: 20MB (oldest removed first).
-
-## Workflow
-
-1. **Edit** agents/skills/servers in this repository
-2. **Test** changes with `./install.sh diff`
-3. **Install** with `./install.sh`
-4. **Iterate** based on feedback
-5. **Commit** improvements
 
 ## Development
 
@@ -177,6 +205,18 @@ Maximum backup size: 20MB (oldest removed first).
 1. Edit files in `servers/notify/`
 2. Run `./install.sh mcp` to reconfigure
 3. Restart OpenCode to reload MCP server
+
+## Backup System
+
+Backups are automatically created before each installation:
+```
+~/.opencode-backups/
+├── agents-YYYYMMDD_HHMMSS/
+├── skills-YYYYMMDD_HHMMSS/
+└── config-YYYYMMDD_HHMMSS/
+```
+
+Maximum backup size: 20MB (oldest removed first).
 
 ## License
 
