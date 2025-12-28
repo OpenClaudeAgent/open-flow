@@ -44,16 +44,23 @@ def configure_mcp_notify(config: dict, mcp_path: Path) -> tuple[dict, bool]:
     if "mcp" not in config:
         config["mcp"] = {}
 
-    # Check if notify already configured
+    server_script = str(mcp_path / "server.py")
+
+    # Check if notify already configured correctly
     if "notify" in config["mcp"]:
-        existing_cwd = config["mcp"]["notify"].get("cwd", "")
-        if str(mcp_path) == existing_cwd:
+        existing = config["mcp"]["notify"]
+        if (
+            existing.get("type") == "local"
+            and existing.get("command") == ["python3", server_script]
+            and existing.get("enabled") is True
+        ):
             return config, False  # Already configured correctly
 
-    # Add notify configuration
+    # Add notify configuration with correct OpenCode MCP schema
     config["mcp"]["notify"] = {
-        "command": ["python3", "server.py"],
-        "cwd": str(mcp_path),
+        "type": "local",
+        "command": ["python3", server_script],
+        "enabled": True,
     }
 
     return config, True
