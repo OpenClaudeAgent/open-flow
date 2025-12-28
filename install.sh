@@ -193,31 +193,40 @@ install_rules() {
 install_mcp() {
     log_info "Configuring MCP servers..."
     
-    local mcp_dir="$SCRIPT_DIR/mcp"
+    local servers_dir="$SCRIPT_DIR/servers"
     
-    if [ ! -d "$mcp_dir" ]; then
-        log_warning "No MCP directory found, skipping"
+    if [ ! -d "$servers_dir" ]; then
+        log_warning "No servers directory found, skipping"
         return 0
     fi
     
-    # Configure notify server
-    if [ -f "$mcp_dir/notify/configure.py" ]; then
-        if python3 "$mcp_dir/notify/configure.py" > /dev/null 2>&1; then
-            log_success "Configured MCP: notify"
-        else
-            log_warning "Failed to configure MCP notify"
+    # Setup notify server venv and dependencies
+    if [ -d "$servers_dir/notify" ]; then
+        local notify_dir="$servers_dir/notify"
+        local venv_dir="$notify_dir/.venv"
+        
+        # Create venv if it doesn't exist
+        if [ ! -d "$venv_dir" ]; then
+            log_info "Creating virtual environment for MCP notify..."
+            python3 -m venv "$venv_dir"
+            log_success "Virtual environment created"
         fi
-    fi
-    
-    # Install Python dependencies for MCP notify
-    if [ -f "$mcp_dir/notify/pyproject.toml" ]; then
-        if command -v pip3 &> /dev/null; then
-            log_info "Checking MCP dependencies..."
-            if pip3 show mcp > /dev/null 2>&1; then
-                log_info "MCP package already installed"
+        
+        # Install dependencies if mcp not installed
+        if ! "$venv_dir/bin/python" -c "import mcp" 2>/dev/null; then
+            log_info "Installing MCP dependencies..."
+            "$venv_dir/bin/pip" install --quiet mcp
+            log_success "MCP package installed"
+        else
+            log_info "MCP package already installed"
+        fi
+        
+        # Configure notify server
+        if [ -f "$notify_dir/configure.py" ]; then
+            if python3 "$notify_dir/configure.py" > /dev/null 2>&1; then
+                log_success "Configured MCP: notify"
             else
-                log_warning "MCP package not found. Install with:"
-                echo "  pip3 install mcp"
+                log_warning "Failed to configure MCP notify"
             fi
         fi
     fi

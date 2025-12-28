@@ -44,6 +44,7 @@ def configure_mcp_notify(config: dict, mcp_path: Path) -> tuple[dict, bool]:
     if "mcp" not in config:
         config["mcp"] = {}
 
+    venv_python = str(mcp_path / ".venv" / "bin" / "python")
     server_script = str(mcp_path / "server.py")
 
     # Check if notify already configured correctly
@@ -51,15 +52,19 @@ def configure_mcp_notify(config: dict, mcp_path: Path) -> tuple[dict, bool]:
         existing = config["mcp"]["notify"]
         if (
             existing.get("type") == "local"
-            and existing.get("command") == ["python3", server_script]
+            and existing.get("command") == [venv_python, server_script]
+            and existing.get("environment", {}).get("PYTHONPATH") == str(mcp_path)
             and existing.get("enabled") is True
         ):
             return config, False  # Already configured correctly
 
     # Add notify configuration with correct OpenCode MCP schema
+    # Use venv python to ensure mcp package is available
+    # Set PYTHONPATH so local imports (notifier) work
     config["mcp"]["notify"] = {
         "type": "local",
-        "command": ["python3", server_script],
+        "command": [venv_python, server_script],
+        "environment": {"PYTHONPATH": str(mcp_path)},
         "enabled": True,
     }
 
