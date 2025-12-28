@@ -77,8 +77,9 @@ Le merge final sur main sera fait apres validation utilisateur.
    - Charger le skill `qml` pour les patterns Qt Quick
 
 3. Implementer selon les specifications du plan (code source uniquement, pas de tests)
-4. Builder et verifier : pas d'erreurs de compilation
-5. Marquer les todos comme completes au fur et a mesure
+4. **Si changements importants** : Invoquer l'agent **Refactoring** pour ameliorer la testabilite et la maintenabilite du code
+5. Builder et verifier : pas d'erreurs de compilation
+6. Marquer les todos comme completes au fur et a mesure
 
 ### Phase 4 : Validation utilisateur
 
@@ -243,6 +244,7 @@ Au demarrage, creer ces todos :
 - [ ] (Si necessaire) Enrichir le plan avec des Specifications
 - [ ] (Si UI) Charger skills ui-design-principles et qml
 - [ ] Implementer les specifications (src/ uniquement)
+- [ ] (Si changements importants) Invoquer agent Refactoring
 - [ ] Builder sans erreurs
 - [ ] Lancer l'application (make run en arriere-plan)
 - [ ] Generer checklist de validation avec scenarios de test
