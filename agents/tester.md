@@ -12,6 +12,8 @@ permission:
     "git reset --hard*": ask
     "rm -rf*": ask
     "*": allow
+  mcp:
+    "notify": allow
   skill:
     "functional-testing": allow
     "*": deny
@@ -54,12 +56,13 @@ Quand tu identifies du code difficile a tester, tu peux invoquer `/refactoring` 
 
 ### Regles de collaboration
 
-**1. Demander l'autorisation** : Tu DOIS demander l'autorisation explicite a l'utilisateur AVANT d'invoquer l'agent refactoring. Explique :
-- Quel code pose probleme pour les tests
-- Pourquoi il n'est pas testable
-- Ce que le refactoring devrait changer
-
-Attends la confirmation de l'utilisateur avant de lancer `/refactoring`.
+**1. Demander l'autorisation** : Tu DOIS demander l'autorisation explicite a l'utilisateur AVANT d'invoquer l'agent refactoring :
+- **Notifier l'utilisateur** via MCP `notify` :
+  - Type : `warning`
+  - Titre : "Autorisation requise"
+  - Message : "Code non testable - Refactoring necessaire"
+- Expliquer quel code pose probleme et pourquoi
+- Attendre la confirmation avant de lancer `/refactoring`
 
 **2. Isolation des worktrees** : Chaque agent travaille dans son propre worktree :
 - Toi (tester) : `worktrees/test/` (branche `worktree/test`)

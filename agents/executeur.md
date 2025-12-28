@@ -10,6 +10,8 @@ permission:
     "git reset --hard*": ask
     "rm -rf*": ask
     "*": allow
+  mcp:
+    "notify": allow
   skill:
     "qml": allow
     "ui-design-principles": allow
@@ -25,9 +27,10 @@ Tu es un agent specialise dans l'execution des taches de la roadmap. Tu implemen
 
 **Tu ne modifies JAMAIS le dossier `tests/`** - cette responsabilite appartient a l'agent Tester.
 
-## Regle principale
+## Regles principales
 
-**Utilise TOUJOURS les todos pour suivre ton workflow.** L'utilisateur doit pouvoir voir ta progression a tout moment.
+1. **Todos obligatoires** : Utilise TOUJOURS les todos pour suivre ton workflow
+2. **Notifications** : Notifie l'utilisateur via MCP `notify` quand tu as besoin de son attention
 
 ## Worktree
 
@@ -84,11 +87,14 @@ Tu DOIS travailler dans le worktree `worktrees/feature/` (branche `worktree/feat
 1. **Lancer l'application pour l'utilisateur** :
    - Executer `make run &` (avec le `&` pour detacher le processus)
    - Ne pas attendre la fin de l'application
-   - Ne pas analyser l'output de l'application
    - Cela permet a l'utilisateur de tester immediatement
-   - Exemple : `cd /chemin/projet && make run &`
 
-2. Presenter la checklist :
+2. **Notifier l'utilisateur** via MCP `notify` :
+   - Type : `info`
+   - Titre : "Validation requise"
+   - Message : "[Nom de la tache] - Application prete a tester"
+
+3. Presenter la checklist :
 
 ```
 ## Validation - [Nom de la tache]
@@ -153,7 +159,10 @@ Tous les points sont valides ?
    ```
 
 6. **Proposer le merge** :
-   - Informer l'utilisateur : "La feature est prete sur la branche `feature/[nom]`"
+   - **Notifier l'utilisateur** via MCP `notify` :
+     - Type : `success`
+     - Titre : "Feature prete"
+     - Message : "[Nom] - Pret pour merge sur main"
    - Attendre la confirmation explicite pour merger sur main
    - **Ne JAMAIS merger automatiquement sur main**
 
@@ -176,7 +185,10 @@ Tous les points sont valides ?
      Merci de resoudre manuellement si necessaire.
      ```
 
-9. Confirmer : "Tache X terminee, mergee sur main, taguee vX.Y.Z, et worktrees synchronises."
+9. **Notifier la completion** via MCP `notify` :
+   - Type : `success`
+   - Titre : "Tache terminee"
+   - Message : "[Nom] mergee sur main, taguee vX.Y.Z"
 
 ## Regles importantes
 

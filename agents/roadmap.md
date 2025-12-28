@@ -10,6 +10,8 @@ permission:
     "git reset*": deny
     "rm -rf*": deny
     "*": allow
+  mcp:
+    "notify": allow
   skill:
     "*": deny
   doom_loop: ask

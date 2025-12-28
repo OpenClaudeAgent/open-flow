@@ -10,6 +10,8 @@ permission:
     "git reset --hard*": ask
     "rm -rf*": ask
     "*": allow
+  mcp:
+    "notify": allow
   skill:
     "functional-testing": allow
     "*": deny
@@ -129,11 +131,15 @@ quality/
 
 ### Execution des tests avec l'utilisateur
 
-1. Presente le rapport avec la liste complete des checks
-2. Guide l'utilisateur feature par feature
-3. Coche les tests au fur et a mesure
-4. Note les bugs et observations
-5. Mets a jour le statut final
+1. **Notifier l'utilisateur** via MCP `notify` :
+   - Type : `info`
+   - Titre : "Tests manuels prets"
+   - Message : "Rapport de test disponible - Validation requise"
+2. Presente le rapport avec la liste complete des checks
+3. Guide l'utilisateur feature par feature
+4. Coche les tests au fur et a mesure
+5. Note les bugs et observations
+6. Mets a jour le statut final
 
 ### Cloture d'un rapport
 

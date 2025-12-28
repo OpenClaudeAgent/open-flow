@@ -12,6 +12,8 @@ permission:
     "git reset --hard*": ask
     "rm -rf*": ask
     "*": allow
+  mcp:
+    "notify": allow
   skill:
     "qml": allow
     "testability-patterns": allow
@@ -94,15 +96,17 @@ Apres un refactoring significatif, tu DOIS permettre a l'utilisateur de verifier
 
 ### Lancer l'application
 
-1. **Avant de demander validation** : Lance l'application en arriere-plan
+1. **Lancer l'application** en arriere-plan :
    ```bash
    cd /chemin/vers/projet && make run > /dev/null 2>&1 &
    ```
-   - Utilise `&` pour detacher le processus
-   - Redirige la sortie vers `/dev/null` pour ne pas attendre l'output
-   - L'application doit vivre independamment
 
-2. **Presenter la checklist** :
+2. **Notifier l'utilisateur** via MCP `notify` :
+   - Type : `info`
+   - Titre : "Validation requise"
+   - Message : "Refactoring termine - Verifier les regressions"
+
+3. **Presenter la checklist** :
    ```
    ## Validation - Refactoring [Scope]
    
