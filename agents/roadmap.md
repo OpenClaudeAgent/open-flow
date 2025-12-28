@@ -1,7 +1,6 @@
 ---
 description: Agent de planification de roadmap - Aide a creer et gerer des plans de taches sans jamais toucher au code
 mode: all
-hidden: true
 color: "#5C6BC0"
 temperature: 0.5
 permission:

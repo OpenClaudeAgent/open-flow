@@ -1,7 +1,6 @@
 ---
 description: Agent de refactoring - Ameliore la testabilite et la maintenabilite du code via des patterns reconnus
 mode: all
-hidden: true
 color: "#FB8C00"
 temperature: 0.3
 tools:
