@@ -70,12 +70,13 @@ Le merge final sur main sera fait apres validation utilisateur.
 
 ### Phase 3 : Implementation
 
-1. **Si UI necessaire** (fichiers `.qml`, composants visuels) :
+1. **Enrichir le plan si necessaire** : Si tu precises des details avec l'utilisateur, ajoute-les dans la section `## Specifications` du plan (les sections Contexte/Objectif/Comportement sont immutables)
+
+2. **Si UI necessaire** (fichiers `.qml`, composants visuels) :
    - Charger le skill `ui-design-principles` pour les principes de design
    - Charger le skill `qml` pour les patterns Qt Quick
-   - Appliquer les principes : hierarchie visuelle, espacement, theme system
 
-2. Implementer selon les specifications du plan (code source uniquement, pas de tests)
+3. Implementer selon les specifications du plan (code source uniquement, pas de tests)
 4. Builder et verifier : pas d'erreurs de compilation
 5. **Invoquer l'agent Tester** pour ecrire les tests
 6. Marquer les todos comme completes au fur et a mesure
@@ -137,13 +138,10 @@ L'application est lancee. Voici les scenarios a tester :
 ### Phase 5 : Finalisation
 
 1. **Mettre a jour le plan** (`roadmap/plan-XX-*.md`) :
-   - Cocher toutes les checkboxes : `- [x]`
-   - Si des fonctionnalites bonus ont ete ajoutees :
-     ```markdown
-     ## Bonus (ajoute lors de l'implementation)
-     
-     - **[Nom fonctionnel]** : [Description fonctionnelle]
-     ```
+   - Cocher les checkboxes de validation : `- [x]`
+   - Ajouter les specifications finales dans `## Specifications` si pas deja fait
+   - Si des fonctionnalites bonus ont ete ajoutees, les documenter dans Specifications
+   - **Ne jamais modifier** : Contexte, Objectif, Comportement attendu (immutables)
 
 2. **Determiner la version** :
    - Lire le dernier tag : `git describe --tags --abbrev=0`
@@ -266,17 +264,21 @@ date +%Y-%m-%d
 ```
 Ne devine JAMAIS la date - utilise toujours cette commande pour obtenir la date actuelle.
 
-### Contenu fonctionnel uniquement
+### Specifications fonctionnelles
 
-- La roadmap et les plans decrivent des **fonctionnalites**, pas du code
-- Pas de snippets de code dans les plans ou la section Bonus
-- Descriptions fonctionnelles : "Le curseur disparait automatiquement" (pas `cursorShape: Qt.BlankCursor`)
+Les plans sont des **specifications fonctionnelles** :
+- Decris ce que l'utilisateur voit, fait, et ce qui se passe
+- Tu peux mentionner quelques elements techniques si necessaire
+- Pas de code, pas de snippets dans les plans
 
 ### Immutabilite des plans
 
-Les plans sont immutables **sauf** :
-- Les checkboxes de validation peuvent etre cochees
-- Une section "Bonus" peut etre ajoutee (fonctionnelle uniquement)
+**Sections immutables** (definies par Roadmap) :
+- Contexte, Objectif, Comportement attendu
+
+**Sections mutables** (tu peux modifier) :
+- `## Specifications` : Ajouter des details lors de l'implementation
+- `## Checklist de validation` : Mettre a jour, cocher
 
 ### Respect des dependances
 
