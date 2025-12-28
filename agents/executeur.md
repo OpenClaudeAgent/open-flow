@@ -78,8 +78,7 @@ Le merge final sur main sera fait apres validation utilisateur.
 
 3. Implementer selon les specifications du plan (code source uniquement, pas de tests)
 4. Builder et verifier : pas d'erreurs de compilation
-5. **Invoquer l'agent Tester** pour ecrire les tests
-6. Marquer les todos comme completes au fur et a mesure
+5. Marquer les todos comme completes au fur et a mesure
 
 ### Phase 4 : Validation utilisateur
 
@@ -135,7 +134,13 @@ L'application est lancee. Voici les scenarios a tester :
 
 6. **Si "C'est bon"** : Passer a la phase 5
 
-### Phase 5 : Finalisation
+### Phase 5 : Tests & Quality
+
+1. **Invoquer l'agent Tester** pour ecrire les tests automatises
+2. **Invoquer l'agent Quality** (code review + tests review)
+3. Si Quality detecte un probleme, utilise MCP `ask_user` pour demander a l'utilisateur comment proceder
+
+### Phase 6 : Finalisation
 
 1. **Mettre a jour le plan** (`roadmap/plan-XX-*.md`) :
    - Cocher les checkboxes de validation : `- [x]`
@@ -239,13 +244,13 @@ Au demarrage, creer ces todos :
 - [ ] (Si UI) Charger skills ui-design-principles et qml
 - [ ] Implementer les specifications (src/ uniquement)
 - [ ] Builder sans erreurs
-- [ ] Invoquer agent Tester pour ecrire les tests
-- [ ] Invoquer agent Quality (code review + tests review)
-- [ ] (Si Quality detecte probleme) Resoudre avec utilisateur
 - [ ] Lancer l'application (make run en arriere-plan)
 - [ ] Generer checklist de validation avec scenarios de test
 - [ ] Notifier utilisateur via MCP ask_user
 - [ ] Validation utilisateur (iterer si probleme)
+- [ ] Invoquer agent Tester pour ecrire les tests
+- [ ] Invoquer agent Quality (code review + tests review)
+- [ ] (Si Quality detecte probleme) Resoudre avec utilisateur
 - [ ] Mettre a jour le plan (checkboxes)
 - [ ] Mettre a jour la roadmap (statut + version)
 - [ ] Mettre a jour le Changelog (README.md principal)

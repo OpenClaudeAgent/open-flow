@@ -68,9 +68,9 @@ Five specialized agents collaborate through isolated worktrees:
 1. **Ideation** : User expresses need
 2. **Planning** : Roadmap creates functional plan
 3. **Implementation** : Executeur codes according to plan
-4. **Tests** : Tester writes automated tests (invoked by Executeur)
-5. **Quality** : Quality does code review + tests review (invoked by Executeur)
-6. **Validation** : User tests with scenarios checklist
+4. **Validation** : User tests with scenarios checklist
+5. **Tests** : Tester writes automated tests (invoked by Executeur)
+6. **Quality** : Quality does code review + tests review (invoked by Executeur)
 7. **Merge** : Executeur merges to main + tags version (after user approval)
 
 ### Validation Phase

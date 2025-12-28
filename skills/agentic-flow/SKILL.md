@@ -32,7 +32,15 @@ Ce skill decrit le workflow de developpement assiste par agents specialises.
      │                                   ├── Output: src/
      │                                   │
      ▼◄──────────────────────────────────┘
-  4. TESTS ─────────────────────────► TESTER (invoque par Executeur)
+  4. VALIDATION UTILISATEUR ────────► EXECUTEUR
+     │                                   │
+     │                                   ├── Lance app (make run &)
+     │                                   ├── Genere scenarios de test
+     │                                   ├── 🔔 MCP ask_user "Validation requise"
+     │                                   ├── Itere si probleme
+     │                                   │
+     ▼◄──────────────────────────────────┘
+  5. TESTS ─────────────────────────► TESTER (invoque par Executeur)
      │                                   │
      │                                   ├── Skill: functional-testing
      │                                   ├── Si non testable → REFACTORING
@@ -40,20 +48,11 @@ Ce skill decrit le workflow de developpement assiste par agents specialises.
      │                                   ├── Output: tests/
      │                                   │
      ▼◄──────────────────────────────────┘
-  5. QUALITY ───────────────────────► QUALITY (invoque par Executeur)
+  6. QUALITY ───────────────────────► QUALITY (invoque par Executeur)
      │                                   │
      │                                   ├── Skills: code-review
-     │                                   ├── Phase 1: Code review (src/)
-     │                                   ├── Phase 2: Tests review (tests/)
+     │                                   ├── Code review (src/) + Tests review (tests/)
      │                                   ├── Output: quality/validation-XX.md
-     │                                   │
-     ▼◄──────────────────────────────────┘
-  6. VALIDATION UTILISATEUR ────────► EXECUTEUR
-     │                                   │
-     │                                   ├── Genere scenarios de test
-     │                                   ├── Lance app (make run &)
-     │                                   ├── 🔔 MCP ask_user "Validation requise"
-     │                                   ├── Itere si probleme
      │                                   │
      ▼◄──────────────────────────────────┘
   7. MERGE ─────────────────────────► EXECUTEUR
