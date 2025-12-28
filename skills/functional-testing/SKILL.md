@@ -1,6 +1,6 @@
 ---
 name: functional-testing
-description: Tests fonctionnels UI Qt Quick Test pour BluePlayer - Patterns, SignalSpy, scenarios et debugging
+description: Principes de testing et patterns Qt Quick Test - Coverage, qualite, pyramide des tests
 ---
 
 # Skill Tests Fonctionnels UI
