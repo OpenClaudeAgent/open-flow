@@ -16,6 +16,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OPENCODE_CONFIG_DIR="$HOME/.config/opencode"
 OPENCODE_DATA_DIR="$HOME/.opencode"
 BACKUP_DIR="$HOME/.opencode-backups"
+BACKUP_MAX_SIZE_MB=20
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 # Functions
@@ -44,9 +45,45 @@ create_backup() {
         mkdir -p "$backup_path"
         cp -r "$source_dir"/* "$backup_path/" 2>/dev/null || true
         log_success "Backup created: $backup_path"
+        cleanup_backups
         return 0
     fi
     return 1
+}
+
+cleanup_backups() {
+    # Clean up old backups if total size exceeds limit
+    if [ ! -d "$BACKUP_DIR" ]; then
+        return
+    fi
+    
+    local max_size_kb=$((BACKUP_MAX_SIZE_MB * 1024))
+    local current_size_kb=$(du -sk "$BACKUP_DIR" 2>/dev/null | cut -f1)
+    
+    if [ "$current_size_kb" -le "$max_size_kb" ]; then
+        return
+    fi
+    
+    log_info "Backup size (${current_size_kb}KB) exceeds limit (${max_size_kb}KB), cleaning up..."
+    
+    # Get list of backups sorted by date (oldest first)
+    # Backup names are like: agents-20241228_134500, skills-20241228_134500
+    local backups=($(ls -1 "$BACKUP_DIR" 2>/dev/null | sort))
+    
+    for backup in "${backups[@]}"; do
+        if [ "$current_size_kb" -le "$max_size_kb" ]; then
+            break
+        fi
+        
+        local backup_path="$BACKUP_DIR/$backup"
+        local backup_size_kb=$(du -sk "$backup_path" 2>/dev/null | cut -f1)
+        
+        rm -rf "$backup_path"
+        current_size_kb=$((current_size_kb - backup_size_kb))
+        log_info "Removed old backup: $backup (${backup_size_kb}KB freed)"
+    done
+    
+    log_success "Cleanup complete. Current size: ${current_size_kb}KB"
 }
 
 show_diff() {
@@ -175,7 +212,8 @@ show_status() {
     
     echo ""
     if [ -d "$BACKUP_DIR" ]; then
-        log_info "Backups stored in: $BACKUP_DIR"
+        local backup_size=$(du -sh "$BACKUP_DIR" 2>/dev/null | cut -f1)
+        log_info "Backups stored in: $BACKUP_DIR ($backup_size / ${BACKUP_MAX_SIZE_MB}MB limit)"
         ls -1 "$BACKUP_DIR" 2>/dev/null | tail -5 | while read b; do
             echo "  - $b"
         done
@@ -199,6 +237,8 @@ show_help() {
     echo "  backup      Create backup of current config"
     echo "  restore     Restore from backup"
     echo "  help        Show this help"
+    echo ""
+    echo "Backup rotation: ${BACKUP_MAX_SIZE_MB}MB max (oldest removed first)"
     echo ""
 }
 
