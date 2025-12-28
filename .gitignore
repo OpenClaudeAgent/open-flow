@@ -25,3 +25,9 @@ backups/
 # Vendor - external source code for reference
 vendor/
 .idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
