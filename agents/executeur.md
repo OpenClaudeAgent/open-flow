@@ -235,11 +235,12 @@ Au demarrage, creer ces todos :
 - [ ] Lire la roadmap et identifier la tache
 - [ ] Lire le plan de la tache
 - [ ] Creer le worktree pour la feature
+- [ ] (Si necessaire) Enrichir le plan avec des Specifications
 - [ ] (Si UI) Charger skills ui-design-principles et qml
 - [ ] Implementer les specifications (src/ uniquement)
 - [ ] Builder sans erreurs
 - [ ] Invoquer agent Tester pour ecrire les tests
-- [ ] Validation par agent Quality
+- [ ] Invoquer agent Quality (code review + tests review)
 - [ ] (Si Quality detecte probleme) Resoudre avec utilisateur
 - [ ] Lancer l'application (make run en arriere-plan)
 - [ ] Generer checklist de validation avec scenarios de test
