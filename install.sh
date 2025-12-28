@@ -166,29 +166,6 @@ install_skills() {
     done
 }
 
-install_config() {
-    log_info "Checking configuration..."
-    
-    local config_file="$OPENCODE_CONFIG_DIR/opencode.json"
-    local template_file="$SCRIPT_DIR/config/opencode.template.json"
-    
-    if [ -f "$config_file" ]; then
-        log_warning "opencode.json already exists. Keeping existing config."
-        log_info "Template available at: $template_file"
-    else
-        log_warning "No opencode.json found."
-        echo ""
-        read -p "Create config from template? [y/N] " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            mkdir -p "$OPENCODE_CONFIG_DIR"
-            cp "$template_file" "$config_file"
-            log_success "Created opencode.json from template"
-            log_warning "Remember to add your API keys!"
-        fi
-    fi
-}
-
 show_status() {
     echo ""
     echo "============================================"
@@ -333,7 +310,6 @@ case "${1:-install}" in
         echo ""
         install_agents
         install_skills
-        install_config
         show_status
         ;;
     agents)
