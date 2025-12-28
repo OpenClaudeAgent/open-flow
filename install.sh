@@ -190,6 +190,39 @@ install_rules() {
     log_success "Installed AGENTS.md (global rules)"
 }
 
+install_mcp() {
+    log_info "Configuring MCP servers..."
+    
+    local mcp_dir="$SCRIPT_DIR/mcp"
+    
+    if [ ! -d "$mcp_dir" ]; then
+        log_warning "No MCP directory found, skipping"
+        return 0
+    fi
+    
+    # Configure notify server
+    if [ -f "$mcp_dir/notify/configure.py" ]; then
+        if python3 "$mcp_dir/notify/configure.py" > /dev/null 2>&1; then
+            log_success "Configured MCP: notify"
+        else
+            log_warning "Failed to configure MCP notify"
+        fi
+    fi
+    
+    # Install Python dependencies for MCP notify
+    if [ -f "$mcp_dir/notify/pyproject.toml" ]; then
+        if command -v pip3 &> /dev/null; then
+            log_info "Checking MCP dependencies..."
+            if pip3 show mcp > /dev/null 2>&1; then
+                log_info "MCP package already installed"
+            else
+                log_warning "MCP package not found. Install with:"
+                echo "  pip3 install mcp"
+            fi
+        fi
+    fi
+}
+
 show_status() {
     echo ""
     echo "============================================"
@@ -216,6 +249,16 @@ show_status() {
     done
     
     echo ""
+    if [ -f "$OPENCODE_CONFIG_DIR/opencode.json" ]; then
+        if grep -q '"mcp"' "$OPENCODE_CONFIG_DIR/opencode.json" 2>/dev/null; then
+            log_info "MCP servers configured in: $OPENCODE_CONFIG_DIR/opencode.json"
+            grep -o '"[a-z]*":' "$OPENCODE_CONFIG_DIR/opencode.json" 2>/dev/null | grep -v '"mcp"' | head -5 | while read server; do
+                echo "  - ${server//[\":]/}"
+            done
+        fi
+    fi
+    
+    echo ""
     if [ -d "$BACKUP_DIR" ]; then
         local backup_size=$(du -sh "$BACKUP_DIR" 2>/dev/null | cut -f1)
         log_info "Backups stored in: $BACKUP_DIR ($backup_size / ${BACKUP_MAX_SIZE_MB}MB limit)"
@@ -234,9 +277,10 @@ show_help() {
     echo "Usage: $0 [command]"
     echo ""
     echo "Commands:"
-    echo "  install     Install agents and skills (default)"
+    echo "  install     Install agents, skills, and MCP servers (default)"
     echo "  agents      Install only agents"
     echo "  skills      Install only skills"
+    echo "  mcp         Configure MCP servers only"
     echo "  status      Show current installation status"
     echo "  diff        Show differences with installed versions"
     echo "  backup      Create backup of current config"
@@ -340,6 +384,7 @@ case "${1:-install}" in
         install_rules
         install_agents
         install_skills
+        install_mcp
         show_status
         ;;
     agents)
@@ -347,6 +392,9 @@ case "${1:-install}" in
         ;;
     skills)
         install_skills
+        ;;
+    mcp)
+        install_mcp
         ;;
     status)
         show_status
