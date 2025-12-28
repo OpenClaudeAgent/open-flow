@@ -1,0 +1,326 @@
+#!/bin/bash
+# OpenCode Configuration Installer
+# Installs agents and skills with automatic backup
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Configuration
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OPENCODE_CONFIG_DIR="$HOME/.config/opencode"
+OPENCODE_DATA_DIR="$HOME/.opencode"
+BACKUP_DIR="$HOME/.opencode-backups"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+# Functions
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[OK]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARN]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+create_backup() {
+    local source_dir="$1"
+    local backup_name="$2"
+    
+    if [ -d "$source_dir" ] && [ "$(ls -A "$source_dir" 2>/dev/null)" ]; then
+        local backup_path="$BACKUP_DIR/$backup_name-$TIMESTAMP"
+        mkdir -p "$backup_path"
+        cp -r "$source_dir"/* "$backup_path/" 2>/dev/null || true
+        log_success "Backup created: $backup_path"
+        return 0
+    fi
+    return 1
+}
+
+show_diff() {
+    local source="$1"
+    local dest="$2"
+    local name="$3"
+    
+    if [ -f "$dest" ]; then
+        if ! diff -q "$source" "$dest" > /dev/null 2>&1; then
+            log_warning "Changes detected in $name:"
+            diff --color=auto -u "$dest" "$source" 2>/dev/null | head -20 || true
+            echo ""
+            return 0
+        fi
+    fi
+    return 1
+}
+
+install_agents() {
+    log_info "Installing agents..."
+    
+    local agent_dir="$OPENCODE_CONFIG_DIR/agent"
+    mkdir -p "$agent_dir"
+    
+    # Backup existing agents
+    create_backup "$agent_dir" "agents"
+    
+    # Install each agent
+    for agent_file in "$SCRIPT_DIR/agents"/*.md; do
+        if [ -f "$agent_file" ]; then
+            local agent_name=$(basename "$agent_file")
+            local dest="$agent_dir/$agent_name"
+            
+            if [ -f "$dest" ]; then
+                if diff -q "$agent_file" "$dest" > /dev/null 2>&1; then
+                    log_info "Agent $agent_name unchanged, skipping"
+                    continue
+                else
+                    log_warning "Agent $agent_name will be updated"
+                fi
+            fi
+            
+            cp "$agent_file" "$dest"
+            log_success "Installed: $agent_name"
+        fi
+    done
+}
+
+install_skills() {
+    log_info "Installing skills..."
+    
+    local skill_dir="$OPENCODE_DATA_DIR/skill"
+    mkdir -p "$skill_dir"
+    
+    # Backup existing skills
+    create_backup "$skill_dir" "skills"
+    
+    # Install each skill (they're in subdirectories)
+    for skill_subdir in "$SCRIPT_DIR/skills"/*; do
+        if [ -d "$skill_subdir" ]; then
+            local skill_name=$(basename "$skill_subdir")
+            local dest_dir="$skill_dir/$skill_name"
+            mkdir -p "$dest_dir"
+            
+            if [ -f "$skill_subdir/SKILL.md" ]; then
+                local dest="$dest_dir/SKILL.md"
+                
+                if [ -f "$dest" ]; then
+                    if diff -q "$skill_subdir/SKILL.md" "$dest" > /dev/null 2>&1; then
+                        log_info "Skill $skill_name unchanged, skipping"
+                        continue
+                    else
+                        log_warning "Skill $skill_name will be updated"
+                    fi
+                fi
+                
+                cp "$skill_subdir/SKILL.md" "$dest"
+                log_success "Installed skill: $skill_name"
+            fi
+        fi
+    done
+}
+
+install_config() {
+    log_info "Checking configuration..."
+    
+    local config_file="$OPENCODE_CONFIG_DIR/opencode.json"
+    local template_file="$SCRIPT_DIR/config/opencode.template.json"
+    
+    if [ -f "$config_file" ]; then
+        log_warning "opencode.json already exists. Keeping existing config."
+        log_info "Template available at: $template_file"
+    else
+        log_warning "No opencode.json found."
+        echo ""
+        read -p "Create config from template? [y/N] " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            mkdir -p "$OPENCODE_CONFIG_DIR"
+            cp "$template_file" "$config_file"
+            log_success "Created opencode.json from template"
+            log_warning "Remember to add your API keys!"
+        fi
+    fi
+}
+
+show_status() {
+    echo ""
+    echo "============================================"
+    echo "            Installation Summary            "
+    echo "============================================"
+    echo ""
+    
+    log_info "Agents installed in: $OPENCODE_CONFIG_DIR/agent/"
+    ls -1 "$OPENCODE_CONFIG_DIR/agent/"*.md 2>/dev/null | while read f; do
+        echo "  - $(basename "$f")"
+    done
+    
+    echo ""
+    log_info "Skills installed in: $OPENCODE_DATA_DIR/skill/"
+    for dir in "$OPENCODE_DATA_DIR/skill"/*/; do
+        if [ -d "$dir" ]; then
+            echo "  - $(basename "$dir")"
+        fi
+    done
+    
+    echo ""
+    if [ -d "$BACKUP_DIR" ]; then
+        log_info "Backups stored in: $BACKUP_DIR"
+        ls -1 "$BACKUP_DIR" 2>/dev/null | tail -5 | while read b; do
+            echo "  - $b"
+        done
+    fi
+    
+    echo ""
+    echo "============================================"
+}
+
+show_help() {
+    echo "OpenCode Configuration Installer"
+    echo ""
+    echo "Usage: $0 [command]"
+    echo ""
+    echo "Commands:"
+    echo "  install     Install agents and skills (default)"
+    echo "  agents      Install only agents"
+    echo "  skills      Install only skills"
+    echo "  status      Show current installation status"
+    echo "  diff        Show differences with installed versions"
+    echo "  backup      Create backup of current config"
+    echo "  restore     Restore from backup"
+    echo "  help        Show this help"
+    echo ""
+}
+
+cmd_diff() {
+    echo "Comparing with installed versions..."
+    echo ""
+    
+    local has_diff=false
+    
+    # Compare agents
+    for agent_file in "$SCRIPT_DIR/agents"/*.md; do
+        if [ -f "$agent_file" ]; then
+            local name=$(basename "$agent_file")
+            local dest="$OPENCODE_CONFIG_DIR/agent/$name"
+            if show_diff "$agent_file" "$dest" "$name"; then
+                has_diff=true
+            fi
+        fi
+    done
+    
+    # Compare skills
+    for skill_subdir in "$SCRIPT_DIR/skills"/*; do
+        if [ -d "$skill_subdir" ]; then
+            local skill_name=$(basename "$skill_subdir")
+            if [ -f "$skill_subdir/SKILL.md" ]; then
+                local dest="$OPENCODE_DATA_DIR/skill/$skill_name/SKILL.md"
+                if show_diff "$skill_subdir/SKILL.md" "$dest" "skill/$skill_name"; then
+                    has_diff=true
+                fi
+            fi
+        fi
+    done
+    
+    if [ "$has_diff" = false ]; then
+        log_success "All files are up to date!"
+    fi
+}
+
+cmd_backup() {
+    log_info "Creating full backup..."
+    mkdir -p "$BACKUP_DIR"
+    
+    create_backup "$OPENCODE_CONFIG_DIR/agent" "agents"
+    create_backup "$OPENCODE_DATA_DIR/skill" "skills"
+    
+    if [ -f "$OPENCODE_CONFIG_DIR/opencode.json" ]; then
+        mkdir -p "$BACKUP_DIR/config-$TIMESTAMP"
+        cp "$OPENCODE_CONFIG_DIR/opencode.json" "$BACKUP_DIR/config-$TIMESTAMP/"
+        log_success "Config backed up"
+    fi
+    
+    log_success "Backup complete: $BACKUP_DIR/*-$TIMESTAMP"
+}
+
+cmd_restore() {
+    echo "Available backups:"
+    ls -1 "$BACKUP_DIR" 2>/dev/null | sort -r | head -10
+    echo ""
+    read -p "Enter backup name to restore (or 'cancel'): " backup_name
+    
+    if [ "$backup_name" = "cancel" ]; then
+        log_info "Restore cancelled"
+        return
+    fi
+    
+    local backup_path="$BACKUP_DIR/$backup_name"
+    if [ ! -d "$backup_path" ]; then
+        log_error "Backup not found: $backup_path"
+        return 1
+    fi
+    
+    # Determine backup type from name
+    if [[ "$backup_name" == agents-* ]]; then
+        cp -r "$backup_path"/* "$OPENCODE_CONFIG_DIR/agent/"
+        log_success "Agents restored from $backup_name"
+    elif [[ "$backup_name" == skills-* ]]; then
+        cp -r "$backup_path"/* "$OPENCODE_DATA_DIR/skill/"
+        log_success "Skills restored from $backup_name"
+    elif [[ "$backup_name" == config-* ]]; then
+        cp "$backup_path/opencode.json" "$OPENCODE_CONFIG_DIR/"
+        log_success "Config restored from $backup_name"
+    else
+        log_error "Unknown backup type"
+    fi
+}
+
+# Main
+case "${1:-install}" in
+    install)
+        echo ""
+        echo "OpenCode Configuration Installer"
+        echo "================================="
+        echo ""
+        install_agents
+        install_skills
+        install_config
+        show_status
+        ;;
+    agents)
+        install_agents
+        ;;
+    skills)
+        install_skills
+        ;;
+    status)
+        show_status
+        ;;
+    diff)
+        cmd_diff
+        ;;
+    backup)
+        cmd_backup
+        ;;
+    restore)
+        cmd_restore
+        ;;
+    help|--help|-h)
+        show_help
+        ;;
+    *)
+        log_error "Unknown command: $1"
+        show_help
+        exit 1
+        ;;
+esac

@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Lock files
+bun.lock
+package-lock.json
+yarn.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets - NEVER commit these
+*.env
+.env.*
+secrets.json
+credentials.json
+
+# Local config overrides
+opencode.local.json
+
+# Backups (stored in ~/.opencode-backups)
+backups/

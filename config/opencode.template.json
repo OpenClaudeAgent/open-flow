@@ -1,0 +1,66 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "playwright": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp@latest",
+        "--extension"
+      ],
+      "enabled": false
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      },
+      "enabled": false
+    },
+    "intellij-stdio": {
+      "type": "local",
+      "command": [
+        "/Applications/IntelliJ IDEA.app/Contents/jbr/Contents/Home/bin/java",
+        "-classpath",
+        "/Users/${USER}/Library/Application Support/JetBrains/IntelliJIdea2025.2/plugins/mcpserver/lib/mcpserver-frontend.jar:/Applications/IntelliJ IDEA.app/Contents/lib/util-8.jar:/Applications/IntelliJ IDEA.app/Contents/lib/modules/intellij.libraries.ktor.client.cio.jar:/Applications/IntelliJ IDEA.app/Contents/lib/lib-client.jar:/Applications/IntelliJ IDEA.app/Contents/lib/modules/intellij.libraries.ktor.client.jar",
+        "com.intellij.mcpserver.stdio.McpStdioRunnerKt"
+      ],
+      "environment": {
+        "IJ_MCP_SERVER_PORT": "64342"
+      },
+      "enabled": false
+    }
+  },
+  "provider": {
+    "anthropic": {
+      "models": {
+        "claude-sonnet-4-5": {
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
+            }
+          }
+        },
+        "claude-opus-4-5-20251101": {
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 24000
+            }
+          }
+        },
+        "claude-haiku-4-5": {
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
+            }
+          }
+        }
+      }
+    }
+  }
+}
