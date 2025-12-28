@@ -52,6 +52,18 @@ async def list_tools() -> list[Tool]:
                         "description": "Whether to play a notification sound",
                         "default": True,
                     },
+                    "agent": {
+                        "type": "string",
+                        "description": "Name of the agent sending the notification. Prepended to the message.",
+                    },
+                    "task": {
+                        "type": "string",
+                        "description": "Name or number of the current task. Prepended to the message.",
+                    },
+                    "repo": {
+                        "type": "string",
+                        "description": "Name of the repository or project. Displayed as subtitle.",
+                    },
                 },
                 "required": ["title", "message"],
             },
@@ -69,21 +81,36 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
     message = arguments.get("message", "")
     ntype = arguments.get("type", "info")
     sound = arguments.get("sound", True)
+    agent = arguments.get("agent")
+    task = arguments.get("task")
+    repo = arguments.get("repo")
 
     # Send the notification
-    success = send_notification(title=title, message=message, type=ntype, sound=sound)
+    success = send_notification(
+        title=title,
+        message=message,
+        type=ntype,
+        sound=sound,
+        agent=agent,
+        task=task,
+        repo=repo,
+    )
 
     if success:
         emoji = {"info": "ℹ️", "success": "✅", "warning": "⚠️", "error": "❌"}.get(
             ntype, "📢"
         )
-
-        return [TextContent(type="text", text=f"{emoji} Notification sent: {title}")]
+        agent_info = f" [{agent}]" if agent else ""
+        return [
+            TextContent(
+                type="text", text=f"{emoji} Notification sent{agent_info}: {title}"
+            )
+        ]
     else:
         return [
             TextContent(
                 type="text",
-                text=f"Failed to send notification. Platform may not be supported.",
+                text="Failed to send notification. Platform may not be supported.",
             )
         ]
 

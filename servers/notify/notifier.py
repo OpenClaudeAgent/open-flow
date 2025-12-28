@@ -5,7 +5,26 @@ import subprocess
 import shutil
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
+from typing import Optional, Any
+from pathlib import Path
+
+# Conditional PyObjC import for macOS
+PYOBJC_AVAILABLE = False
+NSUserNotification: Any = None
+NSUserNotificationCenter: Any = None
+NSImage: Any = None
+
+if platform.system() == "Darwin":
+    try:
+        from Foundation import (  # type: ignore[import-not-found]
+            NSUserNotification,
+            NSUserNotificationCenter,
+        )
+        from AppKit import NSImage  # type: ignore[import-not-found]
+
+        PYOBJC_AVAILABLE = True
+    except ImportError:
+        pass
 
 
 class NotificationType(Enum):
@@ -26,6 +45,9 @@ class NotificationConfig:
     type: NotificationType = NotificationType.INFO
     sound: bool = True
     timeout: int = 10
+    agent: Optional[str] = None
+    task: Optional[str] = None
+    repo: Optional[str] = None
 
 
 # Emoji mapping for notification types
@@ -45,6 +67,16 @@ MACOS_SOUNDS = {
 }
 
 
+def _get_icon_path() -> Optional[str]:
+    """Get the path to the notification icon."""
+    # Look for icon in assets folder relative to this file
+    module_dir = Path(__file__).parent
+    icon_path = module_dir / "assets" / "icon.png"
+    if icon_path.exists():
+        return str(icon_path)
+    return None
+
+
 class Notifier:
     """Cross-platform notification sender."""
 
@@ -58,27 +90,96 @@ class Notifier:
         Returns:
             True if notification was sent successfully.
         """
-        emoji = EMOJIS.get(config.type, "")
-        title = f"{emoji} {config.title}"
-
         if self.system == "Darwin":
-            return self._send_macos(title, config.message, config.type, config.sound)
+            return self._send_macos(config)
         elif self.system == "Linux":
-            return self._send_linux(
-                title, config.message, config.type, config.sound, config.timeout
-            )
+            return self._send_linux(config)
         elif self.system == "Windows":
-            return self._send_windows(
-                title, config.message, config.type, config.sound, config.timeout
-            )
+            return self._send_windows(config)
         else:
             return False
 
-    def _send_macos(
-        self, title: str, message: str, ntype: NotificationType, sound: bool
-    ) -> bool:
-        """Send notification on macOS using osascript."""
-        sound_name = MACOS_SOUNDS.get(ntype, "default") if sound else ""
+    def _send_macos(self, config: NotificationConfig) -> bool:
+        """Send notification on macOS, preferring PyObjC over osascript."""
+        if PYOBJC_AVAILABLE:
+            return self._send_macos_pyobjc(config)
+        else:
+            return self._send_macos_osascript(config)
+
+    def _send_macos_pyobjc(self, config: NotificationConfig) -> bool:
+        """Send notification on macOS using PyObjC (native API)."""
+        try:
+            # Create notification
+            notification = NSUserNotification.alloc().init()
+
+            # Build title with emoji
+            emoji = EMOJIS.get(config.type, "")
+            title = f"{emoji} {config.title}"
+            notification.setTitle_(title)
+
+            # Set subtitle: repo name if provided
+            if config.repo:
+                notification.setSubtitle_(config.repo)
+
+            # Build message with agent and task context
+            message_parts = []
+            if config.agent:
+                message_parts.append(config.agent.capitalize())
+            if config.task:
+                message_parts.append(config.task)
+
+            if message_parts:
+                prefix = " | ".join(message_parts)
+                message = f"{prefix} - {config.message}"
+            else:
+                message = config.message
+            notification.setInformativeText_(message)
+
+            # Set custom icon if available
+            icon_path = _get_icon_path()
+            if icon_path:
+                image = NSImage.alloc().initWithContentsOfFile_(icon_path)
+                if image:
+                    notification.setContentImage_(image)
+
+            # Play sound if requested
+            if config.sound:
+                sound_name = MACOS_SOUNDS.get(config.type, "default")
+                notification.setSoundName_(sound_name)
+
+            # Disable actions - notification does nothing when clicked
+            # By not setting any action buttons, the notification just dismisses on click
+            notification.setHasActionButton_(False)
+
+            # Deliver notification
+            center = NSUserNotificationCenter.defaultUserNotificationCenter()
+            center.deliverNotification_(notification)
+
+            return True
+        except Exception:
+            # Fallback to osascript if PyObjC fails
+            return self._send_macos_osascript(config)
+
+    def _send_macos_osascript(self, config: NotificationConfig) -> bool:
+        """Send notification on macOS using osascript (fallback)."""
+        emoji = EMOJIS.get(config.type, "")
+        title = f"{emoji} {config.title}"
+        sound_name = MACOS_SOUNDS.get(config.type, "default") if config.sound else ""
+
+        # Build message with context
+        message_parts = []
+        if config.repo:
+            message_parts.append(f"[{config.repo}]")
+        if config.agent:
+            message_parts.append(config.agent.capitalize())
+        if config.task:
+            message_parts.append(config.task)
+
+        if message_parts:
+            prefix = " | ".join(message_parts)
+            message = f"{prefix} - {config.message}"
+        else:
+            message = config.message
 
         # Escape quotes for AppleScript
         title_escaped = title.replace('"', '\\"')
@@ -87,7 +188,7 @@ class Notifier:
         script = (
             f'display notification "{message_escaped}" with title "{title_escaped}"'
         )
-        if sound:
+        if config.sound:
             script += f' sound name "{sound_name}"'
 
         try:
@@ -96,17 +197,28 @@ class Notifier:
         except subprocess.CalledProcessError:
             return False
 
-    def _send_linux(
-        self,
-        title: str,
-        message: str,
-        ntype: NotificationType,
-        sound: bool,
-        timeout: int,
-    ) -> bool:
+    def _send_linux(self, config: NotificationConfig) -> bool:
         """Send notification on Linux using notify-send."""
         if not shutil.which("notify-send"):
             return False
+
+        emoji = EMOJIS.get(config.type, "")
+        title = f"{emoji} {config.title}"
+
+        # Build message with context
+        message_parts = []
+        if config.repo:
+            message_parts.append(f"[{config.repo}]")
+        if config.agent:
+            message_parts.append(config.agent.capitalize())
+        if config.task:
+            message_parts.append(config.task)
+
+        if message_parts:
+            prefix = " | ".join(message_parts)
+            message = f"{prefix} - {config.message}"
+        else:
+            message = config.message
 
         # Map type to urgency
         urgency_map = {
@@ -115,7 +227,7 @@ class Notifier:
             NotificationType.WARNING: "normal",
             NotificationType.ERROR: "critical",
         }
-        urgency = urgency_map.get(ntype, "normal")
+        urgency = urgency_map.get(config.type, "normal")
 
         try:
             cmd = [
@@ -123,15 +235,15 @@ class Notifier:
                 "--urgency",
                 urgency,
                 "--expire-time",
-                str(timeout * 1000),
+                str(config.timeout * 1000),
                 title,
                 message,
             ]
             subprocess.run(cmd, check=True, capture_output=True)
 
             # Play sound if requested
-            if sound:
-                self._play_linux_sound(ntype)
+            if config.sound:
+                self._play_linux_sound(config.type)
 
             return True
         except subprocess.CalledProcessError:
@@ -162,15 +274,26 @@ class Notifier:
                 except subprocess.CalledProcessError:
                     continue
 
-    def _send_windows(
-        self,
-        title: str,
-        message: str,
-        ntype: NotificationType,
-        sound: bool,
-        timeout: int,
-    ) -> bool:
+    def _send_windows(self, config: NotificationConfig) -> bool:
         """Send notification on Windows using PowerShell."""
+        emoji = EMOJIS.get(config.type, "")
+        title = f"{emoji} {config.title}"
+
+        # Build message with context
+        message_parts = []
+        if config.repo:
+            message_parts.append(f"[{config.repo}]")
+        if config.agent:
+            message_parts.append(config.agent.capitalize())
+        if config.task:
+            message_parts.append(config.task)
+
+        if message_parts:
+            prefix = " | ".join(message_parts)
+            message = f"{prefix} - {config.message}"
+        else:
+            message = config.message
+
         # PowerShell script for toast notification
         ps_script = f'''
         [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
@@ -184,14 +307,14 @@ class Notifier:
                     <text id="2">{message}</text>
                 </binding>
             </visual>
-            <audio silent="{str(not sound).lower()}"/>
+            <audio silent="{str(not config.sound).lower()}"/>
         </toast>
 "@
         
         $xml = New-Object Windows.Data.Xml.Dom.XmlDocument
         $xml.LoadXml($template)
         $toast = [Windows.UI.Notifications.ToastNotification]::new($xml)
-        [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("OpenCode").Show($toast)
+        [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("OpenFlow").Show($toast)
         '''
 
         try:
@@ -204,7 +327,14 @@ class Notifier:
 
 
 def send_notification(
-    title: str, message: str, type: str = "info", sound: bool = True, timeout: int = 10
+    title: str,
+    message: str,
+    type: str = "info",
+    sound: bool = True,
+    timeout: int = 10,
+    agent: Optional[str] = None,
+    task: Optional[str] = None,
+    repo: Optional[str] = None,
 ) -> bool:
     """
     Convenience function to send a notification.
@@ -215,6 +345,9 @@ def send_notification(
         type: One of 'info', 'success', 'warning', 'error'
         sound: Whether to play a sound
         timeout: Display duration in seconds (Linux/Windows)
+        agent: Name of the agent sending the notification (optional)
+        task: Name or number of the current task (optional)
+        repo: Name of the repository/project (optional, shown as subtitle on macOS)
 
     Returns:
         True if notification was sent successfully.
@@ -225,7 +358,14 @@ def send_notification(
         ntype = NotificationType.INFO
 
     config = NotificationConfig(
-        title=title, message=message, type=ntype, sound=sound, timeout=timeout
+        title=title,
+        message=message,
+        type=ntype,
+        sound=sound,
+        timeout=timeout,
+        agent=agent,
+        task=task,
+        repo=repo,
     )
 
     notifier = Notifier()

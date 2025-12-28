@@ -1,0 +1,15 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="#1a1a2e"/>
+  
+  <!-- Flow symbol - three curved lines representing flow/stream -->
+  <path d="M32 44 Q48 44 56 56 Q64 68 80 68 Q96 68 96 56" 
+        stroke="#6366f1" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M32 64 Q48 64 56 76 Q64 88 80 88 Q96 88 96 76" 
+        stroke="#8b5cf6" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M32 84 Q48 84 56 72 Q64 60 80 60 Q96 60 96 72" 
+        stroke="#a78bfa" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.7"/>
+  
+  <!-- Dot accent -->
+  <circle cx="96" cy="44" r="8" fill="#22d3ee"/>
+</svg>
