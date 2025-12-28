@@ -267,10 +267,15 @@ show_status() {
     
     echo ""
     if [ -f "$OPENCODE_CONFIG_DIR/opencode.json" ]; then
-        if grep -q '"mcp"' "$OPENCODE_CONFIG_DIR/opencode.json" 2>/dev/null; then
+        if command -v jq &> /dev/null && grep -q '"mcp"' "$OPENCODE_CONFIG_DIR/opencode.json" 2>/dev/null; then
             log_info "MCP servers configured in: $OPENCODE_CONFIG_DIR/opencode.json"
-            grep -o '"[a-z]*":' "$OPENCODE_CONFIG_DIR/opencode.json" 2>/dev/null | grep -v '"mcp"' | head -5 | while read server; do
-                echo "  - ${server//[\":]/}"
+            jq -r '.mcp // {} | keys[]' "$OPENCODE_CONFIG_DIR/opencode.json" 2>/dev/null | while read server; do
+                local enabled=$(jq -r ".mcp.\"$server\".enabled // false" "$OPENCODE_CONFIG_DIR/opencode.json")
+                if [ "$enabled" = "true" ]; then
+                    echo "  - $server (enabled)"
+                else
+                    echo "  - $server (disabled)"
+                fi
             done
         fi
     fi
