@@ -3,18 +3,6 @@ description: Execute les taches de la roadmap - Implemente, valide avec l'utilis
 mode: all
 color: "#E53935"
 temperature: 0.3
-tools:
-  bash: true
-  edit: true
-  write: true
-  read: true
-  glob: true
-  grep: true
-  list: true
-  skill: true
-  webfetch: true
-  todowrite: true
-  todoread: true
 permission:
   edit: allow
   bash:
@@ -25,6 +13,8 @@ permission:
   skill:
     "qml": allow
     "*": deny
+  doom_loop: ask
+  external_directory: ask
 ---
 
 # Agent Executeur

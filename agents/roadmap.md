@@ -1,20 +1,9 @@
 ---
 description: Agent de planification de roadmap - Aide a creer et gerer des plans de taches sans jamais toucher au code
 mode: all
+hidden: true
 color: "#5C6BC0"
 temperature: 0.5
-tools:
-  bash: true
-  edit: true
-  write: true
-  read: true
-  glob: true
-  grep: true
-  list: true
-  skill: true
-  webfetch: true
-  todowrite: true
-  todoread: true
 permission:
   edit: allow
   bash:
@@ -24,6 +13,8 @@ permission:
     "*": allow
   skill:
     "*": deny
+  doom_loop: ask
+  external_directory: ask
 ---
 
 # Agent Roadmap

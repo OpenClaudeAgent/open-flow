@@ -1,20 +1,11 @@
 ---
 description: Agent de refactoring - Ameliore la testabilite et la maintenabilite du code via des patterns reconnus
 mode: all
+hidden: true
 color: "#FB8C00"
 temperature: 0.3
 tools:
-  bash: true
-  edit: true
-  write: true
-  read: true
-  glob: true
-  grep: true
-  list: true
-  skill: true
   patch: true
-  todowrite: true
-  todoread: true
 permission:
   edit: allow
   bash:
@@ -25,6 +16,8 @@ permission:
   skill:
     "qml": allow
     "*": deny
+  doom_loop: ask
+  external_directory: ask
 ---
 
 # Agent Refactoring

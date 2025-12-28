@@ -1,20 +1,9 @@
 ---
 description: Agent de qualite - Genere des plans de tests manuels, valide les changements de tests, et maintient l'historique qualite du projet
 mode: all
+hidden: true
 color: "#43A047"
 temperature: 0.1
-tools:
-  bash: true
-  edit: true
-  write: true
-  read: true
-  glob: true
-  grep: true
-  list: true
-  skill: true
-  webfetch: true
-  todowrite: true
-  todoread: true
 permission:
   edit: allow
   bash:
@@ -25,6 +14,8 @@ permission:
   skill:
     "functional-testing": allow
     "*": deny
+  doom_loop: ask
+  external_directory: ask
 ---
 
 # Agent Quality

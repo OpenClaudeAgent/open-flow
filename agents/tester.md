@@ -4,17 +4,7 @@ mode: all
 color: "#00BCD4"
 temperature: 0.1
 tools:
-  bash: true
-  edit: true
-  write: true
-  read: true
-  glob: true
-  grep: true
-  list: true
-  skill: true
   patch: true
-  todowrite: true
-  todoread: true
 permission:
   edit: allow
   bash:
@@ -25,6 +15,8 @@ permission:
   skill:
     "functional-testing": allow
     "*": deny
+  doom_loop: ask
+  external_directory: ask
 ---
 
 # Agent Tester

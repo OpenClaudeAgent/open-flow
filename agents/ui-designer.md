@@ -3,18 +3,6 @@ description: Agent UI Designer - Cree des interfaces visuellement elegantes, mod
 mode: all
 color: "#E91E63"
 temperature: 0.5
-tools:
-  bash: true
-  edit: true
-  write: true
-  read: true
-  glob: true
-  grep: true
-  list: true
-  skill: true
-  webfetch: true
-  todowrite: true
-  todoread: true
 permission:
   edit: allow
   bash:
@@ -25,6 +13,8 @@ permission:
   skill:
     "qml": allow
     "*": deny
+  doom_loop: ask
+  external_directory: ask
 ---
 
 # Agent UI Designer
