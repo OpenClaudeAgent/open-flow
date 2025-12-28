@@ -1,179 +1,15 @@
 ---
 name: functional-testing
-description: Principes de testing et patterns Qt Quick Test - Coverage, qualite, pyramide des tests
+description: Tests fonctionnels UI Qt Quick Test - Patterns, SignalSpy, mocks inline et debugging
 ---
 
-# Skill Tests Fonctionnels UI
+# Skill Tests Fonctionnels UI Qt Quick
 
-Ce skill contient les principes generaux de testing et les patterns specifiques Qt Quick Test.
-
----
-
-## Partie 1 : Principes Generaux de Testing
-
-### Dimensions de la Qualite des Tests
-
-#### 1. Code Coverage
-
-**Objectif** : Mesurer quelle proportion du code est executee par les tests.
-
-**Metriques** :
-- Line coverage : % de lignes executees
-- Branch coverage : % de branches (if/else) testees
-- Function coverage : % de fonctions appelees
-
-**Standards** :
-- Minimum global : 70%
-- Code critique (securite, auth, validation) : 95%
-- Nouveaux fichiers : 80% minimum
-
-**Comment ameliorer** :
-- Identifier les fichiers sans tests
-- Identifier les branches non couvertes
-- Ajouter des tests pour les cas manquants
+Patterns, conventions et bonnes pratiques pour les tests fonctionnels UI avec Qt Quick Test.
 
 ---
 
-#### 2. Qualite des Tests
-
-**Principes** :
-- **Un test = une assertion logique** : Tester une seule chose
-- **Arrange-Act-Assert** : Structure claire en 3 phases
-- **Pas de logique dans les tests** : Pas de if/for/while dans le corps du test
-- **Nommage descriptif** : Le nom decrit le scenario et le resultat attendu
-
-**Anti-patterns a eviter** :
-- Tests qui ne verifient rien (`QVERIFY(true)`)
-- Assertions tautologiques (`QVERIFY(x || !x)`)
-- Tests qui dependent de l'ordre d'execution
-- Tests qui partagent de l'etat mutable
-- Tests commentes ou desactives
-
-**Patterns recommandes** :
-- Data-driven tests pour les variations
-- Fixtures pour la configuration commune
-- Builders pour les donnees de test complexes
-- Mocks pour les dependances externes
-
----
-
-#### 3. Maintenabilite des Tests
-
-**Objectifs** :
-- Tests faciles a comprendre
-- Tests faciles a modifier
-- Pas de duplication
-
-**Strategies** :
-- **DRY mais pas au detriment de la clarte** : La lisibilite prime
-- **Helpers et utilitaires partages** : Factoriser le code commun
-- **Conventions de nommage coherentes** : Pattern uniforme
-- **Documentation des cas complexes** : Expliquer le pourquoi
-
-**Refactoring des tests** :
-- Consolider les tests redondants
-- Extraire les patterns communs en helpers
-- Utiliser des tests parametres (data-driven)
-- Supprimer les tests obsoletes
-
----
-
-### Types de Tests
-
-#### Pyramide des tests
-
-```
-        /\
-       /  \      E2E (5%)
-      /----\     
-     /      \    Integration (15%)
-    /--------\   
-   /          \  Unit (80%)
-  --------------
-```
-
-#### Unit tests
-
-- Testent une seule unite (classe, fonction)
-- Rapides (< 100ms chacun)
-- Isoles (pas de dependances externes)
-- Deterministes
-
-#### Integration tests
-
-- Testent l'interaction entre composants
-- Peuvent utiliser de vraies dependances
-- Plus lents mais plus realistes
-
-#### E2E tests
-
-- Testent le systeme complet
-- Simulent l'utilisateur
-- Les plus lents, les plus fragiles
-
----
-
-### Property-Based Testing
-
-**Objectif** : Tester des proprietes invariantes avec des donnees generees.
-
-**Quand utiliser** :
-- Fonctions pures
-- Serialisation/deserialisation (roundtrip)
-- Parsers et transformations
-- Operations mathematiques
-
-**Proprietes courantes** :
-- Idempotence : `f(f(x)) == f(x)`
-- Roundtrip : `decode(encode(x)) == x`
-- Invariants : conditions toujours vraies
-
----
-
-### Contract Testing
-
-**Objectif** : Verifier que les APIs externes respectent leur contrat.
-
-**Elements a tester** :
-- Schema des requetes/reponses
-- Codes d'erreur
-- Format des donnees
-
-**Strategies** :
-- Enregistrer des reponses reelles comme reference
-- Valider contre des schemas
-- Mock servers bases sur les contrats
-
----
-
-### Metriques de Succes
-
-| Metrique | Minimum | Cible |
-|----------|---------|-------|
-| Line coverage | 70% | 85% |
-| Branch coverage | 60% | 75% |
-| Test/code ratio | 0.5:1 | 1:1 |
-| Flaky tests | 0 | 0 |
-| Test execution time | < 2min | < 1min |
-
----
-
-### Standards de Code Test
-
-Les tests doivent respecter les memes standards que le code production :
-- Pas de code duplique
-- Nommage clair et coherent
-- Pas de magic numbers (utiliser des constantes)
-- Pas de code commente
-- Formatage uniforme
-
-Un test bien ecrit sert aussi de documentation du comportement attendu.
-
----
-
-## Partie 2 : Qt Quick Test Specifique
-
-### Stack technique
+## Stack technique
 
 | Technologie | Role |
 |-------------|------|
@@ -184,51 +20,54 @@ Un test bien ecrit sert aussi de documentation du comportement attendu.
 
 ---
 
-### Structure des fichiers
+## Structure des fichiers
 
 ```
 tests/functional/
-├── main.cpp                    # Point d'entree C++
-├── tst_PlayerControlBar.qml    # Tests du PlayerControlBar
-├── tst_VideoPlayer.qml         # Tests du VideoPlayer
-├── tst_HomeView.qml            # Tests du HomeView
+├── main.cpp              # Point d'entree C++ avec setup QML
+├── tst_MyComponent.qml   # Tests d'un composant
+├── tst_OtherComp.qml     # Tests d'un autre composant
 └── helpers/
-    └── TestUtils.qml           # Utilitaires partages
+    └── TestUtils.qml     # Utilitaires partages (optionnel)
 ```
 
 ---
 
-### Convention de nommage
+## Convention de nommage
 
-#### Fichiers de test
+### Fichiers de test
 
 ```
 tst_<ComponentName>.qml
 ```
 
-#### Fonctions de test
+### Fonctions de test
 
 ```qml
 function test_<element>_<action>_<expectedResult>() { }
+// ou forme courte
+function test_<element>_<comportement>() { }
 ```
 
 Exemples :
-- `test_playButton_click_emitsPlayPauseSignal()`
-- `test_volumeSlider_drag_updatesVolume()`
-- `test_searchInput_enterKey_triggersSearch()`
+- `test_button_click_emitsSignal()`
+- `test_slider_drag_updatesValue()`
+- `test_input_enterKey_triggersSearch()`
+- `test_defaultValues()`
+- `test_hoverState()`
 
 ---
 
-### Pattern AAA (Arrange-Act-Assert)
+## Pattern AAA (Arrange-Act-Assert)
 
 Chaque test DOIT suivre cette structure :
 
 ```qml
-function test_volumeButton_click_togglesMute() {
+function test_button_click_togglesMute() {
     // Arrange - Preparer le contexte
-    var button = findChild(controlBar, "volumeButton")
-    verify(button !== null, "volumeButton should exist")
-    controlBar.muted = false
+    var button = findChild(myComponent, "muteButton")
+    verify(button !== null, "muteButton should exist")
+    myComponent.muted = false
     
     // Act - Executer l'action
     mouseClick(button)
@@ -240,7 +79,11 @@ function test_volumeButton_click_togglesMute() {
 
 ---
 
-### Structure d'un fichier de test complet
+## Deux patterns de structure
+
+### Pattern 1 : Component + createTemporaryObject (simple)
+
+Pour les composants simples ou quand l'import fonctionne bien :
 
 ```qml
 import QtQuick 2.15
@@ -249,104 +92,173 @@ import QtTest 1.15
 
 TestCase {
     id: testCase
-    name: "MyComponentTests"    // Nom affiche dans les resultats
-    when: windowShown           // Attend que la fenetre soit visible
-    width: 800
-    height: 600
+    name: "MyComponentTests"
+    when: windowShown
+    width: 400
+    height: 400
 
-    // Composant a tester (inline ou importe)
     Component {
         id: componentUnderTest
         MyComponent { }
     }
 
-    // Instance et spies
     property var instance: null
-    SignalSpy { id: mySpy; signalName: "mySignal" }
+    SignalSpy { id: clickedSpy; signalName: "clicked" }
 
-    // Setup avant chaque test
     function init() {
         instance = createTemporaryObject(componentUnderTest, testCase)
-        mySpy.target = instance
-        mySpy.clear()
-        waitForRendering(instance)
+        clickedSpy.target = instance
+        clickedSpy.clear()
     }
 
-    // Cleanup apres chaque test (automatique avec createTemporaryObject)
-    function cleanup() {
-        instance = null
-    }
-
-    // Tests
     function test_something() {
-        // Arrange
-        // Act
-        // Assert
+        // ...
+    }
+}
+```
+
+### Pattern 2 : Item + Mock Inline (RECOMMANDE)
+
+**Plus robuste et plus de controle.** Utiliser ce pattern pour :
+- Tests complexes
+- Composants avec des dependances
+- Meilleur controle sur la structure
+
+```qml
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtTest 1.15
+
+Item {
+    id: root
+    width: 400
+    height: 400
+
+    // =========================================================
+    // Mock du composant (reproduit l'API publique)
+    // =========================================================
+    
+    Item {
+        id: myComponent
+        objectName: "myComponent"
+        anchors.centerIn: parent
+        width: 100
+        height: 50
+        
+        // Proprietes publiques
+        property string text: ""
+        property bool enabled: true
+        property bool hovered: false
+        
+        // Signaux
+        signal clicked()
+        signal valueChanged(real newValue)
+        
+        // Fonction reset pour les tests
+        function reset() {
+            text = ""
+            enabled = true
+            hovered = false
+        }
+        
+        // Structure interne simplifiee
+        Rectangle {
+            id: background
+            objectName: "background"
+            anchors.fill: parent
+            color: myComponent.enabled ? "#333" : "#666"
+            radius: 4
+            
+            Text {
+                id: label
+                objectName: "label"
+                anchors.centerIn: parent
+                text: myComponent.text
+                color: "#FFF"
+            }
+            
+            MouseArea {
+                id: mouseArea
+                objectName: "mouseArea"
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: myComponent.clicked()
+                onContainsMouseChanged: myComponent.hovered = containsMouse
+            }
+        }
+    }
+
+    // =========================================================
+    // Signal Spies
+    // =========================================================
+    
+    SignalSpy { id: clickedSpy; target: myComponent; signalName: "clicked" }
+    SignalSpy { id: valueChangedSpy; target: myComponent; signalName: "valueChanged" }
+
+    // =========================================================
+    // Test Case
+    // =========================================================
+    
+    TestCase {
+        id: testCase
+        name: "MyComponentTests"
+        when: windowShown
+        
+        function init() {
+            myComponent.reset()
+            clickedSpy.clear()
+            valueChangedSpy.clear()
+            wait(50)  // Laisser le composant s'initialiser
+        }
+        
+        // Tests ici...
+        function test_defaultValues() {
+            compare(myComponent.text, "", "Default text is empty")
+            compare(myComponent.enabled, true, "Default enabled is true")
+        }
+        
+        function test_click_emitsSignal() {
+            var button = findChild(myComponent, "background")
+            mouseClick(button)
+            compare(clickedSpy.count, 1, "clicked emitted")
+        }
     }
 }
 ```
 
 ---
 
-### Patterns recommandes
+## Patterns recommandes
 
-#### 1. SignalSpy pour capturer les signaux
+### 1. SignalSpy pour capturer les signaux
 
 ```qml
-// Declaration dans le TestCase
 SignalSpy { 
-    id: playPauseSpy 
-    signalName: "playPauseClicked" 
+    id: valueSpy 
+    target: myComponent
+    signalName: "valueChanged" 
 }
 
 function init() {
-    playPauseSpy.target = controlBar
-    playPauseSpy.clear()
+    valueSpy.clear()
 }
 
 function test_signal_emitted() {
-    mouseClick(button)
+    myComponent.setValue(42)
     
     // Verifier le nombre d'emissions
-    compare(playPauseSpy.count, 1)
+    compare(valueSpy.count, 1, "Signal emitted once")
     
     // Verifier les arguments du signal
-    compare(playPauseSpy.signalArguments[0][0], expectedValue)
+    compare(valueSpy.signalArguments[0][0], 42, "Correct value")
 }
 ```
 
-#### 2. createTemporaryObject pour l'isolation
-
-```qml
-function init() {
-    // Cree une nouvelle instance pour chaque test
-    // Automatiquement detruite apres le test
-    controlBar = createTemporaryObject(controlBarComponent, testCase)
-    verify(controlBar !== null)
-}
-// Pas besoin de cleanup explicite !
-```
-
-#### 3. waitForRendering pour la synchronisation
-
-```qml
-function test_stateChange_updatesVisual() {
-    controlBar.playing = true
-    
-    // Attendre que QML mette a jour le rendu
-    waitForRendering(controlBar)
-    
-    // Maintenant verifier l'etat visuel
-    verify(button.color === activeColor)
-}
-```
-
-#### 4. findChild pour localiser les elements
+### 2. findChild pour localiser les elements
 
 ```qml
 function test_nestedElement() {
-    // Trouver un element par objectName
-    var button = findChild(controlBar, "playPauseButton")
+    var button = findChild(myComponent, "submitButton")
     verify(button !== null, "Button should exist")
     
     mouseClick(button)
@@ -356,49 +268,77 @@ function test_nestedElement() {
 **Important** : Les elements doivent avoir un `objectName` :
 
 ```qml
-// Dans le composant
 Rectangle {
-    id: playPauseButton
-    objectName: "playPauseButton"  // Necessaire pour findChild
+    id: submitButton
+    objectName: "submitButton"  // Necessaire pour findChild
 }
 ```
 
-#### 5. Tests data-driven
+### 3. Tests data-driven
 
 Pour tester plusieurs variantes avec le meme code :
 
 ```qml
-function test_speedChange_data() {
+function test_values_data() {
     return [
-        { tag: "increase", initial: 1.0, delta: 0.25, expected: 1.25 },
-        { tag: "decrease", initial: 1.0, delta: -0.25, expected: 0.75 },
-        { tag: "max_limit", initial: 2.75, delta: 0.5, expected: 3.0 },
-        { tag: "min_limit", initial: 0.5, delta: -0.5, expected: 0.25 },
+        { tag: "zero", input: 0, expected: 0 },
+        { tag: "positive", input: 50, expected: 50 },
+        { tag: "max", input: 100, expected: 100 },
+        { tag: "overflow", input: 150, expected: 100 },  // clamped
+        { tag: "negative", input: -10, expected: 0 },    // clamped
     ]
 }
 
-function test_speedChange(data) {
-    // Arrange
-    controlBar.playbackRate = data.initial
+function test_values(data) {
+    myComponent.setValue(data.input)
+    compare(myComponent.value, data.expected, 
+            "Input " + data.input + " -> " + data.expected)
+}
+```
+
+### 4. Organisation par categories (fichiers volumineux)
+
+Pour les fichiers avec 30+ tests, organiser par sections :
+
+```qml
+TestCase {
+    name: "MyComponentTests"
     
-    // Act
-    if (data.delta > 0) {
-        mouseClick(speedUpButton)
-    } else {
-        mouseClick(speedDownButton)
-    }
+    // =====================================================
+    // Default Values Tests
+    // =====================================================
     
-    // Assert
-    compare(rateSpy.signalArguments[0][0], data.expected,
-            "Speed change from " + data.initial + " with delta " + data.delta)
+    function test_defaultValues() { /* ... */ }
+    function test_defaultSize() { /* ... */ }
+    
+    // =====================================================
+    // Property Tests
+    // =====================================================
+    
+    function test_property_canBeSet() { /* ... */ }
+    function test_property_emitsSignal() { /* ... */ }
+    
+    // =====================================================
+    // Interaction Tests
+    // =====================================================
+    
+    function test_click_emitsSignal() { /* ... */ }
+    function test_hover_changesState() { /* ... */ }
+    
+    // =====================================================
+    // Edge Cases
+    // =====================================================
+    
+    function test_rapidClicks() { /* ... */ }
+    function test_disabledState() { /* ... */ }
 }
 ```
 
 ---
 
-### Gestion de l'asynchrone
+## Gestion de l'asynchrone
 
-#### tryCompare pour les valeurs asynchrones
+### tryCompare pour les valeurs asynchrones
 
 ```qml
 function test_asyncValue() {
@@ -409,7 +349,7 @@ function test_asyncValue() {
 }
 ```
 
-#### tryVerify pour les conditions asynchrones
+### tryVerify pour les conditions asynchrones
 
 ```qml
 function test_asyncCondition() {
@@ -422,7 +362,7 @@ function test_asyncCondition() {
 }
 ```
 
-#### wait() en dernier recours
+### wait() en dernier recours
 
 ```qml
 function test_animation() {
@@ -437,223 +377,336 @@ function test_animation() {
 
 ---
 
-### Anti-patterns a eviter
+## Problemes courants et solutions
 
-#### 1. Tests qui dependent de l'ordre
+### 1. mouseMove ne declenche pas onEntered
+
+**Probleme** : Dans l'environnement de test, `mouseMove()` ne declenche pas toujours les handlers `onEntered` des MouseArea.
+
+**Solution** : Tester le comportement hover en manipulant directement la propriete :
+
+```qml
+// PROBLEMATIQUE - peut echouer
+function test_hover_showsPopup() {
+    mouseMove(button, button.width/2, button.height/2)
+    wait(100)
+    compare(popup.visible, true)  // Peut echouer!
+}
+
+// SOLUTION - tester la logique directement
+function test_hover_showsPopup_viaProperty() {
+    compare(myComponent.showPopup, false, "Initially hidden")
+    
+    // Simuler ce que le hover fait
+    myComponent.showPopup = true
+    wait(50)
+    
+    compare(popup.visible, true, "Popup visible when showPopup=true")
+}
+```
+
+### 2. Binding casse apres assignment sur Slider
+
+**Probleme** : Quand on fait `slider.value = X`, le binding QML est casse et ne se retablit pas.
+
+**Solution** : Utiliser `Binding` element avec `restoreMode` :
+
+```qml
+// PROBLEMATIQUE
+Slider {
+    id: slider
+    value: myComponent.volume  // Binding casse si on fait slider.value = 0.5
+}
+
+// SOLUTION
+Slider {
+    id: slider
+    
+    Binding on value {
+        value: myComponent.volume
+        restoreMode: Binding.RestoreBindingOrValue
+    }
+}
+```
+
+### 3. Composant non visible dans les tests
+
+**Probleme** : `control.visible` retourne `false` dans les tests.
+
+**Solution** : Utiliser le pattern Item + Mock avec positionnement explicite :
+
+```qml
+Item {
+    id: root
+    width: 400
+    height: 400
+    
+    MyComponent {
+        id: myComponent
+        // Position explicite dans la zone visible
+        x: 100
+        y: 100
+        width: 200
+        height: 100
+    }
+    
+    TestCase {
+        // ...
+    }
+}
+```
+
+### 4. Tests qui echouent en batch mais passent seuls
+
+**Probleme** : Un test passe quand execute seul mais echoue dans la suite complete.
+
+**Solution** : Verifier l'isolation - ajouter une fonction `reset()` robuste :
+
+```qml
+function reset() {
+    // Reset TOUTES les proprietes
+    text = ""
+    value = 0
+    enabled = true
+    visible = true
+    
+    // Reset aussi les etats internes
+    _internalState = false
+}
+
+function init() {
+    myComponent.reset()
+    // Clear tous les spies
+    clickedSpy.clear()
+    valueSpy.clear()
+    wait(50)
+}
+```
+
+---
+
+## Anti-patterns a eviter
+
+### 1. Tests qui dependent de l'ordre
 
 ```qml
 // MAUVAIS
-function test_1_setPlaying() {
-    controlBar.playing = true
+function test_1_setState() {
+    component.active = true
 }
-function test_2_checkPlaying() {
-    verify(controlBar.playing)  // Peut echouer si test_1 n'a pas ete execute
+function test_2_checkState() {
+    verify(component.active)  // Depend de test_1!
 }
 
 // BON - Chaque test est independant
 function init() {
-    controlBar = createTemporaryObject(...)  // Etat frais
+    component.reset()  // Etat frais
 }
 ```
 
-#### 2. Assertions vides ou tautologiques
+### 2. Assertions vides ou tautologiques
 
 ```qml
 // MAUVAIS
 function test_nothing() {
     mouseClick(button)
-    verify(true)  // Ne verifie rien !
+    verify(true)  // Ne verifie rien!
+}
+
+// BON
+function test_click() {
+    mouseClick(button)
+    compare(clickedSpy.count, 1, "Signal emitted")
 }
 ```
 
-#### 3. Magic numbers
+### 3. Magic numbers
 
 ```qml
 // MAUVAIS
-controlBar.duration = 3600
-controlBar.position = 1800
+component.duration = 3600
+component.position = 1800
 
 // BON
 var oneHour = 3600
-var halfwayPoint = oneHour / 2
-controlBar.duration = oneHour
-controlBar.position = halfwayPoint
+var halfway = oneHour / 2
+component.duration = oneHour
+component.position = halfway
 ```
 
-#### 4. Delais fixes (sleep)
+### 4. Delais fixes excessifs
 
 ```qml
 // MAUVAIS - Fragile et lent
 function test_async() {
-    triggerAsyncAction()
-    wait(2000)  // Attend 2 secondes peu importe
+    triggerAction()
+    wait(2000)
     verify(result)
 }
 
 // BON - Attend une condition
 function test_async() {
-    triggerAsyncAction()
-    tryCompare(target, "property", expectedValue, 2000)  // Timeout de 2s max
+    triggerAction()
+    tryCompare(target, "ready", true, 2000)
 }
 ```
 
-#### 5. Tests trop longs
+### 5. Tests trop longs (> 20 lignes)
 
 ```qml
 // MAUVAIS - Un test qui fait tout
 function test_everything() {
-    mouseClick(playButton)
-    compare(playSpy.count, 1)
-    mouseClick(volumeButton)
-    compare(muteSpy.count, 1)
-    // ... 50 lignes de plus
+    // 50 lignes de code...
 }
 
 // BON - Tests focalises
-function test_playButton_click() { ... }
-function test_volumeButton_click() { ... }
+function test_click() { /* 5-10 lignes */ }
+function test_hover() { /* 5-10 lignes */ }
+function test_disabled() { /* 5-10 lignes */ }
+```
+
+### 6. Tester l'implementation plutot que le comportement
+
+```qml
+// MAUVAIS - Teste l'implementation interne
+function test_internal() {
+    compare(component._privateVar, 42)
+}
+
+// BON - Teste le comportement observable
+function test_behavior() {
+    component.increment()
+    compare(component.value, 43)  // Propriete publique
+}
 ```
 
 ---
 
-### Actions de test disponibles
+## Actions de test disponibles
 
-#### Souris
+### Souris
 
 ```qml
-mouseClick(item)                    // Clic simple
+mouseClick(item)                    // Clic simple au centre
 mouseClick(item, x, y)              // Clic a une position
 mouseDoubleClick(item)              // Double clic
 mousePress(item)                    // Appui (sans relacher)
 mouseRelease(item)                  // Relacher
-mouseMove(item, x, y)               // Deplacer
+mouseMove(item, x, y)               // Deplacer (hover instable)
 mouseDrag(item, x1, y1, dx, dy)     // Glisser
 ```
 
-#### Clavier
+### Clavier
 
 ```qml
 keyClick(Qt.Key_Space)              // Touche simple
-keyPress(Qt.Key_Shift)              // Appui (sans relacher)
+keyClick(Qt.Key_A)                  // Lettre
+keyPress(Qt.Key_Shift)              // Appui maintenu
 keyRelease(Qt.Key_Shift)            // Relacher
-keySequence("Ctrl+S")               // Sequence
+keySequence("Ctrl+S")               // Combinaison
 ```
 
-#### Assertions
+### Assertions
 
 ```qml
 verify(condition, message)          // Condition booleenne
-compare(actual, expected, message)  // Egalite
-fuzzyCompare(a, b, delta)           // Egalite approximative
+compare(actual, expected, message)  // Egalite stricte
+fuzzyCompare(a, b, delta)           // Egalite approximative (floats)
 tryCompare(obj, prop, val, timeout) // Attente asynchrone
 tryVerify(func, timeout)            // Condition asynchrone
 fail(message)                       // Echec force
 skip(message)                       // Ignorer le test
 ```
 
----
-
-### Scenarios BluePlayer
-
-#### IDs de scenarios par composant
-
-| Prefixe | Composant |
-|---------|-----------|
-| PCB | PlayerControlBar |
-| VOL | Volume controls |
-| SPD | Speed controls |
-| SEK | Seek/Timeline |
-| LIV | Live/VOD mode |
-| CTL | Other controls |
-| HOM | HomeView |
-| CAT | Categories |
-| SRC | Search |
-| VPL | VideoPlayer |
-| LOG | LoginView |
-| NAV | Navigation |
-| KEY | Keyboard shortcuts |
-
-#### Scenarios prioritaires (Haute)
-
-| ID | Scenario |
-|----|----------|
-| PCB-001 | Clic sur Play → emet `playPauseClicked` |
-| VOL-001 | Clic sur bouton volume → emet `muteClicked` |
-| VOL-002 | Drag slider volume → emet `volumeRequested` |
-| SPD-001 | Clic sur + → augmente vitesse de 0.25 |
-| SPD-002 | Clic sur - → diminue vitesse de 0.25 |
-| CTL-001 | Clic fullscreen → emet `fullscreenClicked` |
-| HOM-001 | Clic sur StreamCard → ouvre le stream |
-| SRC-001 | Saisie texte → filtre les resultats |
-| KEY-001 | Espace → Play/Pause |
-| KEY-003 | F → Fullscreen |
-
----
-
-### Debugging
-
-#### Logs de debug
+### Utilitaires
 
 ```qml
-function test_example() {
-    console.log("Test starting...")
-    console.log("Button position:", button.x, button.y)
-    console.log("Button visible:", button.visible)
-    
-    mouseClick(button)
-    
-    console.log("Signal count:", spy.count)
-    console.log("Signal args:", JSON.stringify(spy.signalArguments))
-}
+wait(ms)                            // Pause (eviter si possible)
+waitForRendering(item)              // Attendre le rendu
+findChild(parent, objectName)       // Trouver un enfant par nom
+createTemporaryObject(comp, parent) // Creer objet auto-detruit
 ```
 
-#### Execution
+---
+
+## Execution des tests
 
 ```bash
+# Tous les tests
+./build/tests/test_functional_ui
+
 # Mode verbose
 ./build/tests/test_functional_ui -v2
 
-# Avec signaux
-./build/tests/test_functional_ui -v2 -vs
+# Un fichier specifique
+./build/tests/test_functional_ui -input tst_MyComponent.qml
 
-# Test specifique
-./build/tests/test_functional_ui PlayerControlBarTests::test_playButton_click
+# Un test specifique
+./build/tests/test_functional_ui MyComponentTests::test_click
 
 # Export JUnit pour CI
 ./build/tests/test_functional_ui -o results.xml,junitxml
+
+# Lister les tests
+./build/tests/test_functional_ui -functions
 ```
 
-#### Problemes courants
+---
+
+## Debugging
+
+### Logs dans les tests
+
+```qml
+function test_debug() {
+    console.log("=== Debug Info ===")
+    console.log("Component:", myComponent)
+    console.log("Visible:", myComponent.visible)
+    console.log("Position:", myComponent.x, myComponent.y)
+    console.log("Size:", myComponent.width, "x", myComponent.height)
+    
+    mouseClick(button)
+    
+    console.log("Spy count:", clickedSpy.count)
+    console.log("Spy args:", JSON.stringify(clickedSpy.signalArguments))
+}
+```
+
+### Problemes courants
 
 | Probleme | Solution |
 |----------|----------|
 | "QML module not found" | Verifier `addImportPath()` dans main.cpp |
-| "Component is not ready" | Ajouter `verify(component.status === Component.Ready)` |
-| Tests flaky | Ajouter `waitForRendering()` ou `tryCompare()` |
+| "Component is not ready" | Ajouter `wait(50)` apres creation |
+| Tests flaky | Utiliser `tryCompare()` au lieu de `wait()` |
+| Hover ne fonctionne pas | Tester via propriete directe |
+| Binding casse | Utiliser `Binding` element |
+| Test passe seul, echoue en batch | Ameliorer `reset()` |
 
 ---
 
-### Checklist avant commit
+## Checklist avant commit
 
-- [ ] Le test suit le pattern AAA (Arrange-Act-Assert)
-- [ ] Le nommage est descriptif (`test_element_action_result`)
-- [ ] Le test est independant (pas de dependance d'ordre)
-- [ ] Les assertions verifient quelque chose de significatif
+- [ ] Pattern AAA respecte (Arrange-Act-Assert)
+- [ ] Nommage descriptif (`test_element_action`)
+- [ ] Test independant (pas de dependance d'ordre)
+- [ ] Assertions significatives (pas de `verify(true)`)
 - [ ] Pas de magic numbers
 - [ ] Pas de `wait()` sans justification
-- [ ] `waitForRendering()` utilise apres les changements visuels
-- [ ] `tryCompare()` utilise pour les valeurs asynchrones
-- [ ] Le test est deterministe (pas de flakiness)
-- [ ] Le test s'execute en < 1 seconde
-- [ ] Les elements ont un `objectName` pour `findChild()`
+- [ ] `tryCompare()` pour l'asynchrone
+- [ ] Test deterministe (pas de flakiness)
+- [ ] Temps < 1 seconde par test
+- [ ] Elements ont un `objectName` pour `findChild()`
+- [ ] Fonction `reset()` si mock inline
 
 ---
 
-### Metriques cibles Qt Quick Test
+## Metriques cibles
 
 | Metrique | Cible |
 |----------|-------|
-| Couverture des composants critiques | 100% |
-| Tests par composant UI majeur | >= 10 |
-| Temps d'execution total | < 30s |
+| Couverture composants critiques | 100% |
+| Tests par composant UI | >= 15 |
+| Temps d'execution par test | < 1s |
+| Temps total suite | < 60s |
 | Tests flaky | 0 |
