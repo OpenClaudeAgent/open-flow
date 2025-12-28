@@ -58,12 +58,12 @@ EMOJIS = {
     NotificationType.ERROR: "❌",
 }
 
-# macOS sound mapping
+# macOS sound mapping (louder sounds)
 MACOS_SOUNDS = {
-    NotificationType.INFO: "Blow",
-    NotificationType.SUCCESS: "Glass",
-    NotificationType.WARNING: "Basso",
-    NotificationType.ERROR: "Sosumi",
+    NotificationType.INFO: "Ping",
+    NotificationType.SUCCESS: "Hero",
+    NotificationType.WARNING: "Funk",
+    NotificationType.ERROR: "Submarine",
 }
 
 
