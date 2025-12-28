@@ -107,8 +107,8 @@ install_agents() {
     local agent_dir="$OPENCODE_CONFIG_DIR/agent"
     mkdir -p "$agent_dir"
     
-    # Backup existing agents
-    create_backup "$agent_dir" "agents"
+    # Backup existing agents (ignore if empty)
+    create_backup "$agent_dir" "agents" || true
     
     # Install each agent
     for agent_file in "$SCRIPT_DIR/agents"/*.md; do
@@ -137,8 +137,8 @@ install_skills() {
     local skill_dir="$OPENCODE_CONFIG_DIR/skill"
     mkdir -p "$skill_dir"
     
-    # Backup existing skills
-    create_backup "$skill_dir" "skills"
+    # Backup existing skills (ignore if empty)
+    create_backup "$skill_dir" "skills" || true
     
     # Install each skill (they're in subdirectories)
     for skill_subdir in "$SCRIPT_DIR/skills"/*; do
@@ -280,8 +280,8 @@ cmd_backup() {
     log_info "Creating full backup..."
     mkdir -p "$BACKUP_DIR"
     
-    create_backup "$OPENCODE_CONFIG_DIR/agent" "agents"
-    create_backup "$OPENCODE_CONFIG_DIR/skill" "skills"
+    create_backup "$OPENCODE_CONFIG_DIR/agent" "agents" || true
+    create_backup "$OPENCODE_CONFIG_DIR/skill" "skills" || true
     
     if [ -f "$OPENCODE_CONFIG_DIR/opencode.json" ]; then
         mkdir -p "$BACKUP_DIR/config-$TIMESTAMP"
