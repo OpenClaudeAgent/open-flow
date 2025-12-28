@@ -135,12 +135,8 @@ class Notifier:
                 message = config.message
             notification.setInformativeText_(message)
 
-            # Set custom icon if available
-            icon_path = _get_icon_path()
-            if icon_path:
-                image = NSImage.alloc().initWithContentsOfFile_(icon_path)
-                if image:
-                    notification.setContentImage_(image)
+            # Note: setContentImage_ displays a large image (not suitable)
+            # The app icon (Python) is shown automatically
 
             # Play sound if requested
             if config.sound:

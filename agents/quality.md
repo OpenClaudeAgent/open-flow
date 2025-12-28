@@ -132,10 +132,10 @@ quality/
 
 ### Execution des tests avec l'utilisateur
 
-1. **Notifier l'utilisateur** via MCP `notify` :
-   - Type : `info`
+1. **Demander a l'utilisateur** via MCP `ask_user` :
    - Titre : "Tests manuels prets"
-   - Message : "Rapport de test disponible - Validation requise"
+   - Question : "Le rapport de test est disponible. On commence la validation ?"
+   - Options : ["Oui, allons-y", "Plus tard"]
 2. Presente le rapport avec la liste complete des checks
 3. Guide l'utilisateur feature par feature
 4. Coche les tests au fur et a mesure

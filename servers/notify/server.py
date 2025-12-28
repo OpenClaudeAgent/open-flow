@@ -1,13 +1,12 @@
-"""MCP Server for system notifications."""
+"""MCP Server for user interaction notifications."""
 
 import asyncio
-from typing import Literal
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
-from notifier import send_notification, NotificationType
+from notifier import send_notification
 
 
 # Create the MCP server
@@ -19,53 +18,53 @@ async def list_tools() -> list[Tool]:
     """List available tools."""
     return [
         Tool(
-            name="notify",
+            name="ask_user",
             description=(
-                "Send a system notification to the user. "
-                "Use this when you need to alert the user about something important, "
-                "such as task completion, errors, or when user input is required. "
-                "The notification will appear in the system notification center with a sound."
+                "Send a notification to ask the user a question or request a decision. "
+                "Use this ONLY if: (1) the user explicitly asked you to notify them, or "
+                "(2) your agent instructions specify to use this tool. "
+                "Do NOT use this tool proactively without explicit instructions."
             ),
             inputSchema={
                 "type": "object",
                 "properties": {
                     "title": {
                         "type": "string",
-                        "description": "Short title for the notification",
+                        "description": "Short title summarizing what you need from the user.",
                     },
-                    "message": {
+                    "question": {
                         "type": "string",
-                        "description": "Body text of the notification",
+                        "description": "The question or decision you need the user to answer.",
                     },
-                    "type": {
+                    "options": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of possible options or choices for the user.",
+                    },
+                    "urgency": {
                         "type": "string",
-                        "enum": ["info", "success", "warning", "error"],
-                        "description": (
-                            "Type of notification: "
-                            "info (general), success (task completed), "
-                            "warning (attention needed), error (problem occurred)"
-                        ),
-                        "default": "info",
-                    },
-                    "sound": {
-                        "type": "boolean",
-                        "description": "Whether to play a notification sound",
-                        "default": True,
-                    },
-                    "agent": {
-                        "type": "string",
-                        "description": "Name of the agent sending the notification. Prepended to the message.",
-                    },
-                    "task": {
-                        "type": "string",
-                        "description": "Name or number of the current task. Prepended to the message.",
+                        "enum": ["low", "normal", "high"],
+                        "description": "How urgent is this question. High plays a more attention-grabbing sound.",
+                        "default": "normal",
                     },
                     "repo": {
                         "type": "string",
-                        "description": "Name of the repository or project. Displayed as subtitle.",
+                        "description": "Name of the repository or project being worked on.",
+                    },
+                    "branch": {
+                        "type": "string",
+                        "description": "Current git branch being worked on.",
+                    },
+                    "agent": {
+                        "type": "string",
+                        "description": "Name of the agent asking the question.",
+                    },
+                    "task": {
+                        "type": "string",
+                        "description": "Name or number of the current task.",
                     },
                 },
-                "required": ["title", "message"],
+                "required": ["title", "question"],
             },
         )
     ]
@@ -74,37 +73,56 @@ async def list_tools() -> list[Tool]:
 @server.call_tool()
 async def call_tool(name: str, arguments: dict) -> list[TextContent]:
     """Handle tool calls."""
-    if name != "notify":
+    if name != "ask_user":
         return [TextContent(type="text", text=f"Unknown tool: {name}")]
 
-    title = arguments.get("title", "Notification")
-    message = arguments.get("message", "")
-    ntype = arguments.get("type", "info")
-    sound = arguments.get("sound", True)
+    title = arguments.get("title", "Question")
+    question = arguments.get("question", "")
+    options = arguments.get("options", [])
+    urgency = arguments.get("urgency", "normal")
+    repo = arguments.get("repo")
+    branch = arguments.get("branch")
     agent = arguments.get("agent")
     task = arguments.get("task")
-    repo = arguments.get("repo")
+
+    # Map urgency to notification type
+    urgency_to_type = {
+        "low": "info",
+        "normal": "warning",
+        "high": "error",
+    }
+    ntype = urgency_to_type.get(urgency, "warning")
+
+    # Build message with question and options
+    message = question
+    if options:
+        options_str = " | ".join(options)
+        message = f"{question}\n[{options_str}]"
+
+    # Build subtitle from repo and branch
+    subtitle_parts = []
+    if repo:
+        subtitle_parts.append(repo)
+    if branch:
+        subtitle_parts.append(branch)
+    subtitle = " @ ".join(subtitle_parts) if subtitle_parts else None
 
     # Send the notification
     success = send_notification(
         title=title,
         message=message,
         type=ntype,
-        sound=sound,
+        sound=True,
         agent=agent,
         task=task,
-        repo=repo,
+        repo=subtitle,  # Use combined repo@branch as subtitle
     )
 
     if success:
-        emoji = {"info": "ℹ️", "success": "✅", "warning": "⚠️", "error": "❌"}.get(
-            ntype, "📢"
-        )
+        emoji = {"low": "ℹ️", "normal": "⚠️", "high": "🚨"}.get(urgency, "❓")
         agent_info = f" [{agent}]" if agent else ""
         return [
-            TextContent(
-                type="text", text=f"{emoji} Notification sent{agent_info}: {title}"
-            )
+            TextContent(type="text", text=f"{emoji} Question sent{agent_info}: {title}")
         ]
     else:
         return [

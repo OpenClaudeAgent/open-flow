@@ -102,10 +102,10 @@ Apres un refactoring significatif, tu DOIS permettre a l'utilisateur de verifier
    cd /chemin/vers/projet && make run > /dev/null 2>&1 &
    ```
 
-2. **Notifier l'utilisateur** via MCP `notify` :
-   - Type : `info`
+2. **Demander validation** via MCP `ask_user` :
    - Titre : "Validation requise"
-   - Message : "Refactoring termine - Verifier les regressions"
+   - Question : "Refactoring termine. Peux-tu verifier qu'il n'y a pas de regression ?"
+   - Options : ["C'est bon", "Il y a un probleme"]
 
 3. **Presenter la checklist** :
    ```

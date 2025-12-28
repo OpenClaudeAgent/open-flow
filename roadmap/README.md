@@ -17,5 +17,6 @@ Ce dossier contient les plans d'implementation pour le projet open-flow.
 
 ## Historique
 
+- **2025-12-28** : Refonte MCP notify → ask_user (questions utilisateur uniquement)
 - **2025-12-28** : Creation du plan 02 - Notifications macOS avec Go natif (remplace PyObjC)
 - **2025-12-28** : Creation du plan 01 - Notifications macOS natives

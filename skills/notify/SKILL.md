@@ -1,81 +1,69 @@
-# Skill: Notifications Utilisateur
+# Skill: Questions Utilisateur (ask_user)
 
-Ce skill decrit quand et comment utiliser le serveur MCP `notify` pour communiquer avec l'utilisateur.
+Ce skill decrit quand et comment utiliser le MCP `notify` (tool `ask_user`) pour poser des questions a l'utilisateur.
 
 ## Principe
 
-L'utilisateur n'est pas toujours devant son ecran. Quand tu as besoin de son attention, **envoie une notification systeme** via MCP `notify`.
+Le tool `ask_user` sert a poser des questions a l'utilisateur quand tu as besoin d'une reponse pour continuer. Ce n'est PAS pour informer ou notifier - c'est pour DEMANDER.
 
-## Quand notifier
+## Restriction d'usage
 
-### Toujours notifier
+**Tu ne dois utiliser ce tool QUE SI :**
+1. L'utilisateur t'a explicitement demande de le notifier
+2. Tes instructions d'agent specifient d'utiliser ce tool
 
-| Situation | Type | Titre | Message |
-|-----------|------|-------|---------|
-| Tache terminee | `success` | Tache terminee | [Nom] - Pret pour review |
-| Validation requise | `info` | Validation requise | [Contexte] - Action attendue |
-| Decision necessaire | `warning` | Decision requise | [Question courte] |
-| Erreur bloquante | `error` | Erreur | [Description courte] |
-| Attente utilisateur | `info` | En attente | [Ce qui est attendu] |
+**Tu ne dois PAS utiliser ce tool pour :**
+- Informer de la completion d'une tache (utilise la conversation)
+- Donner des mises a jour de progression (utilise les todos)
+- Confirmer des actions simples (utilise la conversation)
 
-### Ne pas notifier
+## Quand utiliser ask_user
 
-- Progression intermediaire (utilise les todos)
-- Messages informatifs non-bloquants
-- Confirmations de commandes simples
+| Situation | Titre | Question | Options |
+|-----------|-------|----------|---------|
+| Besoin de validation | "Validation requise" | "[Contexte] - Peux-tu valider ?" | ["C'est bon", "Probleme"] |
+| Besoin de decision | "Decision requise" | "[Question specifique]" | [choix possibles] |
+| Besoin d'autorisation | "Autorisation requise" | "Puis-je [action] ?" | ["Oui", "Non"] |
 
-## Comment notifier
+## Parametres
 
-```
-Utilise l'outil MCP "notify" avec :
-- title: Titre court (max 50 caracteres)
-- message: Description claire de l'action attendue
-- type: info | success | warning | error
-- sound: true (par defaut)
-```
-
-## Types de notification
-
-| Type | Usage | Exemple |
-|------|-------|---------|
-| `info` | Information, action requise | Tests prets, validation UI |
-| `success` | Tache completee avec succes | Feature mergee, plan cree |
-| `warning` | Attention requise, decision | Autorisation, conflit detecte |
-| `error` | Probleme bloquant | Build echoue, erreur critique |
-
-## Bonnes pratiques
-
-1. **Sois concis** : L'utilisateur lit sur une petite notification
-2. **Sois actionnable** : Dis ce qui est attendu
-3. **Choisis le bon type** : Ca determine l'urgence percue
-4. **Une notification par evenement** : Pas de spam
+| Parametre | Requis | Description |
+|-----------|--------|-------------|
+| `title` | Oui | Titre court (max 50 caracteres) |
+| `question` | Oui | La question a poser |
+| `options` | Non | Liste des reponses possibles |
+| `urgency` | Non | low / normal / high |
+| `repo` | Non | Nom du repository |
+| `branch` | Non | Branche git actuelle |
+| `agent` | Non | Nom de l'agent |
+| `task` | Non | Tache en cours |
 
 ## Exemples
 
 ### Validation utilisateur requise
 ```
-Type: info
 Titre: "Validation requise"
-Message: "Feature X - Application lancee, merci de tester"
+Question: "L'application est prete. Peux-tu tester la feature X ?"
+Options: ["C'est bon", "Il y a un probleme"]
 ```
 
-### Tache terminee
+### Decision requise
 ```
-Type: success
-Titre: "Feature prete"
-Message: "Login OAuth - Pret pour merge sur main"
+Titre: "Decision requise"
+Question: "Dois-je utiliser l'approche A ou B ?"
+Options: ["Approche A", "Approche B", "Autre suggestion"]
 ```
 
-### Autorisation necessaire
+### Autorisation requise
 ```
-Type: warning
 Titre: "Autorisation requise"
-Message: "Code non testable - Refactoring necessaire ?"
+Question: "Code non testable - Puis-je invoquer l'agent refactoring ?"
+Options: ["Oui", "Non"]
 ```
 
-### Erreur bloquante
-```
-Type: error
-Titre: "Build echoue"
-Message: "3 erreurs de compilation - Intervention requise"
-```
+## Bonnes pratiques
+
+1. **Sois concis** : Questions courtes et claires
+2. **Propose des options** : Facilite la reponse de l'utilisateur
+3. **Une question a la fois** : Pas de questions multiples
+4. **Contexte minimal** : repo + branch suffisent generalement

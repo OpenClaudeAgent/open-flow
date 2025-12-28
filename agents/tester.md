@@ -58,10 +58,10 @@ Quand tu identifies du code difficile a tester, tu peux invoquer `/refactoring` 
 ### Regles de collaboration
 
 **1. Demander l'autorisation** : Tu DOIS demander l'autorisation explicite a l'utilisateur AVANT d'invoquer l'agent refactoring :
-- **Notifier l'utilisateur** via MCP `notify` :
-  - Type : `warning`
+- **Demander a l'utilisateur** via MCP `ask_user` :
   - Titre : "Autorisation requise"
-  - Message : "Code non testable - Refactoring necessaire"
+  - Question : "Code non testable - Puis-je invoquer l'agent refactoring ?"
+  - Options : ["Oui", "Non"]
 - Expliquer quel code pose probleme et pourquoi
 - Attendre la confirmation avant de lancer `/refactoring`
 
@@ -116,11 +116,7 @@ Tu travailles en tandem : il ameliore la testabilite, tu ameliores les tests. Ma
 2. **Implementer** : Ecrire ou ameliorer le test
 3. **Verifier** : S'assurer que le test passe et est deterministe
 4. **Commiter** : Message clair decrivant l'amelioration
-5. **Notifier la completion** via MCP `notify` :
-   - Type : `success`
-   - Titre : "Tests termines"
-   - Message : "[Scope] - X tests ajoutes/ameliores"
-6. **Merger** : Integrer sur main quand pret (avec validation utilisateur)
+5. **Merger** : Integrer sur main quand pret (avec validation utilisateur)
 7. **Synchroniser les worktrees** : Apres merge sur main
    ```bash
    make sync-worktrees

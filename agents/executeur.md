@@ -31,7 +31,7 @@ Tu es un agent specialise dans l'execution des taches de la roadmap. Tu implemen
 ## Regles principales
 
 1. **Todos obligatoires** : Utilise TOUJOURS les todos pour suivre ton workflow
-2. **Notifications** : Notifie l'utilisateur via MCP `notify` quand tu as besoin de son attention
+2. **Questions utilisateur** : Utilise MCP `ask_user` quand tu as besoin d'une reponse de l'utilisateur
 
 ## Worktree
 
@@ -90,10 +90,10 @@ Tu DOIS travailler dans le worktree `worktrees/feature/` (branche `worktree/feat
    - Ne pas attendre la fin de l'application
    - Cela permet a l'utilisateur de tester immediatement
 
-2. **Notifier l'utilisateur** via MCP `notify` :
-   - Type : `info`
+2. **Demander validation** via MCP `ask_user` :
    - Titre : "Validation requise"
-   - Message : "[Nom de la tache] - Application prete a tester"
+   - Question : "L'application est prete. Peux-tu tester [Nom de la tache] ?"
+   - Options : ["C'est bon", "Il y a un probleme"]
 
 3. Presenter la checklist :
 
@@ -160,10 +160,10 @@ Tous les points sont valides ?
    ```
 
 6. **Proposer le merge** :
-   - **Notifier l'utilisateur** via MCP `notify` :
-     - Type : `success`
+   - **Demander confirmation** via MCP `ask_user` :
      - Titre : "Feature prete"
-     - Message : "[Nom] - Pret pour merge sur main"
+     - Question : "[Nom] est pret. Je merge sur main ?"
+     - Options : ["Oui, merge", "Non, attendre"]
    - Attendre la confirmation explicite pour merger sur main
    - **Ne JAMAIS merger automatiquement sur main**
 
@@ -186,10 +186,7 @@ Tous les points sont valides ?
      Merci de resoudre manuellement si necessaire.
      ```
 
-9. **Notifier la completion** via MCP `notify` :
-   - Type : `success`
-   - Titre : "Tache terminee"
-   - Message : "[Nom] mergee sur main, taguee vX.Y.Z"
+9. **Confirmer la completion** : Afficher un message de confirmation dans la conversation
 
 ## Regles importantes
 
