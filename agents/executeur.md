@@ -77,10 +77,7 @@ Tu DOIS travailler dans le worktree `worktrees/feature/` (branche `worktree/feat
 
 2. Implementer selon les specifications du plan (code source uniquement, pas de tests)
 4. Builder et verifier : pas d'erreurs de compilation
-5. **Invoquer l'agent Tester** pour ecrire les tests de la nouvelle fonctionnalite :
-   - Informer l'utilisateur : "Implementation terminee. J'invoque l'agent Tester pour ecrire les tests."
-   - Invoquer `/tester` avec les specifications de la fonctionnalite
-   - Attendre la completion avant de continuer
+5. **Invoquer l'agent Tester** pour ecrire les tests
 6. Marquer les todos comme completes au fur et a mesure
 
 ### Phase 4 : Validation utilisateur
@@ -222,62 +219,17 @@ L'application est lancee. Voici les scenarios a tester :
 
 ### Tests : Delegation a l'agent Tester
 
-**Tu ne touches JAMAIS au dossier `tests/`.** Pour chaque nouvelle fonctionnalite implementee :
+**Tu ne touches JAMAIS au dossier `tests/`.** 
 
-1. **Invocation obligatoire** : Apres l'implementation, invoque TOUJOURS l'agent Tester pour ecrire les tests
-2. **Rapport obligatoire** : Informe toujours l'utilisateur quand tu invoques l'agent Tester
+Apres l'implementation, invoque l'agent **Tester** (specialise dans les tests automatises).
 
-**Comment invoquer l'agent Tester** :
-- Utilise `/tester` avec une description claire de la fonctionnalite implementee
-- Exemple : "/tester Ecrire les tests pour la nouvelle fonctionnalite X. Fichiers modifies : [liste]. Comportements a tester : [liste]."
-
-**Apres invocation du Tester** :
-- Attends que l'agent Tester termine
-- Recupere ses changements dans ton worktree si necessaire
-- **Invoque l'agent Quality pour validation** (voir section suivante)
+Ensuite, invoque l'agent **Quality** pour validation.
 
 ### Validation Quality (Code Review + Tests Review)
 
-Apres chaque intervention de l'agent Tester, tu DOIS demander une validation a l'agent Quality.
+Apres l'agent Tester, invoque l'agent **Quality** (specialise dans le code review et la validation des tests).
 
-**Quality effectue une double review** :
-1. **Code Review** : Analyse du code source (src/) avec le skill `code-review`
-2. **Tests Review** : Validation des changements de tests (tests/)
-
-**Comment invoquer Quality** :
-```
-/quality Valider la feature X. 
-- Code modifie : [liste fichiers src/]
-- Tests ajoutes par Tester : [liste fichiers tests/]
-```
-
-**Attendre le rapport** : L'agent Quality analysera :
-- La qualite du code (principes, lisibilite, maintenabilite)
-- Les changements de tests par rapport a l'historique
-- Les regressions potentielles
-- La coherence avec les fonctionnalites existantes
-
-**Rapporter a l'utilisateur** : Presente le rapport de Quality :
-```
-## Rapport Quality - Code Review + Tests Review
-
-L'agent Quality a analyse les changements :
-
-### Code Review
-[Resume]
-
-### Tests Review
-[Resume]
-
-Voulez-vous continuer ?
-```
-
-4. **Si Quality detecte un probleme** :
-   - Presente le probleme a l'utilisateur
-   - Demande s'il faut reinvoquer le Tester ou le Refactoring
-   - Attends la decision de l'utilisateur
-
-5. **Si Quality valide** : Continue le workflow normal
+Quality produit un rapport. Si probleme detecte, utilise MCP `ask_user` pour demander a l'utilisateur comment proceder.
 
 ### Todos obligatoires
 

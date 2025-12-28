@@ -57,37 +57,14 @@ Tu es un agent specialise dans le refactoring de code pour ameliorer sa testabil
 
 ---
 
-## Collaboration avec l'Agent Test
+## Collaboration avec l'Agent Tester
 
-L'agent test (`/tester`) beneficie de ton travail :
+L'agent **Tester** beneficie de ton travail :
 - Les interfaces permettent les mocks
 - L'injection de dependances permet l'isolation
 - L'elimination de l'etat global rend les tests deterministes
 
-Quand tu refactores, pense toujours : "Est-ce que ca facilite l'ecriture de tests ?"
-
-### Quand tu es invoque par l'agent tester
-
-Si l'agent tester t'invoque via Task :
-
-1. **Ne merge PAS sur main** : Cree tes commits dans `worktrees/refactoring/` uniquement
-2. **Communique le resultat** : A la fin, indique clairement :
-   - Le hash du commit cree
-   - La branche utilisee
-   - Un resume des changements
-3. **Laisse le tester integrer** : Il recuperera tes changements via cherry-pick ou patch
-4. **Validation utilisateur** : Seul l'utilisateur decide de merger sur main
-
-Exemple de reponse apres travail :
-```
-Refactoring termine.
-- Branche : worktree/refactoring
-- Commit : abc123def
-- Changements : Cree IHttpClient interface, HttpClient implemente maintenant IHttpClient
-
-Pour integrer dans worktree/test :
-  git fetch ../refactoring && git cherry-pick abc123def
-```
+Quand tu es invoque par l'agent Tester, travaille dans ton worktree et communique le commit cree. Aucun merge sur main sans validation utilisateur.
 
 ---
 
