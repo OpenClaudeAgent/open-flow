@@ -14,7 +14,6 @@ NC='\033[0m' # No Color
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OPENCODE_CONFIG_DIR="$HOME/.config/opencode"
-OPENCODE_DATA_DIR="$HOME/.opencode"
 BACKUP_DIR="$HOME/.opencode-backups"
 BACKUP_MAX_SIZE_MB=20
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -135,7 +134,7 @@ install_agents() {
 install_skills() {
     log_info "Installing skills..."
     
-    local skill_dir="$OPENCODE_DATA_DIR/skill"
+    local skill_dir="$OPENCODE_CONFIG_DIR/skill"
     mkdir -p "$skill_dir"
     
     # Backup existing skills
@@ -203,8 +202,8 @@ show_status() {
     done
     
     echo ""
-    log_info "Skills installed in: $OPENCODE_DATA_DIR/skill/"
-    for dir in "$OPENCODE_DATA_DIR/skill"/*/; do
+    log_info "Skills installed in: $OPENCODE_CONFIG_DIR/skill/"
+    for dir in "$OPENCODE_CONFIG_DIR/skill"/*/; do
         if [ -d "$dir" ]; then
             echo "  - $(basename "$dir")"
         fi
@@ -264,7 +263,7 @@ cmd_diff() {
         if [ -d "$skill_subdir" ]; then
             local skill_name=$(basename "$skill_subdir")
             if [ -f "$skill_subdir/SKILL.md" ]; then
-                local dest="$OPENCODE_DATA_DIR/skill/$skill_name/SKILL.md"
+                local dest="$OPENCODE_CONFIG_DIR/skill/$skill_name/SKILL.md"
                 if show_diff "$skill_subdir/SKILL.md" "$dest" "skill/$skill_name"; then
                     has_diff=true
                 fi
@@ -282,7 +281,7 @@ cmd_backup() {
     mkdir -p "$BACKUP_DIR"
     
     create_backup "$OPENCODE_CONFIG_DIR/agent" "agents"
-    create_backup "$OPENCODE_DATA_DIR/skill" "skills"
+    create_backup "$OPENCODE_CONFIG_DIR/skill" "skills"
     
     if [ -f "$OPENCODE_CONFIG_DIR/opencode.json" ]; then
         mkdir -p "$BACKUP_DIR/config-$TIMESTAMP"
@@ -315,7 +314,7 @@ cmd_restore() {
         cp -r "$backup_path"/* "$OPENCODE_CONFIG_DIR/agent/"
         log_success "Agents restored from $backup_name"
     elif [[ "$backup_name" == skills-* ]]; then
-        cp -r "$backup_path"/* "$OPENCODE_DATA_DIR/skill/"
+        cp -r "$backup_path"/* "$OPENCODE_CONFIG_DIR/skill/"
         log_success "Skills restored from $backup_name"
     elif [[ "$backup_name" == config-* ]]; then
         cp "$backup_path/opencode.json" "$OPENCODE_CONFIG_DIR/"

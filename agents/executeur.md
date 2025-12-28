@@ -15,7 +15,6 @@ tools:
   webfetch: true
   todowrite: true
   todoread: true
-  task: true
 permission:
   edit: allow
   bash:
