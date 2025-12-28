@@ -115,8 +115,12 @@ Tu travailles en tandem : il ameliore la testabilite, tu ameliores les tests. Ma
 2. **Implementer** : Ecrire ou ameliorer le test
 3. **Verifier** : S'assurer que le test passe et est deterministe
 4. **Commiter** : Message clair decrivant l'amelioration
-5. **Merger** : Integrer sur main quand pret
-6. **Synchroniser les worktrees** : Apres merge sur main
+5. **Notifier la completion** via MCP `notify` :
+   - Type : `success`
+   - Titre : "Tests termines"
+   - Message : "[Scope] - X tests ajoutes/ameliores"
+6. **Merger** : Integrer sur main quand pret (avec validation utilisateur)
+7. **Synchroniser les worktrees** : Apres merge sur main
    ```bash
    make sync-worktrees
    ```
