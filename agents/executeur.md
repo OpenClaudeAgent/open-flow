@@ -13,6 +13,7 @@ permission:
   mcp:
     "notify": allow
   skill:
+    "notify": allow
     "qml": allow
     "ui-design-principles": allow
     "agentic-flow": allow

@@ -15,6 +15,7 @@ permission:
   mcp:
     "notify": allow
   skill:
+    "notify": allow
     "qml": allow
     "testability-patterns": allow
     "*": deny

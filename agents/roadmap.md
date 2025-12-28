@@ -13,6 +13,7 @@ permission:
   mcp:
     "notify": allow
   skill:
+    "notify": allow
     "*": deny
   doom_loop: ask
   external_directory: ask

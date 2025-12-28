@@ -13,6 +13,7 @@ permission:
   mcp:
     "notify": allow
   skill:
+    "notify": allow
     "functional-testing": allow
     "*": deny
   doom_loop: ask
