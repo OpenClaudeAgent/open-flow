@@ -212,13 +212,21 @@ install_mcp() {
             log_success "Virtual environment created"
         fi
         
-        # Install dependencies if mcp not installed
+        # Install dependencies if not already installed
+        local needs_install=false
         if ! "$venv_dir/bin/python" -c "import mcp" 2>/dev/null; then
-            log_info "Installing MCP dependencies..."
-            "$venv_dir/bin/pip" install --quiet mcp
-            log_success "MCP package installed"
+            needs_install=true
+        fi
+        if ! "$venv_dir/bin/python" -c "import objc" 2>/dev/null; then
+            needs_install=true
+        fi
+        
+        if [ "$needs_install" = true ]; then
+            log_info "Installing MCP dependencies (mcp, pyobjc)..."
+            "$venv_dir/bin/pip" install --quiet mcp pyobjc
+            log_success "Dependencies installed"
         else
-            log_info "MCP package already installed"
+            log_info "Dependencies already installed"
         fi
         
         # Configure notify server
