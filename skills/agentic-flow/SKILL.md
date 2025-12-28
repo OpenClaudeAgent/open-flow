@@ -114,8 +114,23 @@ Selection → Preparation → Implementation → Tests? → Validation → Final
 2. **Preparation** : Sync main, branche feature
 3. **Implementation** : Code dans `src/`
 4. **Tests** : Si echec, invoquer Tester puis Quality
-5. **Validation** : Checklist avec utilisateur
+5. **Validation** : Checklist + scenarios avec utilisateur (voir detail ci-dessous)
 6. **Finalisation** : Commit, proposition merge
+
+#### Detail : Phase Validation
+
+L'executeur doit generer une **checklist de validation avec scenarios concrets** :
+
+1. **Lancer l'application** (`make run &` en arriere-plan)
+2. **Generer des scenarios de test** bases sur le plan :
+   - Scenario principal (happy path)
+   - Scenarios secondaires
+   - Cas limites (edge cases)
+3. **Chaque scenario inclut** :
+   - Actions concretes (clics, saisies, navigations)
+   - Resultat attendu visible
+4. **Notifier l'utilisateur** via MCP `ask_user`
+5. **Iterer** jusqu'a validation complete
 
 ### Tandem Tester-Refactoring
 

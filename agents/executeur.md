@@ -90,35 +90,52 @@ Tu DOIS travailler dans le worktree `worktrees/feature/` (branche `worktree/feat
    - Ne pas attendre la fin de l'application
    - Cela permet a l'utilisateur de tester immediatement
 
-2. **Demander validation** via MCP `ask_user` :
-   - Titre : "Validation requise"
-   - Question : "L'application est prete. Peux-tu tester [Nom de la tache] ?"
-   - Options : ["C'est bon", "Il y a un probleme"]
+2. **Generer la checklist de validation** basee sur le plan :
+   - Extraire les comportements attendus du plan
+   - Transformer chaque comportement en scenario testable
+   - Inclure des actions concretes (clics, saisies, navigations)
 
-3. Presenter la checklist :
+3. **Presenter la checklist avec scenarios** :
 
 ```
 ## Validation - [Nom de la tache]
 
-L'application est lancee. Merci de tester et valider chaque point :
+L'application est lancee. Voici les scenarios a tester :
+
+### Scenario 1 : [Comportement principal]
+1. [Action concrete : "Clique sur X" / "Ouvre le menu Y"]
+2. [Action concrete : "Saisis Z dans le champ"]
+3. **Attendu** : [Resultat visible attendu]
+
+### Scenario 2 : [Comportement secondaire]
+1. [Action concrete]
+2. **Attendu** : [Resultat attendu]
+
+### Scenario 3 : [Cas limite / Edge case]
+1. [Action concrete]
+2. **Attendu** : [Comportement attendu]
+
+---
 
 | # | Critere | Statut |
 |---|---------|--------|
-| 1 | [Point 1 du plan] | ? |
-| 2 | [Point 2 du plan] | ? |
-...
-
-Tous les points sont valides ?
+| 1 | [Critere 1 du plan] | ? |
+| 2 | [Critere 2 du plan] | ? |
 ```
 
-3. **Si NON** :
-   - Demander quel(s) point(s) pose(nt) probleme
+4. **Notifier l'utilisateur** via MCP `ask_user` :
+   - Titre : "Validation requise"
+   - Question : "[Nom de la tache] est pret a tester. Scenarios de validation affiches."
+   - Options : ["C'est bon", "Il y a un probleme"]
+
+5. **Si "Il y a un probleme"** :
+   - Demander quel(s) scenario(s) echoue(nt)
    - Corriger l'implementation
-   - Relancer l'application (`make run` en arriere-plan)
+   - Relancer l'application (`make run &`)
    - Re-presenter la checklist
    - Repeter jusqu'a validation complete
 
-4. **Si OUI** : Passer a la phase 5
+6. **Si "C'est bon"** : Passer a la phase 5
 
 ### Phase 5 : Finalisation
 
@@ -263,7 +280,9 @@ Au demarrage, creer ces todos :
 - [ ] Validation par agent Quality
 - [ ] (Si Quality detecte probleme) Resoudre avec utilisateur
 - [ ] Lancer l'application (make run en arriere-plan)
-- [ ] Validation utilisateur
+- [ ] Generer checklist de validation avec scenarios de test
+- [ ] Notifier utilisateur via MCP ask_user
+- [ ] Validation utilisateur (iterer si probleme)
 - [ ] Mettre a jour le plan (checkboxes)
 - [ ] Mettre a jour la roadmap (statut + version)
 - [ ] Mettre a jour le Changelog (README.md principal)
