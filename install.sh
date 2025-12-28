@@ -166,12 +166,41 @@ install_skills() {
     done
 }
 
+install_rules() {
+    log_info "Installing rules..."
+    
+    local source_file="$SCRIPT_DIR/AGENTS.md"
+    local dest_file="$OPENCODE_CONFIG_DIR/AGENTS.md"
+    
+    if [ ! -f "$source_file" ]; then
+        log_warning "No AGENTS.md found in repo, skipping"
+        return 0
+    fi
+    
+    if [ -f "$dest_file" ]; then
+        if diff -q "$source_file" "$dest_file" > /dev/null 2>&1; then
+            log_info "AGENTS.md unchanged, skipping"
+            return 0
+        else
+            log_warning "AGENTS.md will be updated"
+        fi
+    fi
+    
+    cp "$source_file" "$dest_file"
+    log_success "Installed AGENTS.md (global rules)"
+}
+
 show_status() {
     echo ""
     echo "============================================"
     echo "            Installation Summary            "
     echo "============================================"
     echo ""
+    
+    if [ -f "$OPENCODE_CONFIG_DIR/AGENTS.md" ]; then
+        log_info "Global rules: $OPENCODE_CONFIG_DIR/AGENTS.md"
+        echo ""
+    fi
     
     log_info "Agents installed in: $OPENCODE_CONFIG_DIR/agent/"
     ls -1 "$OPENCODE_CONFIG_DIR/agent/"*.md 2>/dev/null | while read f; do
@@ -308,6 +337,7 @@ case "${1:-install}" in
         echo "OpenCode Configuration Installer"
         echo "================================="
         echo ""
+        install_rules
         install_agents
         install_skills
         show_status
