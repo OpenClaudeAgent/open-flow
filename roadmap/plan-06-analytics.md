@@ -1,5 +1,13 @@
 # Plan 06 - Analytics OpenFlow
 
+> **STATUT : ABANDONNE**
+> 
+> Ce plan est hors scope pour open-flow qui se concentre sur la definition des agents et skills.
+> 
+> Cette fonctionnalite est implementee dans le projet **OpenCode Monitor** :
+> - Repository : https://github.com/OpenClaudeAgent/opencode-monitor
+> - Plan : `roadmap/plan-16-analytics.md`
+
 ## Contexte
 
 OpenCode stocke des donnees riches sur chaque session dans `~/.local/share/opencode/storage/` :
