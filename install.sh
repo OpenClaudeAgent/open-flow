@@ -317,6 +317,37 @@ install_mcp() {
             fi
         fi
     fi
+    
+    # Setup screenshot server venv and dependencies
+    if [ -d "$servers_dir/screenshot" ]; then
+        local screenshot_dir="$servers_dir/screenshot"
+        local venv_dir="$screenshot_dir/.venv"
+        
+        # Create venv if it doesn't exist
+        if [ ! -d "$venv_dir" ]; then
+            log_info "Creating virtual environment for MCP screenshot..."
+            python3 -m venv "$venv_dir"
+            log_success "Virtual environment created"
+        fi
+        
+        # Install dependencies if not already installed
+        if ! "$venv_dir/bin/python" -c "import mcp" 2>/dev/null; then
+            log_info "Installing MCP dependencies (mcp)..."
+            "$venv_dir/bin/pip" install --quiet mcp
+            log_success "Dependencies installed"
+        else
+            log_info "Dependencies already installed"
+        fi
+        
+        # Configure screenshot server
+        if [ -f "$screenshot_dir/configure.py" ]; then
+            if python3 "$screenshot_dir/configure.py" > /dev/null 2>&1; then
+                log_success "Configured MCP: screenshot"
+            else
+                log_warning "Failed to configure MCP screenshot"
+            fi
+        fi
+    fi
 }
 
 show_status() {
