@@ -137,8 +137,11 @@ L'application est lancee. Voici les scenarios a tester :
 ### Phase 5 : Tests & Quality
 
 1. **Invoquer l'agent Tester** pour ecrire les tests automatises
-2. **Invoquer l'agent Quality** (code review + tests review)
-3. Si Quality detecte un probleme, utilise MCP `ask_user` pour demander a l'utilisateur comment proceder
+2. **Executer toute la suite de tests** : `make test` (ou equivalent)
+   - Si des tests echouent : corriger avant de continuer
+   - S'assurer de zero regression
+3. **Invoquer l'agent Quality** (code review + tests review)
+4. Si Quality detecte un probleme, utilise MCP `ask_user` pour demander a l'utilisateur comment proceder
 
 ### Phase 6 : Finalisation
 
@@ -251,6 +254,8 @@ Au demarrage, creer ces todos :
 - [ ] Notifier utilisateur via MCP ask_user
 - [ ] Validation utilisateur (iterer si probleme)
 - [ ] Invoquer agent Tester pour ecrire les tests
+- [ ] Executer toute la suite de tests (make test)
+- [ ] (Si tests echouent) Corriger jusqu'a zero regression
 - [ ] Invoquer agent Quality (code review + tests review)
 - [ ] (Si Quality detecte probleme) Resoudre avec utilisateur
 - [ ] Mettre a jour le plan (checkboxes)

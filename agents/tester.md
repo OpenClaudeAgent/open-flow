@@ -71,8 +71,12 @@ L'agent Refactoring travaille dans son propre worktree. Aucun merge sur main san
 1. **Identifier** : Trouver une opportunite d'amelioration
 2. **Implementer** : Ecrire ou ameliorer le test
 3. **Verifier** : S'assurer que le test passe et est deterministe
-4. **Commiter** : Message clair decrivant l'amelioration
-5. **Merger** : Integrer sur main quand pret (avec validation utilisateur)
+4. **Executer toute la suite de tests** : `make test` (ou equivalent)
+   - Verifier qu'AUCUN test existant n'a regresse
+   - Si regression detectee : corriger immediatement
+   - Ne jamais continuer avec des tests qui echouent
+5. **Commiter** : Message clair decrivant l'amelioration
+6. **Merger** : Integrer sur main quand pret (avec validation utilisateur)
 7. **Synchroniser les worktrees** : Apres merge sur main
    ```bash
    make sync-worktrees

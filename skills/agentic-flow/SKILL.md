@@ -40,14 +40,15 @@ Ce skill decrit le workflow de developpement assiste par agents specialises.
      │                                   ├── Itere si probleme
      │                                   │
      ▼◄──────────────────────────────────┘
-  5. TESTS ─────────────────────────► TESTER (invoque par Executeur)
-     │                                   │
-     │                                   ├── Skill: functional-testing
-     │                                   ├── Si non testable → REFACTORING
-     │                                   │                        └── Skill: testability-patterns
-     │                                   ├── Output: tests/
-     │                                   │
-     ▼◄──────────────────────────────────┘
+   5. TESTS ─────────────────────────► TESTER (invoque par Executeur)
+      │                                   │
+      │                                   ├── Skill: functional-testing
+      │                                   ├── Si non testable → REFACTORING
+      │                                   │                        └── Skill: testability-patterns
+      │                                   ├── Output: tests/
+      │                                   ├── Execute toute la suite (make test)
+      │                                   │
+      ▼◄──────────────────────────────────┘
   6. QUALITY ───────────────────────► QUALITY (invoque par Executeur)
      │                                   │
      │                                   ├── Skills: code-review
