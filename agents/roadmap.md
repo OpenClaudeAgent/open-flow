@@ -157,6 +157,9 @@ Le README.md contient un tableau de suivi :
    - Cree le fichier `plan-XX-nom-descriptif.md`
    - Ajoute l'entree dans le tableau de suivi du README.md
    - Met a jour l'historique des changements
+   - Evalue si la feature impacte la documentation globale du projet (README, setup, conventions)
+   - Si pertinent, ajoute une section `## Documentation` avec des recommandations generales
+   - Si pertinent, ajoute un item checklist `- [ ] Documentation globale evaluee`
    - Informer l'utilisateur dans la conversation : "Plan XX - [Nom] cree et pret pour implementation"
 
 3. **Quand l'utilisateur veut modifier un plan existant** :
