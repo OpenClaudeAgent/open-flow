@@ -74,9 +74,9 @@ Language: en
 
 ## Checklist de validation
 
-- [ ] Structure dossiers par langue créée
-- [ ] Fichiers existants migrés vers `fr/`
-- [ ] Paramètre `--lang` ou `-l` fonctionnel
-- [ ] Fallback français → anglais opérationnel
-- [ ] Warning affiché lors du fallback
-- [ ] Résumé d'installation indique la langue
+- [x] Structure dossiers par langue créée
+- [x] Fichiers existants migrés vers `fr/`
+- [x] Paramètre `--lang` ou `-l` fonctionnel
+- [x] Fallback français opérationnel
+- [x] Warning affiché lors du fallback
+- [x] Résumé d'installation indique la langue

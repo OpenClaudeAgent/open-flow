@@ -1,6 +1,6 @@
 #!/bin/bash
 # OpenCode Configuration Installer
-# Installs agents and skills with automatic backup
+# Installs agents and skills with automatic backup and i18n support
 
 set -e
 
@@ -18,6 +18,11 @@ BACKUP_DIR="$HOME/.opencode-backups"
 BACKUP_MAX_SIZE_MB=20
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
+# i18n Configuration
+DEFAULT_LANG="fr"
+FALLBACK_LANG="fr"  # Fallback to default language if requested lang not found
+LANG="$DEFAULT_LANG"
+
 # Functions
 log_info() {
     echo -e "${BLUE}[INFO]${NC} $1"
@@ -33,6 +38,28 @@ log_warning() {
 
 log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Get file path with fallback support
+# Returns: path to file (with fallback if needed) and sets USED_FALLBACK=true if fallback was used
+get_i18n_path() {
+    local base_dir="$1"
+    local file_path="$2"
+    local lang="$3"
+    
+    USED_FALLBACK=false
+    
+    local primary_path="$base_dir/$lang/$file_path"
+    local fallback_path="$base_dir/$FALLBACK_LANG/$file_path"
+    
+    if [ -e "$primary_path" ]; then
+        echo "$primary_path"
+    elif [ -e "$fallback_path" ]; then
+        USED_FALLBACK=true
+        echo "$fallback_path"
+    else
+        echo ""
+    fi
 }
 
 create_backup() {
@@ -66,7 +93,6 @@ cleanup_backups() {
     log_info "Backup size (${current_size_kb}KB) exceeds limit (${max_size_kb}KB), cleaning up..."
     
     # Get list of backups sorted by date (oldest first)
-    # Backup names are like: agents-20241228_134500, skills-20241228_134500
     local backups=($(ls -1 "$BACKUP_DIR" 2>/dev/null | sort))
     
     for backup in "${backups[@]}"; do
@@ -102,79 +128,132 @@ show_diff() {
 }
 
 install_agents() {
-    log_info "Installing agents..."
+    log_info "Installing agents (lang: $LANG)..."
     
     local agent_dir="$OPENCODE_CONFIG_DIR/agent"
+    local source_dir="$SCRIPT_DIR/agents/$LANG"
+    local fallback_dir="$SCRIPT_DIR/agents/$FALLBACK_LANG"
+    
     mkdir -p "$agent_dir"
     
     # Backup existing agents (ignore if empty)
     create_backup "$agent_dir" "agents" || true
     
+    # Check if language directory exists
+    if [ ! -d "$source_dir" ]; then
+        if [ -d "$fallback_dir" ]; then
+            log_warning "Language '$LANG' not found for agents, using fallback '$FALLBACK_LANG'"
+            source_dir="$fallback_dir"
+        else
+            log_error "No agents found for language '$LANG' or fallback '$FALLBACK_LANG'"
+            return 1
+        fi
+    fi
+    
     # Install each agent
-    for agent_file in "$SCRIPT_DIR/agents"/*.md; do
+    for agent_file in "$source_dir"/*.md; do
         if [ -f "$agent_file" ]; then
             local agent_name=$(basename "$agent_file")
             local dest="$agent_dir/$agent_name"
+            local fallback_used=""
+            
+            # Check if we need fallback for this specific file
+            if [ ! -f "$SCRIPT_DIR/agents/$LANG/$agent_name" ] && [ -f "$SCRIPT_DIR/agents/$FALLBACK_LANG/$agent_name" ]; then
+                agent_file="$SCRIPT_DIR/agents/$FALLBACK_LANG/$agent_name"
+                fallback_used=" (fallback: $FALLBACK_LANG)"
+            fi
             
             if [ -f "$dest" ]; then
                 if diff -q "$agent_file" "$dest" > /dev/null 2>&1; then
                     log_info "Agent $agent_name unchanged, skipping"
                     continue
                 else
-                    log_warning "Agent $agent_name will be updated"
+                    log_warning "Agent $agent_name will be updated$fallback_used"
                 fi
             fi
             
             cp "$agent_file" "$dest"
-            log_success "Installed: $agent_name"
+            log_success "Installed: $agent_name$fallback_used"
         fi
     done
 }
 
 install_skills() {
-    log_info "Installing skills..."
+    log_info "Installing skills (lang: $LANG)..."
     
     local skill_dir="$OPENCODE_CONFIG_DIR/skill"
+    local source_dir="$SCRIPT_DIR/skills/$LANG"
+    local fallback_dir="$SCRIPT_DIR/skills/$FALLBACK_LANG"
+    
     mkdir -p "$skill_dir"
     
     # Backup existing skills (ignore if empty)
     create_backup "$skill_dir" "skills" || true
     
+    # Check if language directory exists
+    if [ ! -d "$source_dir" ]; then
+        if [ -d "$fallback_dir" ]; then
+            log_warning "Language '$LANG' not found for skills, using fallback '$FALLBACK_LANG'"
+            source_dir="$fallback_dir"
+        else
+            log_error "No skills found for language '$LANG' or fallback '$FALLBACK_LANG'"
+            return 1
+        fi
+    fi
+    
     # Install each skill (they're in subdirectories)
-    for skill_subdir in "$SCRIPT_DIR/skills"/*; do
+    for skill_subdir in "$source_dir"/*; do
         if [ -d "$skill_subdir" ]; then
             local skill_name=$(basename "$skill_subdir")
             local dest_dir="$skill_dir/$skill_name"
+            local fallback_used=""
             mkdir -p "$dest_dir"
             
-            if [ -f "$skill_subdir/SKILL.md" ]; then
+            local skill_file="$skill_subdir/SKILL.md"
+            
+            # Check if we need fallback for this specific skill
+            if [ ! -f "$skill_file" ] && [ -f "$SCRIPT_DIR/skills/$FALLBACK_LANG/$skill_name/SKILL.md" ]; then
+                skill_file="$SCRIPT_DIR/skills/$FALLBACK_LANG/$skill_name/SKILL.md"
+                fallback_used=" (fallback: $FALLBACK_LANG)"
+            fi
+            
+            if [ -f "$skill_file" ]; then
                 local dest="$dest_dir/SKILL.md"
                 
                 if [ -f "$dest" ]; then
-                    if diff -q "$skill_subdir/SKILL.md" "$dest" > /dev/null 2>&1; then
+                    if diff -q "$skill_file" "$dest" > /dev/null 2>&1; then
                         log_info "Skill $skill_name unchanged, skipping"
                         continue
                     else
-                        log_warning "Skill $skill_name will be updated"
+                        log_warning "Skill $skill_name will be updated$fallback_used"
                     fi
                 fi
                 
-                cp "$skill_subdir/SKILL.md" "$dest"
-                log_success "Installed skill: $skill_name"
+                cp "$skill_file" "$dest"
+                log_success "Installed skill: $skill_name$fallback_used"
             fi
         fi
     done
 }
 
 install_rules() {
-    log_info "Installing rules..."
+    log_info "Installing rules (lang: $LANG)..."
     
-    local source_file="$SCRIPT_DIR/AGENTS.md"
+    local source_file="$SCRIPT_DIR/AGENTS.$LANG.md"
+    local fallback_file="$SCRIPT_DIR/AGENTS.$FALLBACK_LANG.md"
     local dest_file="$OPENCODE_CONFIG_DIR/AGENTS.md"
+    local fallback_used=""
     
+    # Check for language-specific file, then fallback
     if [ ! -f "$source_file" ]; then
-        log_warning "No AGENTS.md found in repo, skipping"
-        return 0
+        if [ -f "$fallback_file" ]; then
+            log_warning "AGENTS.$LANG.md not found, using fallback AGENTS.$FALLBACK_LANG.md"
+            source_file="$fallback_file"
+            fallback_used=" (fallback: $FALLBACK_LANG)"
+        else
+            log_warning "No AGENTS.md found for any language, skipping"
+            return 0
+        fi
     fi
     
     if [ -f "$dest_file" ]; then
@@ -182,12 +261,12 @@ install_rules() {
             log_info "AGENTS.md unchanged, skipping"
             return 0
         else
-            log_warning "AGENTS.md will be updated"
+            log_warning "AGENTS.md will be updated$fallback_used"
         fi
     fi
     
     cp "$source_file" "$dest_file"
-    log_success "Installed AGENTS.md (global rules)"
+    log_success "Installed AGENTS.md (global rules)$fallback_used"
 }
 
 install_mcp() {
@@ -247,6 +326,14 @@ show_status() {
     echo "============================================"
     echo ""
     
+    # Show language
+    if [ "$LANG" = "$DEFAULT_LANG" ]; then
+        log_info "Language: $LANG (default)"
+    else
+        log_info "Language: $LANG"
+    fi
+    echo ""
+    
     if [ -f "$OPENCODE_CONFIG_DIR/AGENTS.md" ]; then
         log_info "Global rules: $OPENCODE_CONFIG_DIR/AGENTS.md"
         echo ""
@@ -296,7 +383,7 @@ show_status() {
 show_help() {
     echo "OpenCode Configuration Installer"
     echo ""
-    echo "Usage: $0 [command]"
+    echo "Usage: $0 [command] [options]"
     echo ""
     echo "Commands:"
     echo "  install     Install agents, skills, and MCP servers (default)"
@@ -309,18 +396,34 @@ show_help() {
     echo "  restore     Restore from backup"
     echo "  help        Show this help"
     echo ""
+    echo "Options:"
+    echo "  -l, --lang LANG    Set installation language (default: $DEFAULT_LANG)"
+    echo "                     Available: fr, en"
+    echo "                     Fallback: $FALLBACK_LANG (if requested lang not found)"
+    echo ""
+    echo "Examples:"
+    echo "  $0 install              # Install in default language ($DEFAULT_LANG)"
+    echo "  $0 install --lang=en    # Install in English"
+    echo "  $0 install -l fr        # Install in French"
+    echo ""
     echo "Backup rotation: ${BACKUP_MAX_SIZE_MB}MB max (oldest removed first)"
     echo ""
 }
 
 cmd_diff() {
-    echo "Comparing with installed versions..."
+    echo "Comparing with installed versions (lang: $LANG)..."
     echo ""
     
     local has_diff=false
+    local source_agents="$SCRIPT_DIR/agents/$LANG"
+    local source_skills="$SCRIPT_DIR/skills/$LANG"
+    
+    # Fallback if language not found
+    [ ! -d "$source_agents" ] && source_agents="$SCRIPT_DIR/agents/$FALLBACK_LANG"
+    [ ! -d "$source_skills" ] && source_skills="$SCRIPT_DIR/skills/$FALLBACK_LANG"
     
     # Compare agents
-    for agent_file in "$SCRIPT_DIR/agents"/*.md; do
+    for agent_file in "$source_agents"/*.md; do
         if [ -f "$agent_file" ]; then
             local name=$(basename "$agent_file")
             local dest="$OPENCODE_CONFIG_DIR/agent/$name"
@@ -331,7 +434,7 @@ cmd_diff() {
     done
     
     # Compare skills
-    for skill_subdir in "$SCRIPT_DIR/skills"/*; do
+    for skill_subdir in "$source_skills"/*; do
         if [ -d "$skill_subdir" ]; then
             local skill_name=$(basename "$skill_subdir")
             if [ -f "$skill_subdir/SKILL.md" ]; then
@@ -396,8 +499,37 @@ cmd_restore() {
     fi
 }
 
+# Parse command line arguments
+parse_args() {
+    COMMAND="install"
+    
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -l|--lang)
+                LANG="$2"
+                shift 2
+                ;;
+            --lang=*)
+                LANG="${1#*=}"
+                shift
+                ;;
+            install|agents|skills|mcp|status|diff|backup|restore|help|--help|-h)
+                COMMAND="$1"
+                shift
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                show_help
+                exit 1
+                ;;
+        esac
+    done
+}
+
 # Main
-case "${1:-install}" in
+parse_args "$@"
+
+case "$COMMAND" in
     install)
         echo ""
         echo "OpenCode Configuration Installer"
@@ -434,7 +566,7 @@ case "${1:-install}" in
         show_help
         ;;
     *)
-        log_error "Unknown command: $1"
+        log_error "Unknown command: $COMMAND"
         show_help
         exit 1
         ;;

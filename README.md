@@ -13,39 +13,41 @@ cd ~/Projects/open-flow
 
 # Install everything (agents, skills, MCP servers)
 ./install.sh
+
+# Or install in a specific language
+./install.sh install --lang=en   # English
+./install.sh install --lang=fr   # French (default)
 ```
 
 ## Structure
 
 ```
 open-flow/
-├── agents/                          # Custom agents
-│   ├── executeur.md                 # Task executor agent
-│   ├── quality.md                   # Quality assurance agent
-│   ├── refactoring.md               # Code refactoring agent
-│   ├── roadmap.md                   # Roadmap planning agent
-│   └── tester.md                    # Testing agent
-├── skills/                          # Custom skills
-│   ├── agentic-flow/SKILL.md        # Agentic workflow patterns
-│   ├── clean-code/SKILL.md          # Clean code principles
-│   ├── code-review/SKILL.md         # Code review checklist
-│   ├── functional-testing/SKILL.md  # Qt Quick Test patterns
-│   ├── git-conventions/SKILL.md     # Git conventions
-│   ├── notify/SKILL.md              # Notification tool usage
-│   ├── qml/SKILL.md                 # QML best practices
-│   ├── qt-cpp/SKILL.md              # Qt/C++ patterns
-│   ├── testability-patterns/SKILL.md # Testability patterns
-│   └── ui-design-principles/SKILL.md # UI design principles
+├── agents/                          # Custom agents (i18n)
+│   ├── fr/                          # French agents
+│   │   ├── executeur.md
+│   │   ├── quality.md
+│   │   └── ...
+│   └── en/                          # English agents
+│       ├── executor.md
+│       ├── quality.md
+│       └── ...
+├── skills/                          # Custom skills (i18n)
+│   ├── fr/                          # French skills
+│   │   └── <skill-name>/SKILL.md
+│   └── en/                          # English skills
+│       └── <skill-name>/SKILL.md
 ├── servers/                         # MCP servers
 │   └── notify/                      # Notification MCP server
 │       ├── server.py                # MCP server (tool: ask_user)
 │       ├── notifier.py              # PyObjC native notifications
-│       ├── configure.py             # Auto-configuration script
-│       └── assets/                  # Icons
-├── roadmap/                         # Project roadmaps
-│   └── README.md                    # Current plans
+│       └── configure.py             # Auto-configuration script
+├── roadmap/                         # Project roadmaps (i18n)
+│   ├── fr/README.md                 # Plans (French)
+│   └── en/README.md                 # Plans (English)
 ├── install.sh                       # Installation script
-└── AGENTS.md                        # Global agent rules
+├── AGENTS.fr.md                     # Global rules (French)
+└── AGENTS.en.md                     # Global rules (English)
 ```
 
 ## Agentic Workflow
@@ -170,6 +172,8 @@ Skills provide specialized knowledge loaded via `/skill <name>`.
 | Command | Description |
 |---------|-------------|
 | `./install.sh` | Install all (agents, skills, MCP servers) |
+| `./install.sh install --lang=en` | Install in English |
+| `./install.sh install --lang=fr` | Install in French (default) |
 | `./install.sh agents` | Install only agents |
 | `./install.sh skills` | Install only skills |
 | `./install.sh mcp` | Configure MCP servers only |
