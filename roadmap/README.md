@@ -18,9 +18,11 @@ Ce dossier contient les plans d'implementation pour le projet open-flow.
 | 4 | Actions interactives dans les notifications | [plan-04](./plan-04-notify-actions.md) | `feature/notify-actions` | - | En attente |
 | 5 | Internationalisation du repo | [plan-05](./plan-05-i18n.md) | `feature/i18n` | v0.3.0 | Termine |
 | 6 | Analytics OpenFlow | [plan-06](./plan-06-analytics.md) | - | - | Abandonne |
+| 7 | Serveur MCP OpenCode Session History | [plan-07](./plan-07-mcp-session-history.md) | `feature/opencode-session-history` | - | En attente |
 
 ## Historique
 
+- **2025-12-30** : Creation du plan 07 - Serveur MCP OpenCode Session History (recherche historique persistent)
 - **2025-12-29** : Tache 03 terminee - MCP screenshot (capture ecran/fenetre macOS) v0.4.0
 - **2025-12-29** : Plan 06 abandonne - Hors scope, deplace vers [opencode-monitor](https://github.com/OpenClaudeAgent/opencode-monitor)
 - **2025-12-29** : Creation du plan 06 - Analytics OpenFlow
