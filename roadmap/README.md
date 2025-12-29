@@ -14,7 +14,7 @@ Ce dossier contient les plans d'implementation pour le projet open-flow.
 |---|-------|------|---------|---------|--------|
 | 1 | Notifications macOS natives avec PyObjC | [plan-01](./plan-01-notify-pyobjc.md) | `main` | v0.2.0 | Termine |
 | 2 | Notifications macOS avec binaire Go natif | [plan-02](./plan-02-notify-go.md) | - | - | Annule |
-| 3 | Outil MCP screenshot | [plan-03](./plan-03-mcp-screenshot.md) | `main` | v0.4.0 | Termine |
+| 3 | Outil MCP screenshot | [plan-03](./plan-03-mcp-screenshot.md) | `feature/mcp-screenshot` | v0.4.0 | Termine |
 | 4 | Actions interactives dans les notifications | [plan-04](./plan-04-notify-actions.md) | `feature/notify-actions` | - | En attente |
 | 5 | Internationalisation du repo | [plan-05](./plan-05-i18n.md) | `feature/i18n` | v0.3.0 | Termine |
 | 6 | Analytics OpenFlow | [plan-06](./plan-06-analytics.md) | - | - | Abandonne |

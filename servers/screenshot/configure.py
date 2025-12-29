@@ -33,12 +33,17 @@ def configure_opencode():
     if "mcp" not in config:
         config["mcp"] = {}
 
-    # Add screenshot server configuration
+    # Add screenshot server configuration (same format as notify)
     config["mcp"]["screenshot"] = {
         "type": "local",
-        "command": [str(venv_python), "-m", "server"],
-        "args": [],
-        "cwd": str(server_path),
+        "command": [
+            str(venv_python),
+            str(server_path / "server.py"),
+        ],
+        "environment": {
+            "PYTHONPATH": str(server_path),
+        },
+        "enabled": True,
     }
 
     # Write config
