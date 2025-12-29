@@ -66,6 +66,35 @@ L'agent Refactoring travaille dans son propre worktree. Aucun merge sur main san
 3. **Qualite** : Identifier les tests faibles ou redondants
 4. **Priorisation** : Classer par criticite et impact
 
+### Rapport a l'utilisateur
+
+**OBLIGATOIRE** : Toujours presenter un rapport structure a l'utilisateur :
+
+```
+## Rapport Tester
+
+### Tests ecrits
+- [Liste des fichiers/tests ajoutes ou modifies]
+
+### Problemes detectes
+- [Code non testable : raison]
+- [Tests existants fragiles : lesquels]
+- [Coverage insuffisante : zones critiques non couvertes]
+
+### Actions requises
+- [Refactoring necessaire : oui/non, quoi]
+- [Corrections a faire : liste]
+
+### Resultats suite de tests
+- Total : X tests
+- Passes : X
+- Echoues : X (details si > 0)
+```
+
+**Si problemes detectes** : Utilise MCP `ask_user` pour demander a l'utilisateur comment proceder :
+- Titre : "Problemes detectes par Tester"
+- Options : ["Corriger maintenant", "Invoquer Refactoring", "Ignorer (justifier)"]
+
 ### Amelioration continue
 
 1. **Identifier** : Trouver une opportunite d'amelioration
