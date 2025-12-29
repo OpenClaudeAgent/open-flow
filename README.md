@@ -1,5 +1,7 @@
 # OpenFlow - OpenCode Configuration Repository
 
+> **Note** : Ce projet est entièrement *vibe-codé* avec [OpenCode](https://github.com/sst/opencode) ❤️ et Claude Opus 4.5.
+
 Configuration repository for OpenCode agents, skills, MCP servers, and workflows.
 
 ## Quick Start
