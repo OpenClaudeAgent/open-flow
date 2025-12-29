@@ -137,11 +137,41 @@ L'application est lancee. Voici les scenarios a tester :
 ### Phase 5 : Tests & Quality
 
 1. **Invoquer l'agent Tester** pour ecrire les tests automatises
-2. **Executer toute la suite de tests** : `make test` (ou equivalent)
+
+2. **Rapporter les resultats du Tester a l'utilisateur** :
+   ```
+   ## Rapport Tester
+   
+   - Tests ecrits : [liste des fichiers/tests ajoutes]
+   - Problemes rencontres : [le cas echeant]
+   - Refactoring demande : [oui/non, et pourquoi]
+   ```
+
+3. **Executer toute la suite de tests** : `make test` (ou equivalent)
    - Si des tests echouent : corriger avant de continuer
    - S'assurer de zero regression
-3. **Invoquer l'agent Quality** (code review + tests review)
-4. Si Quality detecte un probleme, utilise MCP `ask_user` pour demander a l'utilisateur comment proceder
+
+4. **Invoquer l'agent Quality** (code review + tests review)
+
+5. **Rapporter les resultats de Quality a l'utilisateur** :
+   ```
+   ## Rapport Quality
+   
+   ### Code Review (src/)
+   - [Points positifs]
+   - [Points a ameliorer]
+   
+   ### Tests Review (tests/)
+   - [Points positifs]
+   - [Points a ameliorer]
+   
+   ### Recommandations
+   - [Liste des recommandations]
+   ```
+
+6. **Si Quality detecte un probleme** : Utilise MCP `ask_user` pour demander a l'utilisateur comment proceder
+   - Ne JAMAIS ignorer les recommandations de Quality
+   - Presenter les options : "Corriger maintenant", "Ignorer (justifier)", "Reporter en dette technique"
 
 ### Phase 6 : Finalisation
 
@@ -235,7 +265,10 @@ Ensuite, invoque l'agent **Quality** pour validation.
 
 Apres l'agent Tester, invoque l'agent **Quality** (specialise dans le code review et la validation des tests).
 
-Quality produit un rapport. Si probleme detecte, utilise MCP `ask_user` pour demander a l'utilisateur comment proceder.
+**IMPORTANT** : Tu DOIS toujours rapporter les resultats des agents a l'utilisateur :
+- Presenter un resume structure des retours de chaque agent (Tester, Quality, Refactoring)
+- Ne JAMAIS ignorer ou masquer les recommandations
+- L'utilisateur doit pouvoir decider comment traiter chaque point souleve
 
 ### Todos obligatoires
 
@@ -254,10 +287,12 @@ Au demarrage, creer ces todos :
 - [ ] Notifier utilisateur via MCP ask_user
 - [ ] Validation utilisateur (iterer si probleme)
 - [ ] Invoquer agent Tester pour ecrire les tests
+- [ ] Rapporter les resultats du Tester a l'utilisateur
 - [ ] Executer toute la suite de tests (make test)
 - [ ] (Si tests echouent) Corriger jusqu'a zero regression
 - [ ] Invoquer agent Quality (code review + tests review)
-- [ ] (Si Quality detecte probleme) Resoudre avec utilisateur
+- [ ] Rapporter les resultats de Quality a l'utilisateur
+- [ ] (Si Quality detecte probleme) Demander a l'utilisateur comment proceder
 - [ ] Mettre a jour le plan (checkboxes)
 - [ ] Mettre a jour la roadmap (statut + version)
 - [ ] Mettre a jour le Changelog (README.md principal)
