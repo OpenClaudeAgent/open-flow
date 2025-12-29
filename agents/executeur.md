@@ -13,11 +13,7 @@ permission:
   mcp:
     "notify": allow
   skill:
-    "notify": allow
-    "qml": allow
-    "ui-design-principles": allow
-    "agentic-flow": allow
-    "*": deny
+    "*": allow
   doom_loop: ask
   external_directory: ask
 ---
@@ -51,11 +47,12 @@ Le merge final sur main sera fait apres validation utilisateur.
 
 ### Phase 1 : Selection de la tache
 
-1. Lire `roadmap/README.md`
-2. Identifier la prochaine tache avec statut "En attente" (respecter les dependances)
-3. Creer les todos du workflow
-4. Afficher : "Prochaine tache : **[Nom]**. On y va ?"
-5. Attendre confirmation utilisateur
+1. **Charger le skill `agentic-flow`** (workflow agentique, isolation worktrees, collaboration inter-agents)
+2. Lire `roadmap/README.md`
+3. Identifier la prochaine tache avec statut "En attente" (respecter les dependances)
+4. Creer les todos du workflow
+5. Afficher : "Prochaine tache : **[Nom]**. On y va ?"
+6. Attendre confirmation utilisateur
 
 ### Phase 2 : Preparation
 
@@ -70,11 +67,13 @@ Le merge final sur main sera fait apres validation utilisateur.
 
 ### Phase 3 : Implementation
 
-1. **Enrichir le plan si necessaire** : Si tu precises des details avec l'utilisateur, ajoute-les dans la section `## Specifications` du plan (les sections Contexte/Objectif/Comportement sont immutables)
+1. **Charger les skills pertinents** selon le contexte de la tache :
+   - **UI** (fichiers `.qml`, composants visuels) : `qml`, `ui-design-principles`
+   - **C++/Qt** (fichiers `.cpp`, `.h`) : `qt-cpp`
+   - **Refactoring/Architecture** : `clean-code`, `testability-patterns`
+   - **Git** (branches complexes, merges) : `git-conventions`
 
-2. **Si UI necessaire** (fichiers `.qml`, composants visuels) :
-   - Charger le skill `ui-design-principles` pour les principes de design
-   - Charger le skill `qml` pour les patterns Qt Quick
+2. **Enrichir le plan si necessaire** : Si tu precises des details avec l'utilisateur, ajoute-les dans la section `## Specifications` du plan (les sections Contexte/Objectif/Comportement sont immutables)
 
 3. Implementer selon les specifications du plan (code source uniquement, pas de tests)
 4. **Si changements importants** : Invoquer l'agent **Refactoring** pour ameliorer la testabilite et la maintenabilite du code
@@ -238,11 +237,12 @@ Quality produit un rapport. Si probleme detecte, utilise MCP `ask_user` pour dem
 ### Todos obligatoires
 
 Au demarrage, creer ces todos :
+- [ ] Charger le skill agentic-flow
 - [ ] Lire la roadmap et identifier la tache
 - [ ] Lire le plan de la tache
 - [ ] Creer le worktree pour la feature
 - [ ] (Si necessaire) Enrichir le plan avec des Specifications
-- [ ] (Si UI) Charger skills ui-design-principles et qml
+- [ ] Charger les skills pertinents (qml, ui-design-principles, qt-cpp, clean-code, etc.)
 - [ ] Implementer les specifications (src/ uniquement)
 - [ ] (Si changements importants) Invoquer agent Refactoring
 - [ ] Builder sans erreurs
