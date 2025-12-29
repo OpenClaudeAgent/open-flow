@@ -190,54 +190,49 @@ def find_window_by_title(title: str) -> dict | None:
     """Find a window by its title (partial match).
 
     Returns dict with 'id' and 'title' if found, None otherwise.
+    Uses Quartz CGWindowListCopyWindowInfo for accurate window IDs.
     """
     try:
-        # Use AppleScript to get window list with IDs
-        script = """
-        set windowList to ""
-        tell application "System Events"
-            set allProcesses to every process whose background only is false
-            repeat with proc in allProcesses
-                try
-                    set procName to name of proc
-                    set procWindows to every window of proc
-                    repeat with win in procWindows
-                        set winName to name of win
-                        set winId to id of win
-                        set windowList to windowList & winId & "|||" & winName & "|||" & procName & "\\n"
-                    end repeat
-                end try
-            end repeat
-        end tell
-        return windowList
-        """
+        import Quartz
 
-        result = subprocess.run(
-            ["osascript", "-e", script],
-            capture_output=True,
-            timeout=10,
+        # Get all windows
+        window_list = Quartz.CGWindowListCopyWindowInfo(
+            Quartz.kCGWindowListOptionOnScreenOnly
+            | Quartz.kCGWindowListExcludeDesktopElements,
+            Quartz.kCGNullWindowID,
         )
 
-        if result.returncode != 0:
-            # Fallback: use CGWindowListCopyWindowInfo via Python (if available)
-            return find_window_by_title_fallback(title)
-
-        output = result.stdout.decode().strip()
         title_lower = title.lower()
 
-        for line in output.split("\n"):
-            if "|||" not in line:
-                continue
-            parts = line.split("|||")
-            if len(parts) >= 2:
-                win_id, win_title = parts[0], parts[1]
-                if title_lower in win_title.lower():
-                    return {"id": int(win_id), "title": win_title}
+        for window in window_list:
+            window_title = window.get(Quartz.kCGWindowName, "")
+            window_owner = window.get(Quartz.kCGWindowOwnerName, "")
+            window_id = window.get(Quartz.kCGWindowNumber)
+
+            # Check window title
+            if window_title and title_lower in window_title.lower():
+                return {
+                    "id": window_id,
+                    "title": f"{window_owner}: {window_title}"
+                    if window_owner
+                    else window_title,
+                }
+            # Also check owner name (app name)
+            if window_owner and title_lower in window_owner.lower():
+                return {
+                    "id": window_id,
+                    "title": f"{window_owner}: {window_title}"
+                    if window_title
+                    else window_owner,
+                }
 
         return None
 
+    except ImportError:
+        # Quartz not available, return None
+        return None
     except Exception:
-        return find_window_by_title_fallback(title)
+        return None
 
 
 def find_window_by_title_fallback(title: str) -> dict | None:

@@ -331,9 +331,17 @@ install_mcp() {
         fi
         
         # Install dependencies if not already installed
+        local needs_install=false
         if ! "$venv_dir/bin/python" -c "import mcp" 2>/dev/null; then
-            log_info "Installing MCP dependencies (mcp)..."
-            "$venv_dir/bin/pip" install --quiet mcp
+            needs_install=true
+        fi
+        if ! "$venv_dir/bin/python" -c "import Quartz" 2>/dev/null; then
+            needs_install=true
+        fi
+        
+        if [ "$needs_install" = true ]; then
+            log_info "Installing MCP dependencies (mcp, pyobjc-framework-Quartz)..."
+            "$venv_dir/bin/pip" install --quiet mcp pyobjc-framework-Quartz
             log_success "Dependencies installed"
         else
             log_info "Dependencies already installed"
