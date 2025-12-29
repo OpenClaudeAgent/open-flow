@@ -167,6 +167,18 @@ Pour sessions longues (16735+ parts), l'indexation sera :
 Chaque agent générera une UUID au démarrage (ou recevra via env var)
 Le serveur utilisera cette ID pour lier les sessions actuelles à l'historique.
 
+## Documentation
+
+Ce serveur MCP est **additionnel** et n'impacte pas la doc globale du projet **actuellement**, mais pour la **cohérence future** :
+
+**À documenter au niveau global** (après implémentation) :
+1. **README.md du projet** : Mentionner le nouveau serveur `opencode-session-history` dans la liste des servers MCP disponibles
+2. **Installation** : Instructions pour installer le serveur (dans `install.sh` si applicable)
+3. **Usage guide** : Comment les agents/utilisateurs peuvent accéder à l'historique via ce serveur
+4. **Architecture docs** : Expliquer comment les sessions OpenCode sont exposées via MCP
+
+**Recommandation** : Ces updates devraient être faites après le merge du serveur (subtask 7.9 crée le README.md du serveur, puis le README.md du projet peut être updaté en post-merge).
+
 ## Subtasks
 
 | Priorité | Subtask | Dépendances | Description |
