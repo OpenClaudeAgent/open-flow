@@ -16,9 +16,11 @@ Ce dossier contient les plans d'implementation pour le projet open-flow.
 | 2 | Notifications macOS avec binaire Go natif | [plan-02](./plan-02-notify-go.md) | - | - | Annule |
 | 3 | Outil MCP screenshot | [plan-03](./plan-03-mcp-screenshot.md) | `feature/mcp-screenshot` | - | En attente |
 | 4 | Actions interactives dans les notifications | [plan-04](./plan-04-notify-actions.md) | `feature/notify-actions` | - | En attente |
+| 5 | Internationalisation du repo | [plan-05](./plan-05-i18n.md) | `feature/i18n` | - | En attente |
 
 ## Historique
 
+- **2025-12-29** : Creation du plan 05 - Internationalisation du repo
 - **2025-12-28** : Creation du plan 04 - Actions interactives dans les notifications
 - **2025-12-28** : Creation du plan 03 - Outil MCP screenshot
 - **2025-12-28** : Plan 02 annule (necessite bundle ID pour icone custom)
