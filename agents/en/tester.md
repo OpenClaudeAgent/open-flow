@@ -15,6 +15,7 @@ permission:
   mcp:
     "notify": deny
   skill:
+    "agentic-flow": allow
     "functional-testing": allow
     "*": deny
   doom_loop: ask

@@ -4,7 +4,7 @@ mode: subagent
 color: "#43A047"
 temperature: 0.1
 permission:
-  edit: allow
+  edit: deny
   bash:
     "git push --force*": ask
     "git reset --hard*": ask
@@ -13,6 +13,7 @@ permission:
   mcp:
     "notify": deny
   skill:
+    "agentic-flow": allow
     "code-review": allow
     "*": deny
   doom_loop: ask

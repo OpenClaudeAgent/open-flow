@@ -1,6 +1,6 @@
 # Plan 07 - Serveur MCP OpenCode Session History
 
-## Context
+## Contexte
 
 Lors des sessions OpenCode longues, l'agent accumule du contexte dans l'historique des messages. Cependant, lors de compactions de session (context window limitations), ce contexte peut être perdu. 
 
@@ -21,7 +21,7 @@ todo/             → Todos
 - De partager des sessions entre agents
 - D'analyser l'historique complet d'un projet
 
-## Objective
+## Objectif
 
 Créer un **serveur MCP (Model Context Protocol)** qui expose une API de recherche et de lecture de l'historique persistant des sessions OpenCode, permettant aux agents de :
 1. Récupérer l'historique complet d'une session
@@ -30,7 +30,7 @@ Créer un **serveur MCP (Model Context Protocol)** qui expose une API de recherc
 4. Accéder au contenu complet des messages et parts
 5. Analyser les statistiques des sessions (tokens, additions/deletions, durée)
 
-## Expected Behavior
+## Comportement attendu
 
 **En tant qu'agent** (ex: roadmap, executor, quality), je peux :
 
@@ -69,7 +69,7 @@ Créer un **serveur MCP (Model Context Protocol)** qui expose une API de recherc
    - En cas de compaction, je demande l'historique de la session actuelle
    - Le serveur me retourne le contexte complet depuis le début
 
-## Specifications
+## Spécifications
 
 ### Structure du Serveur MCP
 
@@ -179,7 +179,7 @@ Ce serveur MCP est **additionnel** et n'impacte pas la doc globale du projet **a
 
 **Recommandation** : Ces updates devraient être faites après le merge du serveur (subtask 7.9 crée le README.md du serveur, puis le README.md du projet peut être updaté en post-merge).
 
-## Subtasks
+## Sous-tâches
 
 | Priorité | Subtask | Dépendances | Description |
 |----------|---------|-------------|-------------|
@@ -193,7 +193,7 @@ Ce serveur MCP est **additionnel** et n'impacte pas la doc globale du projet **a
 | 8 | 7.8 - Tests unitaires | 7.3-7.7 | Coverage des 5 tools |
 | 9 | 7.9 - Documentation & examples | 7.8 | README avec exemples d'usage |
 
-## Validation Checklist
+## Checklist de validation
 
 - [ ] Parser OpenCode storage sans erreur
 - [ ] Lister sessions avec pagination

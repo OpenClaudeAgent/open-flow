@@ -38,13 +38,17 @@ open-flow/
 │   └── en/                          # English skills
 │       └── <skill-name>/SKILL.md
 ├── servers/                         # MCP servers
-│   └── notify/                      # Notification MCP server
-│       ├── server.py                # MCP server (tool: ask_user)
-│       ├── notifier.py              # PyObjC native notifications
+│   ├── notify/                      # Notification MCP server
+│   │   ├── server.py                # MCP server (tool: ask_user)
+│   │   ├── notifier.py              # PyObjC native notifications
+│   │   └── configure.py             # Auto-configuration script
+│   └── screenshot/                  # Screenshot MCP server
+│       ├── server.py                # MCP server (tool: screenshot)
+│       ├── screenshotter.py         # PyObjC screen capture
 │       └── configure.py             # Auto-configuration script
-├── roadmap/                         # Project roadmaps (i18n)
-│   ├── fr/README.md                 # Plans (French)
-│   └── en/README.md                 # Plans (English)
+├── roadmap/                         # Project roadmap
+│   ├── README.md                    # Task tracking + methodology
+│   └── plan-XX-*.md                 # Immutable implementation plans
 ├── install.sh                       # Installation script
 ├── AGENTS.fr.md                     # Global rules (French)
 └── AGENTS.en.md                     # Global rules (English)
@@ -102,6 +106,7 @@ Example validation output:
 
 | Agent | Role | Scope | Key Features |
 |-------|------|-------|--------------|
+| **Coordinateur** | Orchestration | `roadmap/` | Swarm orchestration, parallel executors, merges |
 | **Executeur** | Implementation | `src/` | Validation scenarios, MCP notifications |
 | **Roadmap** | Planning | `roadmap/` | Functional specs, no code |
 | **Quality** | Code Review + QA | `quality/` | Code review, tests review, manual test plans |
@@ -111,6 +116,7 @@ Example validation output:
 ### How to invoke
 
 ```
+/coordinateur # Orchestrate multiple plans in parallel
 /executeur    # Execute next roadmap task
 /roadmap      # Plan a new feature
 /quality      # Generate manual test plan
@@ -149,6 +155,23 @@ This will:
 1. Create a virtual environment in `servers/notify/.venv`
 2. Install dependencies (`mcp`, `pyobjc`)
 3. Configure `~/.config/opencode/opencode.json`
+
+### Screenshot Server
+
+Native macOS screenshot tool for capturing screens and windows.
+
+**Tool**: `screenshot`
+
+**Parameters**:
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `mode` | string | No | `screen` or `window` (default: screen) |
+| `window_title` | string | If mode=window | Window title to capture |
+| `screen_index` | integer | No | Screen index for multi-monitor (default: 0) |
+| `format` | string | No | `png` or `jpg` (default: png) |
+| `delay` | number | No | Seconds to wait before capture |
+
+**Requirements**: macOS Screen Recording permission.
 
 ## Skills
 

@@ -15,6 +15,7 @@ permission:
   mcp:
     "notify": deny
   skill:
+    "agentic-flow": allow
     "testability-patterns": allow
     "qml": allow
     "*": deny
