@@ -56,19 +56,26 @@ open-flow/
 
 ## Agentic Workflow
 
-Five specialized agents collaborate through isolated worktrees:
+Six specialized agents collaborate through isolated worktrees:
 
 ```
-                    UTILISATEUR
-                         |
-     +----------+--------+--------+----------+
-     |          |        |        |          |
-     v          v        v        v          v
-  Roadmap   Executeur  Quality  Tester  Refactoring
-   (Plan)   (Implem)   (QA)    (Tests)  (Testab.)
-     |          |        |        |          |
-     v          v        v        v          v
-  roadmap/    src/    quality/  tests/     src/
+                      UTILISATEUR
+                           │
+              ┌────────────┴────────────┐
+              v                         v
+          Roadmap                  Coordinateur
+          (Plan)                  (Orchestration)
+              │                         │
+              v                         v
+         roadmap/              ┌────────┴────────┐
+                               v                 v
+                          Executeur-1  ...  Executeur-N
+                          (Implem)          (Implem)
+                               │
+                 ┌─────────────┼─────────────┐
+                 v             v             v
+            Refactoring    Tester       Quality
+            (Testab.)     (Tests)     (Review)
 ```
 
 ### Feature Lifecycle
@@ -79,7 +86,7 @@ Five specialized agents collaborate through isolated worktrees:
 4. **Validation** : User tests with scenarios checklist
 5. **Tests** : Tester writes automated tests (invoked by Executeur)
 6. **Quality** : Quality does code review + tests review (invoked by Executeur)
-7. **Merge** : Executeur merges to main + tags version (after user approval)
+7. **Merge** : Coordinator merges to main + tags version (after user approval)
 
 ### Validation Phase
 
@@ -179,7 +186,13 @@ Skills provide specialized knowledge loaded via `/skill <name>`.
 
 | Skill | Description |
 |-------|-------------|
-| `agentic-flow` | Agent collaboration and workflow patterns |
+| `agentic-flow` | Executor workflow patterns (sub-agents, reports) |
+| `swarm-orchestration` | Coordinator patterns (parallel executors, merges) |
+| `interactive-validation` | User validation workflow (manual testing) |
+| `reporting-executor` | Report template for Executor |
+| `reporting-quality` | Report template for Quality |
+| `reporting-tester` | Report template for Tester |
+| `reporting-refactoring` | Report template for Refactoring |
 | `clean-code` | Clean code principles (naming, DRY, KISS) |
 | `code-review` | Code review checklist and feedback |
 | `functional-testing` | Qt Quick Test patterns |
