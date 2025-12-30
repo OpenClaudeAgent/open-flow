@@ -85,7 +85,9 @@ Load skill `interactive-validation`.
 - [ ] For each feature branch:
   - [ ] `git merge feature/[name]`
   - [ ] `git tag -a vX.Y.Z -m "feat([scope]): [description]"`
+  - [ ] **Notify**: `notify_merge` (source_branch, commits_count, files_count, version)
 - [ ] Execute `make sync-worktrees`
+- [ ] **Notify**: `notify_sync` (list of synchronized worktrees)
 - [ ] Confirm completion
 
 ---

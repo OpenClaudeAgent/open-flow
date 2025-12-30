@@ -18,23 +18,31 @@ Use Ask User (MCP Notify) to interrupt user:
 
 ## Workflow (4 steps)
 
-### Step 1: Prepare App
+### Step 1: Prepare for User Validation
 - List modified files + added features
-- Ask: "Ready to test?"
+- Provide clear testing instructions
+- **Ask User**: "Here's what was implemented. Ready to test?"
 
-### Step 2: Manual Tests
-- User tests app
-- Reports problems, validations, feedbacks
+### Step 2: USER Tests (not the agent)
+- **The USER tests themselves** (not the agent)
+- Agent waits for user feedback
+- **Ask User**: "What behaviors work? Which ones fail?"
+
+> ⚠️ **IMPORTANT**: The agent CANNOT validate on behalf of the user.
+> Manual tests are performed by the USER, not simulated by the agent.
 
 ### Step 3: Iteration if Problems
+- User reports problems
 - Request corrections from Executors
-- Executors re-invoke sub-agents
+- Executors fix + re-invoke sub-agents
 - Receive revised report
-- Back to Step 2 (re-test)
+- **Ask User**: "Corrections applied. Can you re-test?"
+- Back to Step 2
 
-### Step 4: Final Validation
-- Request final confirmation
-- Proceed Phase 7 (Merges)
+### Step 4: Final Validation by User
+- **Ask User**: "Everything works? Final validation confirmed?"
+- Wait for explicit user confirmation
+- Proceed Phase 7 (Merges) only after confirmation
 
 ---
 
@@ -49,8 +57,17 @@ Use Ask User (MCP Notify) to interrupt user:
 
 ## Principles
 
+- ✅ **USER validates** - Agent CANNOT validate on their behalf
 - ✅ Ask User interrupts user (may be disconnected)
-- ✅ Iterate until validation OK
+- ✅ Wait for explicit feedback before continuing
+- ✅ Iterate until user validation OK
 - ✅ Todos track progress in real-time
 - ✅ Executor fixes, Coordinator orchestrates
-- ✅ Include important comments integrally  
+- ✅ Never mark "manual tests" as complete without user feedback
+
+## Anti-patterns to avoid
+
+- ❌ Marking tests as "passed" without user feedback
+- ❌ Simulating manual tests automatically
+- ❌ Moving to next step without explicit confirmation
+- ❌ Assuming implementation works without validation  

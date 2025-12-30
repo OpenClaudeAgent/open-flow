@@ -83,7 +83,9 @@ Charge skill `interactive-validation`.
 
 ### Phase 7 : Merges & Synchronisation
 - [ ] Pour chaque branche : `git merge feature/[nom]` + `git tag -a vX.Y.Z -m "..."`
+- [ ] **Notifier** : `notify_merge` (source_branch, commits_count, files_count, version)
 - [ ] Exécuter `make sync-worktrees`
+- [ ] **Notifier** : `notify_sync` (liste worktrees synchronisés)
 - [ ] Confirmer completion
 
 ---

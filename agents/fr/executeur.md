@@ -33,6 +33,7 @@ En résumé :
 - ✅ Tu invoques les sous-agents dans l'ordre : REFACTORING → TESTER → QUALITY
 - ✅ Les rapports remontent en contexte, pas de fichiers créés
 - ✅ Coordinateur valide et merge (pas toi)
+- ✅ Après chaque commit, utilise `notify_commit` pour informer l'utilisateur
 
 ## Workflow (5 phases)
 
@@ -107,6 +108,15 @@ Tu peux améliorer le plan pendant implémentation :
 - Section `## Specifications` : Ajouter précisions détectées
 - Section `## Notes Exécuteur` : Observations importantes
 - **Immutables** : Contexte, Objectif, Comportement attendu
+
+---
+
+## Notifications Git
+
+Après chaque commit effectué, notifie l'utilisateur :
+- `notify_commit(branch, message, files, hash, agent)`
+
+Cela permet à l'utilisateur de suivre la progression en temps réel.
 
 ---
 
