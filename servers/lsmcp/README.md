@@ -2,7 +2,7 @@
 
 MCP server providing LSP (Language Server Protocol) tools for Claude.
 
-This integrates the open-source [lsmcp](https://github.com/nicepkg/lsmcp) project (MIT License) by @nicepkg/@mizchi.
+This integrates the open-source [lsmcp](https://github.com/mizchi/lsmcp) project (MIT License) by @mizchi.
 
 ## Features
 
@@ -129,5 +129,5 @@ First request may be slow as lsmcp starts the LSP server. Subsequent requests ar
 
 ## Links
 
-- [lsmcp GitHub](https://github.com/nicepkg/lsmcp)
+- [lsmcp GitHub](https://github.com/mizchi/lsmcp)
 - [Language Server Protocol](https://microsoft.github.io/language-server-protocol/)

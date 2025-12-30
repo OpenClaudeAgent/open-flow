@@ -38,7 +38,7 @@ def configure_lsmcp(config: dict) -> tuple[dict, bool]:
     if "mcp" not in config:
         config["mcp"] = {}
 
-    expected_command = ["npx", "@nicepkg/lsmcp"]
+    expected_command = ["npx", "@mizchi/lsmcp"]
 
     # Check if lsmcp already configured correctly
     if "lsmcp" in config["mcp"]:

@@ -20,9 +20,11 @@ Ce dossier contient les plans d'implementation pour le projet open-flow.
 | 6 | Analytics OpenFlow | [plan-06](./plan-06-analytics.md) | - | - | Abandonne |
 | 7 | Serveur MCP OpenCode Session History | [plan-07](./plan-07-mcp-session-history.md) | `feature/opencode-session-history` | - | En attente |
 | 8 | Notifications Git Events | [plan-08](./plan-08-notify-git-events.md) | `feature/notify-git-events` | v0.5.0 | Termine |
+| 9 | Integration MCP lsmcp (outils LSP) | [plan-09](./plan-09-mcp-lsmcp.md) | `feature/mcp-lsmcp` | - | En attente |
 
 ## Historique
 
+- **2025-12-31** : Creation du plan 09 - Integration MCP lsmcp (outils LSP via serveur MIT existant)
 - **2025-12-30** : Tache 08 terminee - Notifications Git Events (notify_commit, notify_merge, notify_sync) v0.5.0
 - **2025-12-30** : Creation du plan 08 - Notifications Git Events (notify_commit, notify_merge, notify_sync)
 - **2025-12-30** : Creation du plan 07 - Serveur MCP OpenCode Session History (recherche historique persistent)
