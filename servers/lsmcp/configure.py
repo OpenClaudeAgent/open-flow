@@ -1,9 +1,32 @@
 #!/usr/bin/env python3
-"""Configure MCP lsmcp server in OpenCode."""
+"""Configure MCP lsmcp servers in OpenCode."""
 
 import json
 import sys
 from pathlib import Path
+
+# Available language presets with their descriptions
+PRESETS = {
+    "python": {
+        "preset": "pyright",
+        "description": "Python (pyright)",
+    },
+    "typescript": {
+        "preset": "typescript",
+        "description": "TypeScript/JavaScript",
+    },
+    "go": {
+        "preset": "gopls",
+        "description": "Go",
+    },
+    "rust": {
+        "preset": "rust-analyzer",
+        "description": "Rust",
+    },
+}
+
+# Default presets to install
+DEFAULT_PRESETS = ["python", "typescript"]
 
 
 def get_opencode_config_path() -> Path:
@@ -27,80 +50,108 @@ def save_config(path: Path, config: dict) -> None:
         f.write("\n")
 
 
-def configure_lsmcp(config: dict) -> tuple[dict, bool]:
+def configure_lsmcp(config: dict, presets: list[str]) -> tuple[dict, list[str]]:
     """
-    Add MCP lsmcp configuration.
+    Add MCP lsmcp configurations for specified presets.
 
     Returns:
-        Tuple of (updated config, whether changes were made)
+        Tuple of (updated config, list of configured presets)
     """
-    # Ensure mcp section exists
     if "mcp" not in config:
         config["mcp"] = {}
 
-    expected_command = ["npx", "@mizchi/lsmcp"]
+    configured = []
 
-    # Check if lsmcp already configured correctly
-    if "lsmcp" in config["mcp"]:
-        existing = config["mcp"]["lsmcp"]
-        if (
-            existing.get("type") == "local"
-            and existing.get("command") == expected_command
-            and existing.get("enabled") is True
-        ):
-            return config, False  # Already configured correctly
+    for lang in presets:
+        if lang not in PRESETS:
+            print(f"⚠️  Unknown preset: {lang}")
+            continue
 
-    # Add lsmcp configuration
-    # Uses npx to run the package directly (no local install needed)
-    config["mcp"]["lsmcp"] = {
-        "type": "local",
-        "command": expected_command,
-        "enabled": True,
-    }
+        preset_info = PRESETS[lang]
+        server_name = f"lsmcp-{lang}"
+        expected_command = ["npx", "@mizchi/lsmcp", "-p", preset_info["preset"]]
 
-    return config, True
+        # Check if already configured correctly
+        if server_name in config["mcp"]:
+            existing = config["mcp"][server_name]
+            if (
+                existing.get("type") == "local"
+                and existing.get("command") == expected_command
+                and existing.get("enabled") is True
+            ):
+                continue  # Already configured
+
+        # Add configuration
+        config["mcp"][server_name] = {
+            "type": "local",
+            "command": expected_command,
+            "enabled": True,
+        }
+        configured.append(lang)
+
+    return config, configured
 
 
 def main():
     """Main entry point."""
     if len(sys.argv) > 1 and sys.argv[1] == "--help":
-        print("Configure MCP lsmcp server for OpenCode")
+        print("Configure MCP lsmcp servers for OpenCode")
         print()
-        print("Usage: python configure.py")
+        print("Usage: python configure.py [presets...]")
         print()
-        print("This will add the lsmcp server to your OpenCode config at:")
-        print(f"  {get_opencode_config_path()}")
+        print("Available presets:")
+        for lang, info in PRESETS.items():
+            default = " (default)" if lang in DEFAULT_PRESETS else ""
+            print(f"  {lang:12} - {info['description']}{default}")
+        print()
+        print("Examples:")
+        print(
+            "  python configure.py              # Install defaults (python, typescript)"
+        )
+        print("  python configure.py python       # Install only Python")
+        print("  python configure.py python go    # Install Python and Go")
+        print("  python configure.py all          # Install all presets")
+        print()
+        print(f"Config file: {get_opencode_config_path()}")
         print()
         print("Requirements:")
         print("  - Node.js >= 22")
-        print(
-            "  - LSP servers for your languages (typescript-language-server, pyright, etc.)"
-        )
+        print("  - LSP servers for your languages (pyright, typescript, gopls, etc.)")
         return 0
+
+    # Determine which presets to install
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "all":
+            presets = list(PRESETS.keys())
+        else:
+            presets = sys.argv[1:]
+    else:
+        presets = DEFAULT_PRESETS
 
     config_path = get_opencode_config_path()
 
     print("MCP lsmcp Configuration")
     print("=======================")
     print(f"Config file: {config_path}")
+    print(f"Presets: {', '.join(presets)}")
     print()
 
     # Load existing config
     config = load_config(config_path)
 
-    # Add MCP lsmcp
-    config, changed = configure_lsmcp(config)
+    # Add MCP lsmcp servers
+    config, configured = configure_lsmcp(config, presets)
 
-    if changed:
+    if configured:
         save_config(config_path, config)
-        print("✅ MCP lsmcp configured successfully")
-        print()
-        print("Configuration added:")
-        print(json.dumps({"mcp": {"lsmcp": config["mcp"]["lsmcp"]}}, indent=2))
+        print(f"✅ Configured {len(configured)} lsmcp server(s):")
+        for lang in configured:
+            info = PRESETS[lang]
+            print(f"   - lsmcp-{lang} ({info['description']})")
         print()
         print("Restart OpenCode to use LSP tools.")
     else:
-        print("ℹ️  MCP lsmcp already configured")
+        print("ℹ️  All requested lsmcp servers already configured")
 
     return 0
 

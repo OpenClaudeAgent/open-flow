@@ -21,7 +21,7 @@ lsmcp bridges Claude with Language Server Protocol features, enabling:
 
 ## Installation
 
-The `install.sh` script automatically configures lsmcp if Node.js 22+ is available.
+The `install.sh` script automatically configures lsmcp for Python and TypeScript.
 
 ```bash
 # From project root
@@ -31,9 +31,26 @@ The `install.sh` script automatically configures lsmcp if Node.js 22+ is availab
 ### Manual Installation
 
 ```bash
-# Configure OpenCode
+# Install default presets (Python + TypeScript)
 python3 servers/lsmcp/configure.py
+
+# Install specific languages
+python3 servers/lsmcp/configure.py python go rust
+
+# Install all available presets
+python3 servers/lsmcp/configure.py all
 ```
+
+### Available Presets
+
+| Preset | Server Name | LSP Server |
+|--------|-------------|------------|
+| `python` | `lsmcp-python` | pyright |
+| `typescript` | `lsmcp-typescript` | typescript-language-server |
+| `go` | `lsmcp-go` | gopls |
+| `rust` | `lsmcp-rust` | rust-analyzer |
+
+Each preset creates a separate MCP server (e.g., `lsmcp-python`, `lsmcp-typescript`).
 
 ## Available Tools
 
@@ -54,21 +71,6 @@ Once configured, Claude has access to these LSP tools:
 | `get_code_actions` | Get available quick-fixes and refactorings |
 | `rename_symbol` | Rename a symbol across the project |
 | `check_capabilities` | Check LSP server capabilities |
-
-## Supported Languages
-
-lsmcp works with any language that has an LSP server installed:
-
-| Language | LSP Server | Install |
-|----------|-----------|---------|
-| TypeScript/JavaScript | typescript-language-server | `npm i -g typescript-language-server typescript` |
-| Python | pyright | `npm i -g pyright` |
-| Python | basedpyright | `npm i -g basedpyright` |
-| Go | gopls | `go install golang.org/x/tools/gopls@latest` |
-| Rust | rust-analyzer | Via rustup or IDE |
-| C/C++ | clangd | Via package manager |
-
-Most IDEs (VS Code, etc.) install these automatically.
 
 ## Usage Examples
 
@@ -102,21 +104,37 @@ lsmcp requires Node.js 22 or higher. Check your version:
 node --version
 ```
 
-Install/upgrade Node.js from https://nodejs.org or use a version manager like nvm.
+Install/upgrade Node.js from https://nodejs.org or use nvm.
 
-### LSP features not working for a language
+### "Could not find TypeScript installation"
+
+The TypeScript preset requires TypeScript installed in your project:
+
+```bash
+npm install typescript
+```
+
+### LSP features not working
 
 Ensure the corresponding LSP server is installed:
 
 ```bash
-# Check if typescript-language-server is available
-which typescript-language-server
+# For Python
+pip install pyright
+# or
+npm install -g pyright
 
-# Check if pyright is available  
-which pyright
+# For TypeScript
+npm install -g typescript typescript-language-server
+
+# For Go
+go install golang.org/x/tools/gopls@latest
+
+# For Rust
+rustup component add rust-analyzer
 ```
 
-### Slow responses
+### Slow first request
 
 First request may be slow as lsmcp starts the LSP server. Subsequent requests are faster.
 
