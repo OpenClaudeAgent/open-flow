@@ -33,6 +33,7 @@ In summary:
 - ✅ You invoke sub-agents in order: REFACTORING → TESTER → QUALITY
 - ✅ Reports flow in context, no files created
 - ✅ Coordinator validates and merges (not you)
+- ✅ After each commit, use `notify_commit` to inform the user
 
 ## Workflow (5 phases)
 
@@ -107,6 +108,15 @@ You can improve the plan during implementation:
 - Section `## Specifications`: Add detected details
 - Section `## Executor Notes`: Important observations
 - **Immutable**: Context, Objective, Expected Behavior
+
+---
+
+## Git Notifications
+
+After each commit, notify the user:
+- `notify_commit(branch, message, files, hash, agent)`
+
+This allows the user to follow progress in real-time.
 
 ---
 
