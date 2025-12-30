@@ -66,16 +66,120 @@ async def list_tools() -> list[Tool]:
                 },
                 "required": ["title", "question"],
             },
-        )
+        ),
+        Tool(
+            name="notify_commit",
+            description="Notify the user that a commit was made. Use this after committing changes.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "branch": {
+                        "type": "string",
+                        "description": "Branch name where the commit was made.",
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Commit message (first line).",
+                    },
+                    "files": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of modified files.",
+                    },
+                    "hash": {
+                        "type": "string",
+                        "description": "Short commit hash (7 chars).",
+                    },
+                    "agent": {
+                        "type": "string",
+                        "description": "Name of the agent that made the commit.",
+                    },
+                },
+                "required": ["branch", "message"],
+            },
+        ),
+        Tool(
+            name="notify_merge",
+            description="Notify the user that a branch was merged to main. Use this after merging.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "source_branch": {
+                        "type": "string",
+                        "description": "Branch that was merged.",
+                    },
+                    "commits_count": {
+                        "type": "integer",
+                        "description": "Number of commits merged.",
+                    },
+                    "files_count": {
+                        "type": "integer",
+                        "description": "Number of files changed.",
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "Version tag if any (e.g., v0.5.0).",
+                    },
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository name.",
+                    },
+                    "agent": {
+                        "type": "string",
+                        "description": "Name of the agent that performed the merge.",
+                    },
+                },
+                "required": ["source_branch"],
+            },
+        ),
+        Tool(
+            name="notify_sync",
+            description="Notify the user that worktrees were synchronized. Use after sync-worktrees.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "worktrees": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of worktrees that were synchronized.",
+                    },
+                    "source": {
+                        "type": "string",
+                        "description": "Source branch (default: main).",
+                    },
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository name.",
+                    },
+                    "conflicts": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of conflicts if any.",
+                    },
+                },
+                "required": ["worktrees"],
+            },
+        ),
     ]
 
 
 @server.call_tool()
 async def call_tool(name: str, arguments: dict) -> list[TextContent]:
     """Handle tool calls."""
-    if name != "ask_user":
+    if name == "ask_user":
+        return await _handle_ask_user(arguments)
+    elif name == "notify_commit":
+        return await _handle_notify_commit(arguments)
+    elif name == "notify_merge":
+        return await _handle_notify_merge(arguments)
+    elif name == "notify_sync":
+        return await _handle_notify_sync(arguments)
+    else:
         return [TextContent(type="text", text=f"Unknown tool: {name}")]
 
+
+async def _handle_ask_user(arguments: dict) -> list[TextContent]:
+    """Handle ask_user tool call."""
     title = arguments.get("title", "Question")
     question = arguments.get("question", "")
     options = arguments.get("options", [])
@@ -123,6 +227,143 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
         agent_info = f" [{agent}]" if agent else ""
         return [
             TextContent(type="text", text=f"{emoji} Question sent{agent_info}: {title}")
+        ]
+    else:
+        return [
+            TextContent(
+                type="text",
+                text="Failed to send notification. Platform may not be supported.",
+            )
+        ]
+
+
+async def _handle_notify_commit(arguments: dict) -> list[TextContent]:
+    """Handle notify_commit tool call."""
+    branch = arguments.get("branch", "unknown")
+    message = arguments.get("message", "")
+    files = arguments.get("files", [])
+    commit_hash = arguments.get("hash", "")
+    agent = arguments.get("agent")
+
+    # Build notification body
+    body_parts = [message]
+    if files:
+        files_str = ", ".join(files[:5])  # Limit to 5 files
+        if len(files) > 5:
+            files_str += f" (+{len(files) - 5} more)"
+        body_parts.append(f"Files: {files_str}")
+
+    body = "\n".join(body_parts)
+
+    # Send notification with low urgency (info type)
+    success = send_notification(
+        title="Commit",
+        message=body,
+        type="info",  # low urgency = info (Ping sound)
+        sound=True,
+        agent=agent,
+        repo=branch,  # Branch as subtitle
+    )
+
+    if success:
+        hash_info = f" {commit_hash}" if commit_hash else ""
+        return [
+            TextContent(type="text", text=f"Commit notified:{hash_info} on {branch}")
+        ]
+    else:
+        return [
+            TextContent(
+                type="text",
+                text="Failed to send notification. Platform may not be supported.",
+            )
+        ]
+
+
+async def _handle_notify_merge(arguments: dict) -> list[TextContent]:
+    """Handle notify_merge tool call."""
+    source_branch = arguments.get("source_branch", "unknown")
+    commits_count = arguments.get("commits_count")
+    files_count = arguments.get("files_count")
+    version = arguments.get("version")
+    repo = arguments.get("repo")
+    agent = arguments.get("agent")
+
+    # Build notification body
+    body_parts = [f"{source_branch} → main"]
+
+    stats = []
+    if commits_count:
+        stats.append(f"{commits_count} commit{'s' if commits_count > 1 else ''}")
+    if files_count:
+        stats.append(f"{files_count} file{'s' if files_count > 1 else ''}")
+    if stats:
+        body_parts.append(", ".join(stats))
+
+    if version:
+        body_parts.append(f"Version: {version}")
+
+    body = "\n".join(body_parts)
+
+    # Send notification with normal urgency (warning type)
+    success = send_notification(
+        title="Merge sur main",
+        message=body,
+        type="warning",  # normal urgency = warning (Funk sound)
+        sound=True,
+        agent=agent,
+        repo=repo,  # Repo as subtitle
+    )
+
+    if success:
+        return [
+            TextContent(type="text", text=f"Merge notified: {source_branch} → main")
+        ]
+    else:
+        return [
+            TextContent(
+                type="text",
+                text="Failed to send notification. Platform may not be supported.",
+            )
+        ]
+
+
+async def _handle_notify_sync(arguments: dict) -> list[TextContent]:
+    """Handle notify_sync tool call."""
+    worktrees = arguments.get("worktrees", [])
+    source = arguments.get("source", "main")
+    repo = arguments.get("repo")
+    conflicts = arguments.get("conflicts", [])
+
+    # Build notification body
+    count = len(worktrees)
+    body_parts = [f"{count} worktree{'s' if count > 1 else ''} updated from {source}"]
+
+    if worktrees:
+        worktrees_str = ", ".join(worktrees[:5])  # Limit to 5
+        if len(worktrees) > 5:
+            worktrees_str += f" (+{len(worktrees) - 5} more)"
+        body_parts.append(worktrees_str)
+
+    if conflicts:
+        body_parts.append(f"⚠️ Conflicts: {', '.join(conflicts)}")
+
+    body = "\n".join(body_parts)
+
+    # Determine urgency based on conflicts
+    ntype = "warning" if conflicts else "info"  # Conflicts = normal, no conflicts = low
+
+    # Send notification
+    success = send_notification(
+        title="Worktrees synchronisés",
+        message=body,
+        type=ntype,
+        sound=True,
+        repo=repo,  # Repo as subtitle
+    )
+
+    if success:
+        return [
+            TextContent(type="text", text=f"Sync notified: {count} worktrees updated")
         ]
     else:
         return [

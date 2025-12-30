@@ -43,9 +43,22 @@ On macOS, notifications require the "Notifications" permission:
 
 ## Usage
 
-The server provides a single tool: `ask_user`
+The server provides 4 tools:
 
-### Parameters
+| Tool | Purpose | Urgency |
+|------|---------|---------|
+| `ask_user` | Ask user a question or request a decision | Configurable |
+| `notify_commit` | Notify that a commit was made | Low |
+| `notify_merge` | Notify that a branch was merged to main | Normal |
+| `notify_sync` | Notify that worktrees were synchronized | Low |
+
+---
+
+### Tool: `ask_user`
+
+Send a notification to ask the user a question or request a decision.
+
+#### Parameters
 
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
@@ -58,7 +71,7 @@ The server provides a single tool: `ask_user`
 | `agent` | string | No | - | Name of the agent asking the question |
 | `task` | string | No | - | Name or number of the current task |
 
-### Urgency Levels
+#### Urgency Levels
 
 | Level | Sound | Emoji | Use Case |
 |-------|-------|-------|----------|
@@ -66,7 +79,7 @@ The server provides a single tool: `ask_user`
 | `normal` | Funk | ⚠️ | Standard decisions |
 | `high` | Submarine | 🚨 | Urgent attention needed |
 
-### Examples
+#### Examples
 
 **Simple question:**
 ```
@@ -89,7 +102,7 @@ Notify the user with:
 - branch: "feature/auth"
 ```
 
-### Output
+#### Output
 
 The tool returns a confirmation message with:
 - Urgency emoji (ℹ️, ⚠️, or 🚨)
@@ -97,6 +110,104 @@ The tool returns a confirmation message with:
 - Title of the notification sent
 
 Example: `⚠️ Question sent [Executor]: Merge Conflict`
+
+---
+
+### Tool: `notify_commit`
+
+Notify the user that a commit was made. Use this after committing changes.
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `branch` | string | Yes | Branch name where the commit was made |
+| `message` | string | Yes | Commit message (first line) |
+| `files` | array | No | List of modified files |
+| `hash` | string | No | Short commit hash (7 chars) |
+| `agent` | string | No | Name of the agent that made the commit |
+
+#### Example Notification
+
+```
++-----------------------------------------------+
+| [Icon]                                        |
+| feature/notify-actions              subtitle  |
+| ℹ️ Commit                             title   |
+| fix(notify): add action button support        |
+| Files: server.py, notifier.py           body  |
++-----------------------------------------------+
+```
+
+#### Output
+
+Returns: `Commit notified: <hash> on <branch>`
+
+---
+
+### Tool: `notify_merge`
+
+Notify the user that a branch was merged to main. Use this after merging.
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `source_branch` | string | Yes | Branch that was merged |
+| `commits_count` | integer | No | Number of commits merged |
+| `files_count` | integer | No | Number of files changed |
+| `version` | string | No | Version tag if any (e.g., v0.5.0) |
+| `repo` | string | No | Repository name |
+| `agent` | string | No | Name of the agent that performed the merge |
+
+#### Example Notification
+
+```
++-----------------------------------------------+
+| [Icon]                                        |
+| open-flow                             subtitle |
+| ⚠️ Merge sur main                      title  |
+| feature/notify-actions → main                 |
+| 3 commits, 5 files                      body  |
++-----------------------------------------------+
+```
+
+#### Output
+
+Returns: `Merge notified: <source_branch> → main`
+
+---
+
+### Tool: `notify_sync`
+
+Notify the user that worktrees were synchronized. Use after sync-worktrees.
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `worktrees` | array | Yes | List of worktrees that were synchronized |
+| `source` | string | No | Source branch (default: main) |
+| `repo` | string | No | Repository name |
+| `conflicts` | array | No | List of conflicts if any |
+
+#### Example Notification
+
+```
++-----------------------------------------------+
+| [Icon]                                        |
+| open-flow                             subtitle |
+| ℹ️ Worktrees synchronisés              title  |
+| 3 worktrees updated from main                 |
+| roadmap, executor, quality              body  |
++-----------------------------------------------+
+```
+
+#### Output
+
+Returns: `Sync notified: <count> worktrees updated`
+
+**Note:** If conflicts are detected, urgency is elevated to `normal` and conflicts are listed.
 
 ## Troubleshooting
 
