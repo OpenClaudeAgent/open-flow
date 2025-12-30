@@ -1,203 +1,117 @@
 ---
 name: agentic-flow
-description: Agentic workflow - Feature lifecycle, worktree isolation, inter-agent collaboration
+description: Executor's agentic workflow - Analysis, implementation, sequential sub-agents
 ---
 
-# Agentic Flow Skill
+# Skill Agentic Flow
 
-This skill describes the development workflow assisted by specialized agents.
+Workflow of **Executor** invoked by Coordinator.
 
----
-
-## Feature Lifecycle
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        FEATURE LIFECYCLE                         │
-└─────────────────────────────────────────────────────────────────┘
-
-  1. IDEATION
-     │
-     │  User expresses the need
-     │
-     ▼
-  2. PLANNING ────────────────────────► ROADMAP
-     │                                   │
-     │                                   ├── Output: roadmap/plan-XX.md
-     │                                   │
-     ▼◄──────────────────────────────────┘
-  3. IMPLEMENTATION ──────────────────► EXECUTOR
-     │                                   │
-     │                                   ├── Skills: ui-design-principles, qml, qt-cpp
-     │                                   ├── Output: src/
-     │                                   │
-     ▼◄──────────────────────────────────┘
-  4. USER VALIDATION ─────────────────► EXECUTOR
-     │                                   │
-     │                                   ├── Launch app (make run &)
-     │                                   ├── Generate test scenarios
-     │                                   ├── 🔔 MCP ask_user "Validation required"
-     │                                   ├── Iterate if problem
-     │                                   │
-     ▼◄──────────────────────────────────┘
-   5. TESTS ──────────────────────────► TESTER (invoked by Executor)
-      │                                   │
-      │                                   ├── Skill: functional-testing
-      │                                   ├── If not testable → REFACTORING
-      │                                   │                        └── Skill: testability-patterns
-      │                                   ├── Output: tests/
-      │                                   ├── Run entire suite (make test)
-      │                                   │
-      ▼◄──────────────────────────────────┘
-  6. QUALITY ─────────────────────────► QUALITY (invoked by Executor)
-     │                                   │
-     │                                   ├── Skills: code-review
-     │                                   ├── Code review (src/) + Tests review (tests/)
-     │                                   ├── Output: quality/validation-XX.md
-     │                                   │
-     ▼◄──────────────────────────────────┘
-  7. MERGE ───────────────────────────► EXECUTOR
-     │                                   │
-     │                                   ├── 🔔 MCP ask_user "Should I merge?"
-     │                                   ├── Skill: git-conventions
-     │                                   ├── Commit + Version Tag
-     │                                   │
-     ▼◄──────────────────────────────────┘
-  8. RELEASE
-     │
-     └── User publishes
-```
+**For multi-plan orchestration**, see skill `swarm-orchestration`.
 
 ---
 
-## Agents and responsibilities
+## Executor Workflow (5 phases)
 
-| Agent | Role | Scope | Skills |
-|-------|------|-------|--------|
-| **Roadmap** | Planning | `roadmap/` | - |
-| **Executor** | Implementation | `src/` | ui-design-principles, qml, qt-cpp, git-conventions |
-| **Tester** | Auto tests | `tests/` | functional-testing |
-| **Quality** | QA + Code Review | `quality/` | code-review |
-| **Refactoring** | Testability | `src/` | testability-patterns |
-
----
-
-## MCP Notification Points
-
-| Step | Agent | Title | Question |
-|------|-------|-------|----------|
-| Validation | Executor | "Validation required" | "Test the scenarios" |
-| Merge | Executor | "Feature ready" | "Should I merge to main?" |
-| Testability | Tester | "Authorization required" | "Invoke Refactoring?" |
-| Manual tests | Quality | "Manual tests ready" | "Shall we begin?" |
+| Phase | Action |
+|-------|--------|
+| 1 | Load skill → Create todos → Analyze plan |
+| 2 | Load relevant skills → Implement → Build |
+| 3 | Invoke REFACTORING → TESTER → QUALITY (sequential) |
+| 4 | Consolidate all reports (see reporting-* skills) |
+| 5 | User Validation at Coordinator → Final report |
 
 ---
 
-## Skills by phase
+## Dynamic Skills Analysis
 
-### Phase 3: Implementation (Executor)
+Executor identifies and loads skills based on files:
 
-| Condition | Skill to load |
-|-----------|---------------|
-| `.qml` files | `qml` |
+| File | Skill |
+|------|-------|
+| `.qml` | `qml` |
 | UI components | `ui-design-principles` |
-| Qt `.cpp/.h` files | `qt-cpp` |
-
-### Phase 4: Tests (Tester)
-
-| Condition | Skill to load |
-|-----------|---------------|
-| Always | `functional-testing` |
-| Non-testable code | → Invoke Refactoring with `testability-patterns` |
-
-### Phase 5: Quality
-
-| Condition | Skill to load |
-|-----------|---------------|
-| Always | `code-review` |
-
-### Phase 7: Merge (Executor)
-
-| Condition | Skill to load |
-|-----------|---------------|
-| Commit/Tag | `git-conventions` |
+| `.cpp` / `.h` Qt | `qt-cpp` |
+| Non-testable code | Assign to REFACTORING |
 
 ---
 
-## Agent Isolation (Worktrees)
+## Sequential Sub-Agents
 
-Each agent operates in its own Git worktree:
+Executor invokes in this **MANDATORY** order:
 
-| Worktree | Branch | Agent |
-|----------|--------|-------|
-| `worktrees/feature/[name]` | `feature/[name]` | Executor (created per feature) |
-| `worktrees/roadmap/` | `worktree/roadmap` | Roadmap |
-| `worktrees/quality/` | `worktree/quality` | Quality |
-| `worktrees/test/` | `worktree/test` | Tester |
-| `worktrees/refactoring/` | `worktree/refactoring` | Refactoring |
+**1. REFACTORING** (skill: testability-patterns)
+   └─ Worktree: Shared | Report: reporting-refactoring
 
-**Executor**: Creates a dedicated worktree for each feature:
-```bash
-git worktree add worktrees/feature/[name] -b feature/[name]
+**2. TESTER** (skill: functional-testing)
+   └─ Worktree: Shared | Report: reporting-tester
+
+**3. QUALITY** (skill: code-review)
+   └─ Worktree: Shared (read-only) | Report: reporting-quality
+
+---
+
+## Reporting Skills
+
+Use specialized skills to structure reports:
+
+```
+Executor → Load reporting-executor skill
+├─ Include FULL report from Refactoring
+├─ Include FULL report from Tester
+├─ Include FULL report from Quality
+└─ Consolidate all Important Notes (integrally)
 ```
 
-**Benefits**:
-- No conflicts between agents
-- Branch traceability
-- Multiple features in parallel
-- `main` under user control
+**CRITICAL**: Important Notes are NEVER summarized.
 
 ---
 
-## Global rules
+## Shared Worktree Model
+
+All agents use the SAME worktree created by Executor:
+
+```
+worktrees/feature/[name]
+├─ Executor: R/W src/
+├─ Refactoring: R/W src/
+├─ Tester: R/W tests/
+└─ Quality: read-only src/ + tests/
+```
+
+**Benefits**: No conflicts, isolation by feature, centralized merge.
+
+---
+
+## User Iteration
+
+If User Validation fails (at Coordinator):
+
+Coordinator requests correction → Executor fixes → Re-invokes sub-agents if needed
+
+**No complete re-implementation.**
+
+---
+
+## Global Rules
 
 | Rule | Description |
 |------|-------------|
-| System dates | Always `date +%Y-%m-%d` |
-| Worktrees | Each agent in its worktree |
-| Validation | No merge without explicit approval |
-| Isolation | Don't modify outside your scope |
-| MCP | Use `ask_user` according to agent instructions |
+| System dates | `date +%Y-%m-%d` |
+| Worktree | Shared by all (Executor + sub-agents) |
+| User Validation | At Coordinator after implementation |
+| Merges | Coordinator handles |
+| Important Notes | Propagated integrally |
+| Communication | Conversation context only |
 
 ---
 
-## Worktree synchronization
+## Worktree Synchronization
 
-After merge to main:
+After merge (by Coordinator):
 
 ```bash
 make sync-worktrees
 ```
 
-- Synchronizes all worktrees with main
-- If conflict: report to user without resolving
-
----
-
-## Specific workflows
-
-### Tester-Refactoring Tandem
-
-```
-Tester identifies non-testable code
-       ↓
-🔔 ask_user "Authorization required"
-       ↓
-Refactoring (skill: testability-patterns)
-       ↓
-Tester writes the tests
-```
-
-### Quality: Double review
-
-```
-Executor invokes Quality
-       ↓
-Quality loads skill: code-review
-       ↓
-Phase 1: Code review (src/)
-       ↓
-Phase 2: Tests review (tests/)
-       ↓
-Consolidated report → Executor
-```
+Synchronizes all worktrees with main. If conflict: report to user.
