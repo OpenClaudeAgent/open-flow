@@ -356,6 +356,30 @@ install_mcp() {
             fi
         fi
     fi
+    
+    # Setup lsmcp server (LSP tools for Claude)
+    if [ -d "$servers_dir/lsmcp" ]; then
+        local lsmcp_dir="$servers_dir/lsmcp"
+        
+        # Check Node.js version (lsmcp requires >= 22)
+        if command -v node &> /dev/null; then
+            local node_version=$(node --version | sed 's/v//' | cut -d. -f1)
+            if [ "$node_version" -ge 22 ] 2>/dev/null; then
+                # Node.js >= 22 available, configure lsmcp
+                if [ -f "$lsmcp_dir/configure.py" ]; then
+                    if python3 "$lsmcp_dir/configure.py" > /dev/null 2>&1; then
+                        log_success "Configured MCP: lsmcp (LSP tools)"
+                    else
+                        log_warning "Failed to configure MCP lsmcp"
+                    fi
+                fi
+            else
+                log_warning "lsmcp requires Node.js >= 22 (found v$node_version), skipping"
+            fi
+        else
+            log_warning "lsmcp requires Node.js >= 22 (not found), skipping"
+        fi
+    fi
 }
 
 show_status() {
