@@ -20,11 +20,15 @@ Ce dossier contient les plans d'implementation pour le projet open-flow.
 | 6 | Analytics OpenFlow | [plan-06](./plan-06-analytics.md) | - | - | Abandonne |
 | 7 | Serveur MCP OpenCode Session History | [plan-07](./plan-07-mcp-session-history.md) | `feature/opencode-session-history` | - | En attente |
 | 8 | Notifications Git Events | [plan-08](./plan-08-notify-git-events.md) | `feature/notify-git-events` | v0.5.0 | Termine |
-| 9 | Integration MCP lsmcp (outils LSP) | [plan-09](./plan-09-mcp-lsmcp.md) | `feature/mcp-lsmcp` | - | En attente |
+| 9 | Integration MCP lsmcp (outils LSP) | [plan-09](./plan-09-mcp-lsmcp.md) | `feature/mcp-lsmcp` | v0.6.0 | Termine |
 | 10 | MCP Sequential Thinking + Workflow RC | [plan-10](./plan-10-mcp-sequential-thinking.md) | `main` | v0.6.0 | Termine |
+| 11 | Support C/C++ dans lsmcp | [plan-11](./plan-11-lsmcp-cpp.md) | `feature/lsmcp-cpp` | v0.7.0 | Termine |
 
 ## Historique
 
+- **2025-12-31** : Tache 11 terminee - Support C/C++ dans lsmcp (clangd via --bin) v0.7.0
+- **2025-12-31** : Creation du plan 11 - Support C/C++ dans lsmcp (preset clangd)
+- **2025-12-31** : Tache 09 terminee - Integration MCP lsmcp (outils LSP) v0.6.0
 - **2025-12-31** : Tache 10 terminee - MCP Sequential Thinking + Workflow RC v0.6.0
 - **2025-12-31** : Creation du plan 10 - MCP Sequential Thinking (pensee structuree pour taches complexes)
 - **2025-12-31** : Creation du plan 09 - Integration MCP lsmcp (outils LSP via serveur MIT existant)
