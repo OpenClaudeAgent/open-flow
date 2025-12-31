@@ -25,7 +25,8 @@ PRESETS = {
         "description": "Rust",
     },
     "cpp": {
-        "preset": "clangd",
+        "bin": "clangd",
+        "files": "**/*.{c,cpp,h,hpp,cc,cxx}",
         "description": "C/C++ (clangd)",
         "check_command": "clangd",
     },
@@ -104,7 +105,21 @@ def configure_lsmcp(config: dict, presets: list[str]) -> tuple[dict, list[str]]:
 
         preset_info = PRESETS[lang]
         server_name = f"lsmcp-{lang}"
-        expected_command = ["npx", "@mizchi/lsmcp", "-p", preset_info["preset"]]
+
+        # Build command based on preset type
+        if "bin" in preset_info:
+            # Custom LSP server (e.g., clangd for C/C++)
+            expected_command = [
+                "npx",
+                "@mizchi/lsmcp",
+                "--bin",
+                preset_info["bin"],
+                "--files",
+                preset_info["files"],
+            ]
+        else:
+            # Built-in preset
+            expected_command = ["npx", "@mizchi/lsmcp", "-p", preset_info["preset"]]
 
         # Check if already configured correctly
         if server_name in config["mcp"]:

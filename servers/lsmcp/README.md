@@ -47,11 +47,13 @@ python3 servers/lsmcp/configure.py all
 |--------|-------------|------------|---------|
 | `python` | `lsmcp-python` | pyright | Yes |
 | `typescript` | `lsmcp-typescript` | typescript-language-server | Yes |
-| `cpp` | `lsmcp-cpp` | clangd | Yes |
+| `cpp` | `lsmcp-cpp` | clangd (via --bin) | Yes |
 | `go` | `lsmcp-go` | gopls | No |
 | `rust` | `lsmcp-rust` | rust-analyzer | No |
 
 Each preset creates a separate MCP server (e.g., `lsmcp-python`, `lsmcp-typescript`).
+
+**Note**: The `cpp` preset uses lsmcp's custom LSP mode (`--bin clangd --files "**/*.{c,cpp,h,hpp,cc,cxx}"`) since clangd is not a built-in lsmcp preset.
 
 ## Available Tools
 
