@@ -380,6 +380,30 @@ install_mcp() {
             log_warning "lsmcp requires Node.js >= 22 (not found), skipping"
         fi
     fi
+    
+    # Setup sequential-thinking server (structured reasoning via npx)
+    if [ -d "$servers_dir/sequential-thinking" ]; then
+        local st_dir="$servers_dir/sequential-thinking"
+        
+        # Check Node.js version (sequential-thinking requires >= 18)
+        if command -v node &> /dev/null; then
+            local node_version=$(node --version | sed 's/v//' | cut -d. -f1)
+            if [ "$node_version" -ge 18 ] 2>/dev/null; then
+                # Node.js >= 18 available, configure sequential-thinking
+                if [ -f "$st_dir/configure.py" ]; then
+                    if python3 "$st_dir/configure.py" > /dev/null 2>&1; then
+                        log_success "Configured MCP: sequential-thinking"
+                    else
+                        log_warning "Failed to configure MCP sequential-thinking"
+                    fi
+                fi
+            else
+                log_warning "sequential-thinking requires Node.js >= 18 (found v$node_version), skipping"
+            fi
+        else
+            log_warning "sequential-thinking requires Node.js >= 18 (not found), skipping"
+        fi
+    fi
 }
 
 show_status() {

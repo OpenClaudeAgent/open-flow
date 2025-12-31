@@ -71,3 +71,18 @@ Utiliser Ask User (MCP Notify) pour interrompre l'utilisateur :
 - ❌ Simuler des tests manuels automatiquement
 - ❌ Passer à l'étape suivante sans confirmation explicite
 - ❌ Assumer que l'implémentation fonctionne sans validation  
+
+---
+
+## Mode Multi-Features (RC)
+
+Quand plusieurs features doivent être validées ensemble :
+
+1. **Créer branche RC** : `git checkout -b rc/test-$(date +%Y%m%d) main`
+2. **Merger toutes les features** dans RC
+3. **UTILISATEUR teste** l'ensemble intégré
+4. **Si bug** : Corriger sur branche originale → Re-merger dans RC → Re-tester
+5. **Validation OK** : Supprimer RC → Merger features individuellement
+
+> ⚠️ Ne JAMAIS corriger directement sur la branche RC.
+> Les corrections se font sur les branches features originales.

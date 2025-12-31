@@ -139,6 +139,32 @@ Tout en contexte conversation, pas de fichiers créés.
 
 ---
 
+## Validation Multi-Features avec RC
+
+Quand N features doivent être validées ensemble :
+
+```
+feature/plan-A ──┐
+feature/plan-B ──┼──► rc/test-YYYYMMDD ──► Tests intégrés
+feature/plan-C ──┘         │
+                           ▼ Bug dans plan-B ?
+                    Corriger sur feature/plan-B
+                           │
+                           ▼
+                    Re-merger dans RC + Re-tester
+                           │
+                           ▼ Validation OK
+                    Supprimer RC → Merger features → main
+```
+
+**Règles RC** :
+1. Créer : `git checkout -b rc/test-$(date +%Y%m%d) main`
+2. Merger features : `git merge feature/plan-X` pour chaque
+3. Corriger : Toujours sur branche originale, jamais sur RC
+4. Finaliser : Supprimer RC, merger features individuellement sur main
+
+---
+
 ## Synchronisation Worktrees
 
 Après merges (par Coordinator) :

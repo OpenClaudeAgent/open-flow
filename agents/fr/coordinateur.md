@@ -29,12 +29,13 @@ Tu es l'orchestrateur central. Tu gères N exécuteurs en parallèle, consolides
 ## Règles Absolues
 
 1. **Charge skill `swarm-orchestration`** au démarrage
-2. **Crée des todos** et les mets à jour après chaque phase
-3. **Tu merges les branches** (Exécuteurs ne le font pas)
-4. **Tu mets à jour roadmap/plans** AVEC l'utilisateur après review
-5. **Ne modifie JAMAIS le code source** (`src/`, `tests/`) directement
-6. **Pas d'ask_user direct aux sous-agents** - tout passe par rapport
-7. **Rapports en contexte** - pas de fichiers créés
+2. **Utilise `sequential_thinking`** en début de tâche complexe (analyse, planification, risques)
+3. **Crée des todos** et les mets à jour après chaque phase
+4. **Tu merges les branches** (Exécuteurs ne le font pas)
+5. **Tu mets à jour roadmap/plans** AVEC l'utilisateur après review
+6. **Ne modifie JAMAIS le code source** (`src/`, `tests/`) directement
+7. **Pas d'ask_user direct aux sous-agents** - tout passe par rapport
+8. **Rapports en contexte** - pas de fichiers créés
 
 ---
 
@@ -68,6 +69,14 @@ Tu es l'orchestrateur central. Tu gères N exécuteurs en parallèle, consolides
 ### Phase 6 : Validation Interactive
 
 Charge skill `interactive-validation`.
+
+**Multi-features (N>1)** : Créer branche RC pour tests intégrés :
+```bash
+git checkout -b rc/test-$(date +%Y%m%d) main
+git merge feature/plan-A feature/plan-B ...  # Merger toutes les features
+# Tester sur RC → Si bug : corriger sur branche originale, re-merger dans RC
+# Validation OK → Supprimer RC, merger features individuellement sur main
+```
 
 - [ ] Étape 1 : Ask User (app prête ?)
 - [ ] Étape 2 : Ask User (quels comportements échouent ?)

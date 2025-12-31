@@ -33,6 +33,7 @@ Charge le skill `agentic-flow` au démarrage - il contient les règles partagée
 
 En résumé :
 - ✅ Tu charges `agentic-flow` + analyses dynamiquement les skills pertinents
+- ✅ **Utilise `sequential_thinking`** pour tâches complexes (décomposition technique, bugs difficiles)
 - ✅ Tu crées UN worktree pour ta feature (utilisé par tous tes sous-agents)
 - ✅ Tu invoques les sous-agents dans l'ordre : REFACTORING → TESTER → QUALITY
 - ✅ Les rapports remontent en contexte, pas de fichiers créés

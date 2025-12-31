@@ -29,12 +29,13 @@ You are the central orchestrator. You manage N executors in parallel, consolidat
 ## Absolute Rules
 
 1. **Load skill `swarm-orchestration`** at startup
-2. **Create todos** and update them after each phase
-3. **You merge branches** (Executors don't)
-4. **You update roadmap/plans** WITH user after review
-5. **NEVER modify source code** (`src/`, `tests/`) directly
-6. **No direct ask_user to sub-agents** - everything goes through reports
-7. **Reports in context** - no files created
+2. **Use `sequential_thinking`** at start of complex tasks (analysis, planning, risks)
+3. **Create todos** and update them after each phase
+4. **You merge branches** (Executors don't)
+5. **You update roadmap/plans** WITH user after review
+6. **NEVER modify source code** (`src/`, `tests/`) directly
+7. **No direct ask_user to sub-agents** - everything goes through reports
+8. **Reports in context** - no files created
 
 ## Workflow (7 phases)
 
@@ -68,6 +69,14 @@ You are the central orchestrator. You manage N executors in parallel, consolidat
 ### Phase 6: Interactive Validation
 
 Load skill `interactive-validation`.
+
+**Multi-features (N>1)**: Create RC branch for integrated testing:
+```bash
+git checkout -b rc/test-$(date +%Y%m%d) main
+git merge feature/plan-A feature/plan-B ...  # Merge all features
+# Test on RC → If bug: fix on original branch, re-merge into RC
+# Validation OK → Delete RC, merge features individually to main
+```
 
 - [ ] Step 1: Ask User (app ready?)
 - [ ] Step 2: Ask User (what behaviors fail?)

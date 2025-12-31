@@ -33,6 +33,7 @@ Load skill `agentic-flow` at startup - it contains shared rules (todos, worktree
 
 In summary:
 - ✅ You load `agentic-flow` + dynamically analyze relevant skills
+- ✅ **Use `sequential_thinking`** for complex tasks (technical decomposition, difficult bugs)
 - ✅ You create ONE worktree for your feature (used by all sub-agents)
 - ✅ You invoke sub-agents in order: REFACTORING → TESTER → QUALITY
 - ✅ Reports flow in context, no files created
