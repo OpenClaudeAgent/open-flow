@@ -21,7 +21,7 @@ lsmcp bridges Claude with Language Server Protocol features, enabling:
 
 ## Installation
 
-The `install.sh` script automatically configures lsmcp for Python and TypeScript.
+The `install.sh` script automatically configures lsmcp for Python, TypeScript, and C/C++.
 
 ```bash
 # From project root
@@ -31,11 +31,11 @@ The `install.sh` script automatically configures lsmcp for Python and TypeScript
 ### Manual Installation
 
 ```bash
-# Install default presets (Python + TypeScript)
+# Install default presets (Python, TypeScript, C/C++)
 python3 servers/lsmcp/configure.py
 
 # Install specific languages
-python3 servers/lsmcp/configure.py python go rust
+python3 servers/lsmcp/configure.py python go rust cpp
 
 # Install all available presets
 python3 servers/lsmcp/configure.py all
@@ -43,12 +43,13 @@ python3 servers/lsmcp/configure.py all
 
 ### Available Presets
 
-| Preset | Server Name | LSP Server |
-|--------|-------------|------------|
-| `python` | `lsmcp-python` | pyright |
-| `typescript` | `lsmcp-typescript` | typescript-language-server |
-| `go` | `lsmcp-go` | gopls |
-| `rust` | `lsmcp-rust` | rust-analyzer |
+| Preset | Server Name | LSP Server | Default |
+|--------|-------------|------------|---------|
+| `python` | `lsmcp-python` | pyright | Yes |
+| `typescript` | `lsmcp-typescript` | typescript-language-server | Yes |
+| `cpp` | `lsmcp-cpp` | clangd | Yes |
+| `go` | `lsmcp-go` | gopls | No |
+| `rust` | `lsmcp-rust` | rust-analyzer | No |
 
 Each preset creates a separate MCP server (e.g., `lsmcp-python`, `lsmcp-typescript`).
 
@@ -132,6 +133,18 @@ go install golang.org/x/tools/gopls@latest
 
 # For Rust
 rustup component add rust-analyzer
+
+# For C/C++
+# macOS (via Homebrew)
+brew install llvm
+# or install Xcode Command Line Tools (includes clangd)
+xcode-select --install
+
+# Linux (Debian/Ubuntu)
+sudo apt install clangd
+
+# Windows
+# Install LLVM from https://llvm.org/builds/
 ```
 
 ### Slow first request

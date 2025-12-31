@@ -2,6 +2,7 @@
 """Configure MCP lsmcp servers in OpenCode."""
 
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -23,15 +24,49 @@ PRESETS = {
         "preset": "rust-analyzer",
         "description": "Rust",
     },
+    "cpp": {
+        "preset": "clangd",
+        "description": "C/C++ (clangd)",
+        "check_command": "clangd",
+    },
 }
 
 # Default presets to install
-DEFAULT_PRESETS = ["python", "typescript"]
+DEFAULT_PRESETS = ["python", "typescript", "cpp"]
 
 
 def get_opencode_config_path() -> Path:
     """Get the OpenCode config file path."""
     return Path.home() / ".config" / "opencode" / "opencode.json"
+
+
+def check_lsp_server(preset_name: str, preset_info: dict) -> bool:
+    """
+    Check if the LSP server for a preset is available.
+
+    Returns True if available, False otherwise.
+    Prints a warning if not available.
+    """
+    check_cmd = preset_info.get("check_command")
+    if not check_cmd:
+        return True  # No check needed
+
+    if shutil.which(check_cmd):
+        return True
+
+    # Print warning with installation instructions
+    print(
+        f"⚠️  {check_cmd} not found - {preset_info['description']} support may not work"
+    )
+
+    if preset_name == "cpp":
+        print("   Install clangd:")
+        print("   - macOS: brew install llvm (or Xcode Command Line Tools)")
+        print("   - Linux: apt install clangd (or equivalent)")
+        print("   - Windows: Install LLVM from https://llvm.org")
+    print()
+
+    return False
 
 
 def load_config(path: Path) -> dict:
@@ -106,7 +141,7 @@ def main():
         print()
         print("Examples:")
         print(
-            "  python configure.py              # Install defaults (python, typescript)"
+            "  python configure.py              # Install defaults (python, typescript, cpp)"
         )
         print("  python configure.py python       # Install only Python")
         print("  python configure.py python go    # Install Python and Go")
@@ -116,7 +151,9 @@ def main():
         print()
         print("Requirements:")
         print("  - Node.js >= 22")
-        print("  - LSP servers for your languages (pyright, typescript, gopls, etc.)")
+        print(
+            "  - LSP servers for your languages (pyright, typescript, gopls, clangd, etc.)"
+        )
         return 0
 
     # Determine which presets to install
@@ -149,6 +186,11 @@ def main():
             info = PRESETS[lang]
             print(f"   - lsmcp-{lang} ({info['description']})")
         print()
+
+        # Check LSP server availability for configured presets
+        for lang in configured:
+            check_lsp_server(lang, PRESETS[lang])
+
         print("Restart OpenCode to use LSP tools.")
     else:
         print("ℹ️  All requested lsmcp servers already configured")
