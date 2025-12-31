@@ -1,6 +1,6 @@
 ---
 description: Execute plans - Analyzes, implements, invokes sub-agents, reports to Coordinator
-mode: agent
+mode: all
 color: "#E53935"
 temperature: 0.3
 permission:

@@ -1,6 +1,6 @@
 ---
 description: Execute les plans - Analyse, implémente, invoque sous-agents, rapporte au Coordinateur
-mode: agent
+mode: all
 color: "#E53935"
 temperature: 0.3
 permission:
