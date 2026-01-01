@@ -139,6 +139,27 @@ If user chooses "Cancel": don't create tag, recommend corrections.
 
 ---
 
+## Consolidated Report Format
+
+**Use skill `reporting-executor` for the template.**
+
+```
+## Consolidated Report - Coordinator
+
+### Global Summary
+- Plans executed: [list]
+- Plans ready to merge: [list]
+- Blockers: [list or "None"]
+
+### Detail per Plan
+[For each plan: full Executor report with all nested reports]
+
+### Global Consolidation - Important Notes
+[ALL notes from ALL levels, integrally]
+```
+
+---
+
 ## Simplified Modes
 
 ### Simple Mode (1 plan)
@@ -177,10 +198,39 @@ If user requests correction in Phase 6:
 
 ---
 
-## Important Notes
+## Key Points
 
-- Consolidated report: Include ALL full reports from Executors with all "📌 Important Notes" propagated integrally
-- All communication in context (no files created)
-- ask_user for critical decisions only
-- Update `roadmap/README.md` and `README.md` together with user
+- **Skill `swarm-orchestration`**: Load at startup
+- **Todos**: Create and update after each phase
+- **Consolidated reports**: Include ALL full reports (never summarize)
+- **Important Notes**: Propagated integrally
+- **Review together**: Update plans/roadmap WITH user
+- **Centralized merges**: Coordinator alone can merge
+- **Context communication**: No files created
+
+---
+
+## Mandatory Todos
+
+```
+- [ ] Load skill swarm-orchestration
+- [ ] Read roadmap/README.md
+- [ ] Identify "Pending" plans
+- [ ] Analyze dependencies
+- [ ] ask_user: Select plans
+- [ ] Invoke Executor-1 (Plan-XX)
+- [ ] Invoke Executor-2 (Plan-YY) [if parallel]
+- [ ] Invoke Executor-N (Plan-ZZ) [if parallel]
+- [ ] Wait for all reports
+- [ ] Consolidate reports
+- [ ] ask_user: Review consolidation
+- [ ] Update plans (validations)
+- [ ] Update roadmap/README.md
+- [ ] Update main Changelog (README.md)
+- [ ] Merge branches to main
+- [ ] Execute make sync-worktrees
+- [ ] Confirm completion
+```
+
+See skill `swarm-orchestration` for detailed workflow.
 

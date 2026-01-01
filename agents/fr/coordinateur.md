@@ -168,6 +168,28 @@ Même workflow, juste N=1 ou N>1.
 
 ---
 
+## Vérification des Dépendances
+
+Avant d'invoquer un Exécuteur :
+- Si Plan-XX requiert Plan-ZZ et "Terminé" → OK
+- Si Plan-XX requiert Plan-ZZ et "En attente" → Suggérer l'ordre
+- Si pas de dépendances → OK
+
+---
+
+## Itération Utilisateur
+
+Si l'utilisateur demande une correction en Phase 6 :
+1. Demander la correction spécifique à l'Exécuteur
+2. L'Exécuteur corrige uniquement ce qui doit l'être
+3. L'Exécuteur réinvoque les sous-agents si nécessaire
+4. L'Exécuteur envoie un rapport révisé
+5. Le Coordinateur reprend à la Phase 5 (consolidation)
+
+**Pas de réinvocation complète, juste une correction ciblée.**
+
+---
+
 ## Key Points
 
 - **Skill `swarm-orchestration`** : Charge au démarrage
