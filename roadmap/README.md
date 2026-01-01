@@ -23,10 +23,11 @@ Ce dossier contient les plans d'implementation pour le projet open-flow.
 | 9 | Integration MCP lsmcp (outils LSP) | [plan-09](./plan-09-mcp-lsmcp.md) | `feature/mcp-lsmcp` | v0.6.0 | Termine |
 | 10 | MCP Sequential Thinking + Workflow RC | [plan-10](./plan-10-mcp-sequential-thinking.md) | `main` | v0.6.0 | Termine |
 | 11 | Support C/C++ dans lsmcp | [plan-11](./plan-11-lsmcp-cpp.md) | `feature/lsmcp-cpp` | v0.7.0 | Termine |
-| 12 | Agent Maintainer (surveillance projet) | [plan-12](./plan-12-agent-maintainer.md) | - | - | En attente |
+| 12 | Agent Maintainer (surveillance projet) | [plan-12](./plan-12-agent-maintainer.md) | `feature/agent-maintainer` | v0.8.0 | Termine |
 
 ## Historique
 
+- **2025-12-31** : Tache 12 terminee - Agent Maintainer (surveillance et sante du projet) v0.8.0
 - **2025-12-31** : Creation du plan 12 - Agent Maintainer (surveillance et sante du projet)
 - **2025-12-31** : Tache 11 terminee - Support C/C++ dans lsmcp (clangd via --bin) v0.7.0
 - **2025-12-31** : Creation du plan 11 - Support C/C++ dans lsmcp (preset clangd)
