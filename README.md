@@ -49,6 +49,10 @@ open-flow/
 ├── roadmap/                         # Project roadmap
 │   ├── README.md                    # Task tracking + methodology
 │   └── plan-XX-*.md                 # Immutable implementation plans
+├── maintenance/                     # Project health monitoring
+│   ├── reports/                     # Generated health reports
+│   ├── templates/                   # Report templates
+│   └── metrics/                     # Metrics history (JSON)
 ├── install.sh                       # Installation script
 ├── AGENTS.fr.md                     # Global rules (French)
 └── AGENTS.en.md                     # Global rules (English)
@@ -56,7 +60,7 @@ open-flow/
 
 ## Agentic Workflow
 
-Six specialized agents collaborate through isolated worktrees:
+Seven specialized agents collaborate through isolated worktrees:
 
 ```
                       UTILISATEUR
@@ -76,6 +80,11 @@ Six specialized agents collaborate through isolated worktrees:
                  v             v             v
             Refactoring    Tester       Quality
             (Testab.)     (Tests)     (Review)
+                                          
+                               │
+                               v
+                          Maintainer ←── (avant tag)
+                          (Surveillance)
 ```
 
 ### Feature Lifecycle
@@ -119,6 +128,7 @@ Example validation output:
 | **Quality** | Code Review + QA | `quality/` | Code review, tests review, manual test plans |
 | **Tester** | Automated tests | `tests/` | Unit/E2E tests, coverage |
 | **Refactoring** | Testability | `src/` | SOLID patterns, DI |
+| **Maintainer** | Project health | `maintenance/` | Metrics, alerts, recommendations, reports |
 
 ### How to invoke
 
@@ -129,6 +139,7 @@ Example validation output:
 /quality      # Generate manual test plan
 /tester       # Write automated tests
 /refactoring  # Improve code testability
+/maintainer   # Analyze project health and generate report
 ```
 
 ## MCP Servers
@@ -193,6 +204,7 @@ Skills provide specialized knowledge loaded via `/skill <name>`.
 | `reporting-quality` | Report template for Quality |
 | `reporting-tester` | Report template for Tester |
 | `reporting-refactoring` | Report template for Refactoring |
+| `reporting-maintainer` | Report template for Maintainer |
 | `clean-code` | Clean code principles (naming, DRY, KISS) |
 | `code-review` | Code review checklist and feedback |
 | `functional-testing` | Qt Quick Test patterns |

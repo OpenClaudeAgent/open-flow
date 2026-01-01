@@ -93,11 +93,49 @@ git merge feature/plan-A feature/plan-B ...  # Merge all features
 ### Phase 7: Merges & Synchronization
 - [ ] For each feature branch:
   - [ ] `git merge feature/[name]`
-  - [ ] `git tag -a vX.Y.Z -m "feat([scope]): [description]"`
   - [ ] **Notify**: `notify_merge` (source_branch, commits_count, files_count, version)
+  - [ ] **Invoke Maintainer** before tag creation (see dedicated section)
+  - [ ] If health OK: `git tag -a vX.Y.Z -m "feat([scope]): [description]"`
 - [ ] Execute `make sync-worktrees`
 - [ ] **Notify**: `notify_sync` (list of synchronized worktrees)
 - [ ] Confirm completion
+
+---
+
+## Maintainer Invocation (before tag)
+
+Before creating a tag, **invoke the Maintainer agent** to evaluate project health:
+
+```
+/maintainer
+# Context: Analysis before tag vX.Y.Z
+# Compare with: previous tag
+```
+
+### Maintainer Workflow
+
+1. Maintainer analyzes the project and generates a report in `maintenance/reports/`
+2. Read the report and check overall health
+3. Decide based on result:
+
+| Health | Action |
+|--------|--------|
+| **Good** | Create tag normally |
+| **Warning** | Create tag + note recommendations for next iteration |
+| **Critical** | Use `ask_user` to request confirmation |
+
+### In case of Critical health
+
+```
+ask_user(
+    title: "Maintainer: Critical state detected"
+    question: "The report indicates [problems]. Do you want to continue?"
+    options: ["Force tag", "Cancel and fix"]
+    urgency: "high"
+)
+```
+
+If user chooses "Cancel": don't create tag, recommend corrections.
 
 ---
 

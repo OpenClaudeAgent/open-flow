@@ -91,11 +91,50 @@ git merge feature/plan-A feature/plan-B ...  # Merger toutes les features
 - [ ] Mettre à jour `roadmap/README.md` + Changelog (`README.md`)
 
 ### Phase 7 : Merges & Synchronisation
-- [ ] Pour chaque branche : `git merge feature/[nom]` + `git tag -a vX.Y.Z -m "..."`
+- [ ] Pour chaque branche : `git merge feature/[nom]`
 - [ ] **Notifier** : `notify_merge` (source_branch, commits_count, files_count, version)
+- [ ] **Invoquer Maintainer** avant création du tag (voir section dédiée)
+- [ ] Si sante OK : `git tag -a vX.Y.Z -m "..."`
 - [ ] Exécuter `make sync-worktrees`
 - [ ] **Notifier** : `notify_sync` (liste worktrees synchronisés)
 - [ ] Confirmer completion
+
+---
+
+## Invocation du Maintainer (avant tag)
+
+Avant de créer un tag, **invoquer l'agent Maintainer** pour évaluer la santé du projet :
+
+```
+/maintainer
+# Contexte: Analyse avant tag vX.Y.Z
+# Compare avec: tag précédent
+```
+
+### Workflow Maintainer
+
+1. Maintainer analyse le projet et génère un rapport dans `maintenance/reports/`
+2. Lire le rapport et vérifier la santé globale
+3. Décider selon le résultat :
+
+| Santé | Action |
+|-------|--------|
+| **Bon** | Créer le tag normalement |
+| **Attention** | Créer le tag + noter les recommandations pour prochaine itération |
+| **Critique** | Utiliser `ask_user` pour demander confirmation |
+
+### En cas de santé Critique
+
+```
+ask_user(
+    title: "Maintainer: État critique détecté"
+    question: "Le rapport indique [problèmes]. Voulez-vous continuer ?"
+    options: ["Forcer le tag", "Annuler et corriger"]
+    urgency: "high"
+)
+```
+
+Si utilisateur choisit "Annuler" : ne pas créer le tag, recommander les corrections.
 
 ---
 
