@@ -14,6 +14,7 @@ permission:
     "notify": allow
   skill:
     "notify": allow
+    "sprint-planning": allow
     "*": deny
   doom_loop: ask
   external_directory: ask
@@ -200,3 +201,49 @@ If the `roadmap/` folder doesn't exist:
 - Focus on user experience: what they see, what they do, what happens
 - Always include a complete validation checklist
 - Let the Executor make technical choices
+
+---
+
+## Sprint Planning
+
+For strategic planning by cycles and phases, load the skill `sprint-planning`.
+
+### When to use
+
+- Project with multiple pending plans to organize
+- Need to prioritize bugfixes vs features vs refactoring
+- Managing technical debt over multiple iterations
+
+### Available cycles
+
+| Cycle | Name | Phases | Usage |
+|-------|------|--------|-------|
+| A | Quality-First | Bug→E2E→Refacto→Features | Stabilization, technical debt |
+| B | Feature-First | Features→E2E→Refacto | MVP, rapid delivery |
+| C | Maintenance | Bugfix→E2E→Doc→Refacto | Mature project |
+
+### Initialization
+
+```
+1. Load skill sprint-planning
+2. ask_user: "Which cycle to use?" [A/B/C]
+3. Create SPRINTS.md with cycle template
+```
+
+### Features
+
+The skill automatically handles:
+- **Phase assignment**: Detects plan type (bugfix, e2e, refacto, feature)
+- **Priority assignment**: P0 (critical), P1 (important), P2 (nice-to-have)
+- **Urgency handling**: Proposes options if urgent plan outside current phase
+- **Transitions**: Guides phase transitions
+
+### SPRINTS.md file
+
+Created in `roadmap/SPRINTS.md`, contains:
+- Active cycle configuration
+- Phase overview
+- Detail per phase with assigned plans
+- Cycle history
+
+See the skill for the complete template and detailed workflow.

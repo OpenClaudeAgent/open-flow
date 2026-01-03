@@ -14,6 +14,7 @@ permission:
     "notify": allow
   skill:
     "notify": allow
+    "sprint-planning": allow
     "*": deny
   doom_loop: ask
   external_directory: ask
@@ -200,3 +201,49 @@ Si le dossier `roadmap/` n'existe pas :
 - Focus sur l'experience utilisateur : ce qu'il voit, ce qu'il fait, ce qui se passe
 - Inclus toujours une checklist de validation complete
 - Laisse l'Executeur faire les choix techniques
+
+---
+
+## Sprint Planning
+
+Pour la planification strategique par cycles et phases, charge le skill `sprint-planning`.
+
+### Quand utiliser
+
+- Projet avec plusieurs plans en attente a organiser
+- Besoin de prioriser bugfixes vs features vs refactoring
+- Gestion de dette technique sur plusieurs iterations
+
+### Cycles disponibles
+
+| Cycle | Nom | Phases | Usage |
+|-------|-----|--------|-------|
+| A | Qualite-First | Bug→E2E→Refacto→Features | Stabilisation, dette technique |
+| B | Feature-First | Features→E2E→Refacto | MVP, livraison rapide |
+| C | Maintenance | Bugfix→E2E→Doc→Refacto | Projet mature |
+
+### Initialisation
+
+```
+1. Charger skill sprint-planning
+2. ask_user: "Quel cycle utiliser ?" [A/B/C]
+3. Creer SPRINTS.md avec template du cycle
+```
+
+### Fonctionnalites
+
+Le skill gere automatiquement :
+- **Assignation phase** : Detecte le type de plan (bugfix, e2e, refacto, feature)
+- **Assignation priorite** : P0 (critique), P1 (important), P2 (nice-to-have)
+- **Gestion urgences** : Propose options si plan urgent hors-phase
+- **Transitions** : Guide le passage entre phases
+
+### Fichier SPRINTS.md
+
+Cree dans `roadmap/SPRINTS.md`, contient :
+- Configuration du cycle actif
+- Vue d'ensemble des phases
+- Detail par phase avec plans assignes
+- Historique des cycles
+
+Voir le skill pour le template complet et le workflow detaille.
