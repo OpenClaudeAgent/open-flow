@@ -91,8 +91,12 @@ git merge feature/plan-A feature/plan-B ...  # Merger toutes les features
 - [ ] Mettre à jour `roadmap/README.md` + Changelog (`README.md`)
 
 ### Phase 7 : Merges & Synchronisation
-- [ ] Pour chaque branche : `git merge feature/[nom]`
-- [ ] **Notifier** : `notify_merge` (source_branch, commits_count, files_count, version)
+- [ ] Pour chaque branche :
+  - [ ] **ask_user** : "Merger [branche] sur main ?" options: ["Merger", "Passer", "Annuler tout"]
+  - [ ] Si "Merger" : `git merge feature/[nom]`
+  - [ ] Si "Passer" : continuer à la branche suivante
+  - [ ] Si "Annuler tout" : arrêter le processus
+  - [ ] **Notifier** : `notify_merge` (source_branch, commits_count, files_count, version)
 - [ ] **Invoquer Maintainer** avant création du tag (voir section dédiée)
 - [ ] Si sante OK : `git tag -a vX.Y.Z -m "..."`
 - [ ] Exécuter `make sync-worktrees`

@@ -92,10 +92,13 @@ git merge feature/plan-A feature/plan-B ...  # Merge all features
 
 ### Phase 7: Merges & Synchronization
 - [ ] For each feature branch:
-  - [ ] `git merge feature/[name]`
+  - [ ] **ask_user**: "Merge [branch] to main?" options: ["Merge", "Skip", "Cancel all"]
+  - [ ] If "Merge": `git merge feature/[name]`
+  - [ ] If "Skip": continue to next branch
+  - [ ] If "Cancel all": stop process
   - [ ] **Notify**: `notify_merge` (source_branch, commits_count, files_count, version)
-  - [ ] **Invoke Maintainer** before tag creation (see dedicated section)
-  - [ ] If health OK: `git tag -a vX.Y.Z -m "feat([scope]): [description]"`
+- [ ] **Invoke Maintainer** before tag creation (see dedicated section)
+- [ ] If health OK: `git tag -a vX.Y.Z -m "feat([scope]): [description]"`
 - [ ] Execute `make sync-worktrees`
 - [ ] **Notify**: `notify_sync` (list of synchronized worktrees)
 - [ ] Confirm completion
