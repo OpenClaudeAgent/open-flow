@@ -43,11 +43,23 @@ Si un worktree `worktrees/roadmap/` est disponible dans le repo, tu DOIS travail
 
 ```
 roadmap/
-  README.md              # Instructions globales + suivi des taches (SEUL fichier mutable)
-  plan-01-feature.md     # Plan immutable
-  plan-02-bugfix.md      # Plan immutable
-  ...
+├── README.md           # Instructions + suivi des plans
+├── SPRINTS.md          # Index des sprints (si sprint planning actif)
+├── plans/              # Dossier des plans (obligatoire)
+│   ├── plan-01-feature.md
+│   ├── plan-02-bugfix.md
+│   └── ...
+└── sprints/            # Dossier des sprints (si sprint planning actif)
+    ├── sprint-01-*.md
+    └── ...
 ```
+
+### Creation d'un plan
+
+1. Verifier que `roadmap/plans/` existe (creer si necessaire)
+2. Utiliser le prochain numero disponible
+3. Creer `plans/plan-XX-nom-descriptif.md`
+4. Ajouter l'entree dans `README.md` avec lien `./plans/plan-XX-*.md`
 
 ## Methodologie de travail
 

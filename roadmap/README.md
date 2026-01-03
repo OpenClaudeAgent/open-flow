@@ -2,9 +2,21 @@
 
 Ce dossier contient les plans d'implementation pour le projet open-flow.
 
+## Structure
+
+```
+roadmap/
+├── README.md           # Ce fichier (suivi des plans)
+├── SPRINTS.md          # Index des sprints (si actif)
+├── plans/              # Plans individuels
+│   └── plan-XX-*.md
+└── sprints/            # Details des sprints (si actif)
+    └── sprint-XX-*.md
+```
+
 ## Methodologie
 
-- Chaque plan est un fichier `plan-XX-nom.md` **immutable**
+- Chaque plan est un fichier `plans/plan-XX-nom.md` **immutable**
 - Le suivi se fait uniquement via ce README
 - L'implementation est faite par l'agent Executeur
 
@@ -12,18 +24,18 @@ Ce dossier contient les plans d'implementation pour le projet open-flow.
 
 | # | Tache | Plan | Branche | Version | Statut |
 |---|-------|------|---------|---------|--------|
-| 1 | Notifications macOS natives avec PyObjC | [plan-01](./plan-01-notify-pyobjc.md) | `main` | v0.2.0 | Termine |
-| 2 | Notifications macOS avec binaire Go natif | [plan-02](./plan-02-notify-go.md) | - | - | Annule |
-| 3 | Outil MCP screenshot | [plan-03](./plan-03-mcp-screenshot.md) | `feature/mcp-screenshot` | v0.4.0 | Termine |
-| 4 | Actions interactives dans les notifications | [plan-04](./plan-04-notify-actions.md) | `feature/notify-actions` | - | En attente |
-| 5 | Internationalisation du repo | [plan-05](./plan-05-i18n.md) | `feature/i18n` | v0.3.0 | Termine |
-| 6 | Analytics OpenFlow | [plan-06](./plan-06-analytics.md) | - | - | Abandonne |
-| 7 | Serveur MCP OpenCode Session History | [plan-07](./plan-07-mcp-session-history.md) | `feature/opencode-session-history` | - | En attente |
-| 8 | Notifications Git Events | [plan-08](./plan-08-notify-git-events.md) | `feature/notify-git-events` | v0.5.0 | Termine |
-| 9 | Integration MCP lsmcp (outils LSP) | [plan-09](./plan-09-mcp-lsmcp.md) | `feature/mcp-lsmcp` | v0.6.0 | Termine |
-| 10 | MCP Sequential Thinking + Workflow RC | [plan-10](./plan-10-mcp-sequential-thinking.md) | `main` | v0.6.0 | Termine |
-| 11 | Support C/C++ dans lsmcp | [plan-11](./plan-11-lsmcp-cpp.md) | `feature/lsmcp-cpp` | v0.7.0 | Termine |
-| 12 | Agent Maintainer (surveillance projet) | [plan-12](./plan-12-agent-maintainer.md) | `feature/agent-maintainer` | v0.8.0 | Termine |
+| 1 | Notifications macOS natives avec PyObjC | [plan-01](./plans/plan-01-notify-pyobjc.md) | `main` | v0.2.0 | Termine |
+| 2 | Notifications macOS avec binaire Go natif | [plan-02](./plans/plan-02-notify-go.md) | - | - | Annule |
+| 3 | Outil MCP screenshot | [plan-03](./plans/plan-03-mcp-screenshot.md) | `feature/mcp-screenshot` | v0.4.0 | Termine |
+| 4 | Actions interactives dans les notifications | [plan-04](./plans/plan-04-notify-actions.md) | `feature/notify-actions` | - | En attente |
+| 5 | Internationalisation du repo | [plan-05](./plans/plan-05-i18n.md) | `feature/i18n` | v0.3.0 | Termine |
+| 6 | Analytics OpenFlow | [plan-06](./plans/plan-06-analytics.md) | - | - | Abandonne |
+| 7 | Serveur MCP OpenCode Session History | [plan-07](./plans/plan-07-mcp-session-history.md) | `feature/opencode-session-history` | - | En attente |
+| 8 | Notifications Git Events | [plan-08](./plans/plan-08-notify-git-events.md) | `feature/notify-git-events` | v0.5.0 | Termine |
+| 9 | Integration MCP lsmcp (outils LSP) | [plan-09](./plans/plan-09-mcp-lsmcp.md) | `feature/mcp-lsmcp` | v0.6.0 | Termine |
+| 10 | MCP Sequential Thinking + Workflow RC | [plan-10](./plans/plan-10-mcp-sequential-thinking.md) | `main` | v0.6.0 | Termine |
+| 11 | Support C/C++ dans lsmcp | [plan-11](./plans/plan-11-lsmcp-cpp.md) | `feature/lsmcp-cpp` | v0.7.0 | Termine |
+| 12 | Agent Maintainer (surveillance projet) | [plan-12](./plans/plan-12-agent-maintainer.md) | `feature/agent-maintainer` | v0.8.0 | Termine |
 
 ## Historique
 

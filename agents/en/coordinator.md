@@ -17,6 +17,8 @@ permission:
     "swarm-orchestration": allow
     "agentic-flow": allow
     "interactive-validation": allow
+    "sprint-planning": allow
+    "sprint-runner": allow
     "*": deny
   doom_loop: ask
   external_directory: ask
@@ -203,6 +205,20 @@ If user requests correction in Phase 6:
 5. Coordinator restarts Phase 5 (consolidation)
 
 **No complete re-invocation, just targeted correction.**
+
+---
+
+## Sprint Execution
+
+To execute sprints, load the skill `sprint-runner`.
+
+This skill enables:
+- Understanding the roadmap structure (`plans/`, `sprints/`)
+- Executing sprints on demand ("Run sprint N")
+- Managing status and phase transitions
+- Invoking Roadmapper to create sprints
+
+See the skill for detailed workflows.
 
 ---
 

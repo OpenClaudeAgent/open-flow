@@ -2,6 +2,65 @@
 
 Strategic planning by cycles and phases to organize roadmap plans.
 
+---
+
+## File Structure (mandatory)
+
+```
+roadmap/
+├── README.md           # Global tracking (always present)
+├── SPRINTS.md          # Sprint index
+├── plans/              # Plans folder (mandatory)
+│   └── plan-XX-*.md
+└── sprints/            # Sprints folder
+    └── sprint-XX-*.md
+```
+
+### Structure Initialization
+
+If structure doesn't exist:
+
+1. Create `roadmap/plans/`
+2. Create `roadmap/sprints/`
+3. Create `roadmap/SPRINTS.md` with template
+
+### Migration (if plans at root)
+
+If plans exist at `roadmap/` root:
+
+1. Create `roadmap/plans/`
+2. Move all `plan-*.md` to `plans/`
+3. Update links in `README.md`: `./plan-XX.md` → `./plans/plan-XX.md`
+
+---
+
+## Individual Sprint Template
+
+Each `sprints/sprint-XX-*.md` file:
+
+```markdown
+# Sprint XX - [Name]
+
+**Objective**: [Description]
+
+---
+
+## Plans
+
+| Plan | Description | E2E Test | Status |
+|------|-------------|----------|--------|
+| **XX** | [desc] | [associated test] | 🔴 |
+
+---
+
+## Checklist
+
+- [ ] Plan XX - [short description]
+- [ ] Plan YY - [short description]
+```
+
+---
+
 ## Available Cycles
 
 ### Cycle A: Quality-First (default)
