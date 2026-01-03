@@ -36,9 +36,12 @@ roadmap/
 | 10 | MCP Sequential Thinking + Workflow RC | [plan-10](./plans/plan-10-mcp-sequential-thinking.md) | `main` | v0.6.0 | Termine |
 | 11 | Support C/C++ dans lsmcp | [plan-11](./plans/plan-11-lsmcp-cpp.md) | `feature/lsmcp-cpp` | v0.7.0 | Termine |
 | 12 | Agent Maintainer (surveillance projet) | [plan-12](./plans/plan-12-agent-maintainer.md) | `feature/agent-maintainer` | v0.8.0 | Termine |
+| 13 | Factoriser configure.py des serveurs MCP | [plan-13](./plans/plan-13-refactor-configure.md) | `feature/refactor-configure` | - | En attente |
+| 14 | Base Class pour serveurs MCP | [plan-14](./plans/plan-14-mcp-base-class.md) | `feature/mcp-base-class` | - | En attente |
 
 ## Historique
 
+- **2026-01-03** : Creation des plans 13, 14 - Refactoring serveurs MCP (configure.py, base class)
 - **2025-12-31** : Tache 12 terminee - Agent Maintainer (surveillance et sante du projet) v0.8.0
 - **2025-12-31** : Creation du plan 12 - Agent Maintainer (surveillance et sante du projet)
 - **2025-12-31** : Tache 11 terminee - Support C/C++ dans lsmcp (clangd via --bin) v0.7.0

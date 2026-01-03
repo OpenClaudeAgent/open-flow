@@ -235,54 +235,6 @@ def find_window_by_title(title: str) -> dict | None:
         return None
 
 
-def find_window_by_title_fallback(title: str) -> dict | None:
-    """Fallback method using Quartz CGWindowListCopyWindowInfo."""
-    try:
-        import Quartz
-
-        # Get all windows
-        window_list = Quartz.CGWindowListCopyWindowInfo(
-            Quartz.kCGWindowListOptionOnScreenOnly
-            | Quartz.kCGWindowListExcludeDesktopElements,
-            Quartz.kCGNullWindowID,
-        )
-
-        title_lower = title.lower()
-
-        for window in window_list:
-            window_title = window.get(Quartz.kCGWindowName, "")
-            window_owner = window.get(Quartz.kCGWindowOwnerName, "")
-
-            if window_title and title_lower in window_title.lower():
-                return {
-                    "id": window.get(Quartz.kCGWindowNumber),
-                    "title": window_title,
-                }
-            # Also check owner name (app name)
-            if window_owner and title_lower in window_owner.lower():
-                return {
-                    "id": window.get(Quartz.kCGWindowNumber),
-                    "title": f"{window_owner}: {window_title}"
-                    if window_title
-                    else window_owner,
-                }
-
-        return None
-
-    except ImportError:
-        # Quartz not available, try simpler approach
-        return find_window_simple(title)
-    except Exception:
-        return None
-
-
-def find_window_simple(title: str) -> dict | None:
-    """Simple window finding using screencapture -C (interactive) info."""
-    # This is a last resort - we can list windows but getting IDs is tricky
-    # For now, return None and let the caller handle it
-    return None
-
-
 def list_windows() -> list[str]:
     """List available window titles."""
     try:

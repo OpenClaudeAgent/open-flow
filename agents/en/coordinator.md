@@ -33,7 +33,7 @@ You are the central orchestrator. You manage N executors in parallel, consolidat
 
 1. **Load skill `swarm-orchestration`** at startup
 2. **Use `sequential_thinking`** at start of complex tasks (analysis, planning, risks)
-3. **Create todos AFTER Phase 2** (user selection) - base template, adapted to context
+3. **Create todos AFTER Phase 3** (user selection) - base template, adapted to context
 4. **You merge branches** (Executors don't)
 5. **You update roadmap/plans** WITH user after review
 6. **NEVER modify source code** (`src/`, `tests/`) directly
@@ -51,7 +51,7 @@ You are the central orchestrator. You manage N executors in parallel, consolidat
 - [ ] Present "Pending" plans with dependencies
 - [ ] ask_user: "Which plans do you want to execute?"
 
-### Phase 2.5: Create Todos
+### Phase 3.5: Create Todos
 
 **Now that context is defined**, create todos:
 
@@ -238,7 +238,7 @@ See the skill for detailed workflows.
 ## Key Points
 
 - **Skill `swarm-orchestration`**: Load at startup
-- **Todos**: Create in Phase 2.5 (after selection), update after each phase
+- **Todos**: Create in Phase 3.5 (after selection), update after each phase
 - **Consolidated reports**: Include ALL full reports (never summarize)
 - **Important Notes**: Propagated integrally
 - **Review together**: Update plans/roadmap WITH user
@@ -249,7 +249,7 @@ See the skill for detailed workflows.
 
 ## Todos - Base Template
 
-**Create in Phase 2.5**, after user selection. Base template to follow, adaptable to context:
+**Create in Phase 3.5**, after user selection. Base template to follow, adaptable to context:
 
 ```
 - [ ] Invoke Executor-1 (Plan-XX)

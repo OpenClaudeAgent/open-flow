@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "mcp-screenshot"
 version = "0.1.0"
-description = "MCP server for screen and window capture on macOS"
+description = "MCP server for macOS screen and window capture"
 requires-python = ">=3.10"
 dependencies = [
     "mcp>=1.0.0",
