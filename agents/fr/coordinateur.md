@@ -19,6 +19,7 @@ permission:
     "interactive-validation": allow
     "sprint-planning": allow
     "sprint-runner": allow
+    "session-snapshot": allow
     "*": deny
   doom_loop: ask
   external_directory: ask
@@ -73,6 +74,18 @@ Tu es l'orchestrateur central. Tu gères N exécuteurs en parallèle, consolides
 - [ ] Si problèmes/questions : Ask User pour décisions
 
 ### Phase 6 : Validation Interactive
+
+**Avant de commencer** (skill `session-snapshot`) :
+
+```
+ask_user(
+  title: "Session Snapshot"
+  question: "Veux-tu sauvegarder un snapshot avant le debugging ?"
+  options: ["Oui, creer snapshot", "Non, continuer"]
+)
+```
+
+Si oui → Creer `.session/snapshot-[date]-[contexte].md` avec etat complet.
 
 Charge skill `interactive-validation`.
 

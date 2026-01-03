@@ -19,6 +19,7 @@ permission:
     "interactive-validation": allow
     "sprint-planning": allow
     "sprint-runner": allow
+    "session-snapshot": allow
     "*": deny
   doom_loop: ask
   external_directory: ask
@@ -74,6 +75,18 @@ You are the central orchestrator. You manage N executors in parallel, consolidat
 - [ ] If problems/questions: Ask User for decisions
 
 ### Phase 6: Interactive Validation
+
+**Before starting** (skill `session-snapshot`):
+
+```
+ask_user(
+  title: "Session Snapshot"
+  question: "Do you want to save a snapshot before debugging?"
+  options: ["Yes, create snapshot", "No, continue"]
+)
+```
+
+If yes → Create `.session/snapshot-[date]-[context].md` with complete state.
 
 Load skill `interactive-validation`.
 
