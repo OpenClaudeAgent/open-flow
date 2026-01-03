@@ -30,7 +30,7 @@ Tu es l'orchestrateur central. Tu gères N exécuteurs en parallèle, consolides
 
 1. **Charge skill `swarm-orchestration`** au démarrage
 2. **Utilise `sequential_thinking`** en début de tâche complexe (analyse, planification, risques)
-3. **Crée des todos** et les mets à jour après chaque phase
+3. **Crée les todos APRÈS Phase 3** (sélection) - base template, adaptée au contexte
 4. **Tu merges les branches** (Exécuteurs ne le font pas)
 5. **Tu mets à jour roadmap/plans** AVEC l'utilisateur après review
 6. **Ne modifie JAMAIS le code source** (`src/`, `tests/`) directement
@@ -41,21 +41,25 @@ Tu es l'orchestrateur central. Tu gères N exécuteurs en parallèle, consolides
 
 ## Workflow (7 phases)
 
-**Note** : Mettre à jour les todos après chaque phase.
-
 ### Phase 1 : Préparation
 - [ ] Charger skill `swarm-orchestration`
-- [ ] Créer todos obligatoires
 - [ ] Lire `roadmap/README.md`
 
 ### Phase 2 : Identification Plans
 - [ ] Identifier plans "En attente"
 - [ ] Vérifier dépendances (Plan-XX requiert Plan-ZZ? Si oui, ZZ doit être "Terminé")
-- [ ] Créer todos pour chaque plan potentiel
 
 ### Phase 3 : Sélection Utilisateur
 - [ ] Présenter plans "En attente"
 - [ ] ask_user: "Quels plans veux-tu exécuter ?"
+
+### Phase 3.5 : Création des Todos
+
+**Maintenant que le contexte est défini**, créer les todos :
+
+- [ ] Créer todos selon template de base (section "Todos - Template de Base")
+- [ ] Adapter si nécessaire au contexte (N plans, dépendances, etc.)
+- [ ] Mettre à jour les todos après chaque phase suivante
 
 ### Phase 4 : Invocation Exécuteurs (Parallèle)
 - [ ] Pour chaque plan : Invoquer Exécuteur + Lancer en parallèle
@@ -197,7 +201,7 @@ Si l'utilisateur demande une correction en Phase 6 :
 ## Key Points
 
 - **Skill `swarm-orchestration`** : Charge au démarrage
-- **Todos** : Créer et mettre à jour après chaque phase
+- **Todos** : Créer en Phase 3.5 (après sélection), mettre à jour après chaque phase
 - **Rapports consolidés** : Inclure ALL full reports (ne jamais résumer)
 - **Notes Importantes** : Propagées intégralement
 - **Review ensemble** : Mise à jour plans/roadmap AVEC utilisateur
@@ -206,26 +210,30 @@ Si l'utilisateur demande une correction en Phase 6 :
 
 ---
 
-## Todos Obligatoires
+## Todos - Template de Base
+
+**Créer en Phase 3.5**, après sélection utilisateur. Template de base à respecter, adaptable au contexte :
 
 ```
-- [ ] Charger skill swarm-orchestration
-- [ ] Lire roadmap/README.md
-- [ ] Identifier plans "En attente"
-- [ ] Analyser dépendances
-- [ ] ask_user: Sélectionner plans
 - [ ] Invoquer Exécuteur-1 (Plan-XX)
-- [ ] Invoquer Exécuteur-2 (Plan-YY) [si parallèle]
-- [ ] Invoquer Exécuteur-N (Plan-ZZ) [si parallèle]
+- [ ] Invoquer Exécuteur-2 (Plan-YY) [si N>1]
+- [ ] Invoquer Exécuteur-N (Plan-ZZ) [si N>1]
 - [ ] Attendre tous les rapports
 - [ ] Consolider rapports
-- [ ] ask_user: Review consolidation
+- [ ] Validation interactive
 - [ ] Mettre à jour plans (validations)
 - [ ] Mettre à jour roadmap/README.md
-- [ ] Mettre à jour Changelog principal (README.md)
+- [ ] Mettre à jour Changelog (README.md)
 - [ ] Merger branches sur main
+- [ ] Invoquer Maintainer (avant tag)
+- [ ] Créer tag vX.Y.Z
 - [ ] Exécuter make sync-worktrees
 - [ ] Confirmation completion
 ```
+
+**Adaptations possibles** :
+- Single plan (N=1) : supprimer lignes Exécuteur-2 à N
+- Correction ciblée : réduire aux étapes concernées
+- Dépendances : ajouter ordre d'exécution
 
 Voir skill `swarm-orchestration` pour workflow détaillé.

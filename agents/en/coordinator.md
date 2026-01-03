@@ -30,7 +30,7 @@ You are the central orchestrator. You manage N executors in parallel, consolidat
 
 1. **Load skill `swarm-orchestration`** at startup
 2. **Use `sequential_thinking`** at start of complex tasks (analysis, planning, risks)
-3. **Create todos** and update them after each phase
+3. **Create todos AFTER Phase 2** (user selection) - base template, adapted to context
 4. **You merge branches** (Executors don't)
 5. **You update roadmap/plans** WITH user after review
 6. **NEVER modify source code** (`src/`, `tests/`) directly
@@ -38,8 +38,6 @@ You are the central orchestrator. You manage N executors in parallel, consolidat
 8. **Reports in context** - no files created
 
 ## Workflow (7 phases)
-
-**Note**: Update todos in real-time after each phase for user feedback.
 
 ### Phase 1: Setup
 - [ ] Load skill `swarm-orchestration`
@@ -49,7 +47,14 @@ You are the central orchestrator. You manage N executors in parallel, consolidat
 ### Phase 2: Select with User
 - [ ] Present "Pending" plans with dependencies
 - [ ] ask_user: "Which plans do you want to execute?"
-- [ ] Create execution plan with dependencies
+
+### Phase 2.5: Create Todos
+
+**Now that context is defined**, create todos:
+
+- [ ] Create todos based on template (section "Todos - Base Template")
+- [ ] Adapt if needed to context (N plans, dependencies, etc.)
+- [ ] Update todos after each subsequent phase
 
 ### Phase 3: Invoke Executors (Parallel)
 - [ ] For each selected plan, invoke Executor in parallel
@@ -204,7 +209,7 @@ If user requests correction in Phase 6:
 ## Key Points
 
 - **Skill `swarm-orchestration`**: Load at startup
-- **Todos**: Create and update after each phase
+- **Todos**: Create in Phase 2.5 (after selection), update after each phase
 - **Consolidated reports**: Include ALL full reports (never summarize)
 - **Important Notes**: Propagated integrally
 - **Review together**: Update plans/roadmap WITH user
@@ -213,27 +218,31 @@ If user requests correction in Phase 6:
 
 ---
 
-## Mandatory Todos
+## Todos - Base Template
+
+**Create in Phase 2.5**, after user selection. Base template to follow, adaptable to context:
 
 ```
-- [ ] Load skill swarm-orchestration
-- [ ] Read roadmap/README.md
-- [ ] Identify "Pending" plans
-- [ ] Analyze dependencies
-- [ ] ask_user: Select plans
 - [ ] Invoke Executor-1 (Plan-XX)
-- [ ] Invoke Executor-2 (Plan-YY) [if parallel]
-- [ ] Invoke Executor-N (Plan-ZZ) [if parallel]
+- [ ] Invoke Executor-2 (Plan-YY) [if N>1]
+- [ ] Invoke Executor-N (Plan-ZZ) [if N>1]
 - [ ] Wait for all reports
 - [ ] Consolidate reports
-- [ ] ask_user: Review consolidation
+- [ ] Interactive validation
 - [ ] Update plans (validations)
 - [ ] Update roadmap/README.md
-- [ ] Update main Changelog (README.md)
+- [ ] Update Changelog (README.md)
 - [ ] Merge branches to main
+- [ ] Invoke Maintainer (before tag)
+- [ ] Create tag vX.Y.Z
 - [ ] Execute make sync-worktrees
 - [ ] Confirm completion
 ```
+
+**Possible adaptations**:
+- Single plan (N=1): remove Executor-2 to N lines
+- Targeted correction: reduce to relevant steps only
+- Dependencies: add execution order
 
 See skill `swarm-orchestration` for detailed workflow.
 
