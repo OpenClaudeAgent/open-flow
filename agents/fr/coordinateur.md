@@ -85,7 +85,41 @@ ask_user(
 )
 ```
 
-Si oui → Creer `.session/snapshot-[date]-[contexte].md` avec etat complet.
+#### Si Snapshot demandé :
+
+1. **Créer le snapshot** avec :
+   - État actuel (todos, branches, rapports)
+   - **Todo Complet de Debugging** (contextuel aux problèmes)
+   
+2. **Générer le Todo Complet** dans le snapshot :
+   ```
+   ## Todos de Debugging
+   | ID | Tache | Statut | Priorite |
+   |----|-------|--------|----------|
+   | D1 | Analyser : [problème spécifique] | pending | high |
+   | D2 | Identifier cause dans [fichiers] | pending | high |
+   | D3 | Appliquer correction | pending | high |
+   | D4 | Réinvoquer Exécuteur si nécessaire | pending | medium |
+   | D5 | Retester comportement | pending | high |
+   | D6 | Valider avec utilisateur | pending | high |
+   | D7 | ★ Recharger session pour continuer ★ | pending | low |
+   ```
+
+3. **Créer Todo Intermédiaire** (léger, pour le debugging) :
+   ```
+   - [ ] Debug en cours → voir .session/snapshot-XXX.md
+   - [ ] [Action immédiate spécifique]
+   ```
+
+4. Informer : "Snapshot créé : [chemin]. Todo complet sauvegardé."
+
+#### Rechargement de Session
+
+Si l'utilisateur demande "recharge la session" :
+1. Lire le snapshot demandé
+2. **Recréer les todos depuis "Todos de Debugging"** avec TodoWrite
+3. Présenter le contexte
+4. Reprendre la Phase 6
 
 Charge skill `interactive-validation`.
 

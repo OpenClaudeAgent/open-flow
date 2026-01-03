@@ -86,7 +86,41 @@ ask_user(
 )
 ```
 
-If yes → Create `.session/snapshot-[date]-[context].md` with complete state.
+#### If Snapshot requested:
+
+1. **Create the snapshot** with:
+   - Current state (todos, branches, reports)
+   - **Complete Debugging Todo** (contextual to problems)
+   
+2. **Generate Complete Todo** in the snapshot:
+   ```
+   ## Debugging Todos
+   | ID | Task | Status | Priority |
+   |----|------|--------|----------|
+   | D1 | Analyze: [specific problem] | pending | high |
+   | D2 | Identify cause in [files] | pending | high |
+   | D3 | Apply fix | pending | high |
+   | D4 | Re-invoke Executor if needed | pending | medium |
+   | D5 | Retest behavior | pending | high |
+   | D6 | Validate with user | pending | high |
+   | D7 | ★ Reload session to continue ★ | pending | low |
+   ```
+
+3. **Create Intermediate Todo** (lightweight, for debugging):
+   ```
+   - [ ] Debug in progress → see .session/snapshot-XXX.md
+   - [ ] [Immediate specific action]
+   ```
+
+4. Inform: "Snapshot created: [path]. Complete todo saved."
+
+#### Session Reload
+
+If user requests "reload the session":
+1. Read the requested snapshot
+2. **Recreate todos from "Debugging Todos"** with TodoWrite
+3. Present context
+4. Resume Phase 6
 
 Load skill `interactive-validation`.
 
