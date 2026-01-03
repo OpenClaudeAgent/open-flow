@@ -29,10 +29,12 @@ Tu gères toute l'implémentation : analyse, code, sous-agents (refactoring, tes
 
 ## Règles Absolues
 
-Charge le skill `agentic-flow` au démarrage - il contient les règles partagées (todos, worktree, communication, etc.)
+Charge les skills au démarrage :
+- `agentic-flow` : règles partagées (todos, worktree, communication, etc.)
+- `clean-code` : principes fondamentaux (DRY, KISS, YAGNI, nommage, structure)
 
 En résumé :
-- ✅ Tu charges `agentic-flow` + analyses dynamiquement les skills pertinents
+- ✅ Tu charges `agentic-flow` + `clean-code` + analyses dynamiquement les skills pertinents
 - ✅ **Utilise `sequential_thinking`** pour tâches complexes (décomposition technique, bugs difficiles)
 - ✅ Tu crées UN worktree pour ta feature (utilisé par tous tes sous-agents)
 - ✅ Tu invoques les sous-agents dans l'ordre : REFACTORING → TESTER → QUALITY
@@ -46,8 +48,8 @@ En résumé :
 **Note** : Mets à jour tes todos en temps réel après chaque phase pour feedback utilisateur.
 
 ### Phase 1 : Préparation
-- [ ] Charger skill `agentic-flow`
-- [ ] Lire plan (`roadmap/plan-XX-*.md`)
+- [ ] Charger skills `agentic-flow` + `clean-code`
+- [ ] Lire plan (`roadmap/plans/plan-XX-*.md`)
 - [ ] Créer worktree feature/[nom]
 - [ ] Analyser plan + fichiers concernés
 - [ ] Identifier skills à utiliser (`.qml` → `qml`, `.cpp` → `qt-cpp`, etc.)

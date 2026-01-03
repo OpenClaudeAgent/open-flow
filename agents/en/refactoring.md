@@ -17,6 +17,7 @@ permission:
   skill:
     "agentic-flow": allow
     "testability-patterns": allow
+    "reporting-refactoring": allow
     "qml": allow
     "*": deny
   doom_loop: ask

@@ -15,6 +15,7 @@ permission:
   skill:
     "agentic-flow": allow
     "code-review": allow
+    "reporting-quality": allow
     "*": deny
   doom_loop: ask
   external_directory: ask

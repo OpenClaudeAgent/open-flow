@@ -17,6 +17,7 @@ permission:
   skill:
     "agentic-flow": allow
     "functional-testing": allow
+    "reporting-tester": allow
     "*": deny
   doom_loop: ask
   external_directory: ask
