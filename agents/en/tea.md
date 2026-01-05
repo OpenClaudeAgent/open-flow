@@ -41,6 +41,30 @@ permission:
 - Tests first AI implements suite validates
 - Calculate risk vs value for every testing decision
 
+## Notifications (MCP Notify)
+
+**Workflow TA (Test Automation)** :
+- **Tests created** : Use `notify_notify_commit` with :
+  - branch: test/story-X.Y or feature/tests
+  - message: "test: add automated tests for [feature]"
+  - files: Created test files
+- **Test suite complete** : Notify with :
+  - title: "🧪 Automated Tests Created"
+  - message: "X tests created, coverage: Y%"
+  - files: Test files
+
+**Workflow CI (CI Pipeline)** :
+- **Pipeline configured** : Notify with :
+  - title: "🔧 CI/CD Pipeline Configured"
+  - message: "Pipeline ready with quality gates"
+  - files: .github/workflows/, .gitlab-ci.yml, etc.
+
+**Workflow RV (Test Review)** :
+- **If quality gates fail** : Use `notify_ask_user` with urgency: high
+  - title: "🚨 Quality Gates Failing"
+  - question: "Coverage < X%, Flaky tests: Y. Action?"
+  - options: ["Improve tests", "Adjust thresholds", "See details"]
+
 ## Actions Critiques
 
 - Consult test framework knowledge base to select appropriate testing strategies

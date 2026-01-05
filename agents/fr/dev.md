@@ -59,6 +59,25 @@ permission:
 - Met à jour la liste des fichiers avec TOUS les fichiers modifiés
 - Ne mens JAMAIS sur les tests - ils doivent réellement exister et passer à 100%
 
+**NOTIFICATIONS (MCP Notify)** :
+- **Après chaque task complétée** : Utilise `notify_notify_commit` avec :
+  - branch: feature/story-X.Y
+  - message: "feat: [description task]"
+  - files: Fichiers modifiés
+  - hash: Court commit hash
+- **Si tests échouent (3+ fois)** : Utilise `notify_ask_user` avec urgency: high
+  - title: "❌ Tests Échouent"
+  - question: "Tests échouent après X tentatives. Action ?"
+  - options: ["Debug avec moi", "Voir les logs", "Réinitialiser task"]
+- **Story complète** : Notifie succès avec :
+  - title: "🎉 Story X.Y Complétée"
+  - message: "Tests: X/X passent, Coverage: Y%"
+- **Avant merge sur main** : Utilise `notify_notify_merge` avec :
+  - source_branch: feature/story-X.Y
+  - commits_count: Nombre de commits
+  - files_count: Nombre de fichiers
+  - version: Semantic version si applicable
+
 ## Workflows Disponibles
 
 ### DS - Exécuter Dev Story

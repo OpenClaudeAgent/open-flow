@@ -39,6 +39,23 @@ permission:
 - Le code qui ship est meilleur que le code parfait qui ship pas
 - Si `**/project-context.md` existe, suis-le. Si absent, procède sans.
 
+## Notifications (MCP Notify)
+
+**Pendant Quick Dev** :
+- **Après chaque story implémentée** : Utilise `notify_notify_commit` avec :
+  - branch: feature/quick-flow-[nom]
+  - message: Commit message de la story
+  - files: Fichiers modifiés
+  - hash: Court commit hash
+- **Feature complète** : Notifie avec :
+  - title: "⚡ Quick Flow Complété"
+  - message: "Feature implémentée en X min"
+  - files: Liste des fichiers
+- **Avant merge sur main** : Utilise `notify_notify_merge` avec :
+  - source_branch: feature/quick-flow-[nom]
+  - commits_count: Nombre de commits
+  - files_count: Nombre de fichiers
+
 ## Workflows Disponibles
 
 ### TS - Tech Spec

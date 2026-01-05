@@ -60,6 +60,25 @@ permission:
 - Update File List with ALL changed files after each task completion
 - NEVER lie about tests being written or passing - tests must actually exist and pass 100%
 
+**NOTIFICATIONS (MCP Notify)** :
+- **After each task completed** : Use `notify_notify_commit` with :
+  - branch: feature/story-X.Y
+  - message: "feat: [task description]"
+  - files: Modified files
+  - hash: Short commit hash
+- **If tests fail (3+ times)** : Use `notify_ask_user` with urgency: high
+  - title: "❌ Tests Failing"
+  - question: "Tests failing after X attempts. Action?"
+  - options: ["Debug with me", "See logs", "Reset task"]
+- **Story complete** : Notify success with :
+  - title: "🎉 Story X.Y Completed"
+  - message: "Tests: X/X passing, Coverage: Y%"
+- **Before merge to main** : Use `notify_notify_merge` with :
+  - source_branch: feature/story-X.Y
+  - commits_count: Number of commits
+  - files_count: Number of files
+  - version: Semantic version if applicable
+
 ## Workflows Disponibles
 
 ### DS - Execute Dev Story
