@@ -1,8 +1,8 @@
-# OpenFlow - OpenCode Configuration Repository
+# OpenFlow - BMAD Method for OpenCode
 
-> **Note** : Ce projet est entièrement *vibe-codé* avec [OpenCode](https://github.com/sst/opencode) ❤️ et Claude Opus 4.5.
+> **Note** : Ce projet implémente la méthodologie **BMAD** (Build More, Architect Dreams) pour [OpenCode](https://github.com/sst/opencode) ❤️
 
-Configuration repository for OpenCode agents, skills, MCP servers, and workflows.
+Configuration repository implementing BMAD methodology with specialized agents, skills, and MCP servers for AI-driven agile development.
 
 ## Quick Start
 
@@ -58,44 +58,39 @@ open-flow/
 └── AGENTS.en.md                     # Global rules (English)
 ```
 
-## Agentic Workflow
+## BMAD Methodology (4 Phases)
 
-Seven specialized agents collaborate through isolated worktrees:
+**BMAD** = Build More, Architect Dreams - AI-driven agile development methodology
 
 ```
-                      UTILISATEUR
-                           │
-              ┌────────────┴────────────┐
-              v                         v
-          Roadmap                  Coordinateur
-          (Plan)                  (Orchestration)
-              │                         │
-              v                         v
-         roadmap/              ┌────────┴────────┐
-                               v                 v
-                          Executeur-1  ...  Executeur-N
-                          (Implem)          (Implem)
-                               │
-                 ┌─────────────┼─────────────┐
-                 v             v             v
-            Refactoring    Tester       Quality
-            (Testab.)     (Tests)     (Review)
-                                          
-                               │
-                               v
-                          Maintainer ←── (avant tag)
-                          (Surveillance)
+Phase 1: ANALYSIS (Optional)
+    └─> Analyst → Product Brief, Research
+
+Phase 2: PLANNING  
+    └─> PM → PRD (Product Requirements Document)
+
+Phase 3: SOLUTIONING
+    ├─> UX Designer → UX Design
+    ├─> Architect → Architecture Document
+    └─> PM → Epics & User Stories
+
+Phase 4: IMPLEMENTATION
+    ├─> SM (Scrum Master) → Sprint Planning, Stories
+    ├─> Dev (Developer) → Implementation (TDD)
+    ├─> TEA (Test Architect) → Test Framework, Automation
+    └─> Tech Writer → Documentation
+
+QUICK FLOW (Alternative rapide)
+    └─> Quick Flow → Tech Spec → Quick Dev → Code Review
 ```
 
-### Feature Lifecycle
+### BMAD Lifecycle
 
-1. **Ideation** : User expresses need
-2. **Planning** : Roadmap creates functional plan
-3. **Implementation** : Executeur codes according to plan
-4. **Validation** : User tests with scenarios checklist
-5. **Tests** : Tester writes automated tests (invoked by Executeur)
-6. **Quality** : Quality does code review + tests review (invoked by Executeur)
-7. **Merge** : Coordinator merges to main + tags version (after user approval)
+1. **Analysis** (Optional) : Brainstorming, research, product brief
+2. **Planning** : User interviews → PRD creation
+3. **Solutioning** : UX → Architecture → Epics & Stories
+4. **Implementation** : Sprint planning → Story creation → TDD → Tests → Review
+5. **Quick Flow** : Tech spec → Implementation → Review (pour petites features)
 
 ### Validation Phase
 
@@ -118,28 +113,47 @@ Example validation output:
 2. **Expected** : [expected behavior]
 ```
 
-## Agents
+## Agents BMAD
 
-| Agent | Role | Scope | Key Features |
-|-------|------|-------|--------------|
-| **Coordinateur** | Orchestration | `roadmap/` | Swarm orchestration, parallel executors, merges |
-| **Executeur** | Implementation | `src/` | Validation scenarios, MCP notifications |
-| **Roadmap** | Planning | `roadmap/` | Functional specs, no code |
-| **Quality** | Code Review + QA | `quality/` | Code review, tests review, manual test plans |
-| **Tester** | Automated tests | `tests/` | Unit/E2E tests, coverage |
-| **Refactoring** | Testability | `src/` | SOLID patterns, DI |
-| **Maintainer** | Project health | `maintenance/` | Metrics, alerts, recommendations, reports |
+| Agent | Role | Phase | Key Workflows |
+|-------|------|-------|---------------|
+| **Analyst** | Business Analysis | 1 - Analysis | Brainstorming, Research, Product Brief |
+| **PM** | Product Manager | 2 - Planning | PRD Creation, Epics & Stories |
+| **UX Designer** | User Experience | 3 - Solutioning | UX Design, Wireframes |
+| **Architect** | System Architecture | 3 - Solutioning | Architecture Document |
+| **SM** | Scrum Master | 4 - Implementation | Sprint Planning, Story Creation |
+| **Dev** | Developer | 4 - Implementation | TDD Implementation, Story Execution |
+| **TEA** | Test Architect | 4 - Implementation | Test Framework, Automation, CI/CD |
+| **Tech Writer** | Documentation | All phases | Project Docs, Diagrams, Explanations |
+| **Quick Flow** | Full-Stack Solo | Quick Flow | Tech Spec → Implementation → Review |
+| **BMad Master** | Orchestrator | All phases | Task/Workflow lists, Guidance |
 
 ### How to invoke
 
-```
-/coordinateur # Orchestrate multiple plans in parallel
-/executeur    # Execute next roadmap task
-/roadmap      # Plan a new feature
-/quality      # Generate manual test plan
-/tester       # Write automated tests
-/refactoring  # Improve code testability
-/maintainer   # Analyze project health and generate report
+```bash
+# Analysis Phase
+/analyst          # Business analysis, research, product brief
+
+# Planning Phase
+/pm               # Create PRD, epics & stories
+
+# Solutioning Phase
+/ux-designer      # UX design and wireframes
+/architect        # Architecture document
+
+# Implementation Phase
+/sm               # Sprint planning, story creation
+/dev              # TDD implementation
+/tea              # Test framework, automation
+
+# Documentation
+/tech-writer      # Documentation, diagrams
+
+# Quick Flow (alternative)
+/quick-flow       # Rapid tech spec → implementation → review
+
+# Orchestration
+/bmad-master      # Guidance, task lists, workflow orchestration
 ```
 
 ## MCP Servers
@@ -191,29 +205,34 @@ Native macOS screenshot tool for capturing screens and windows.
 
 **Requirements**: macOS Screen Recording permission.
 
-## Skills
+## Skills BMAD
 
-Skills provide specialized knowledge loaded via `/skill <name>`.
+Skills provide specialized knowledge and workflows loaded via `/skill <name>`.
+
+### BMAD Core Skills
+
+| Skill | Description | Used By |
+|-------|-------------|---------|
+| `bmad-workflow-status` | Track project progress through BMAD phases | All agents |
+| `bmad-prd` | Create Product Requirements Document | PM |
+| `bmad-architecture` | Design scalable architecture | Architect |
+| `bmad-ux-design` | UX Design and UI planning | UX Designer |
+| `bmad-epics-stories` | Create Epics and User Stories | PM |
+| `bmad-sprint-planning` | Generate sprint-status from epics | SM |
+| `bmad-create-story` | Create developer-ready stories | SM |
+| `bmad-dev-story` | TDD implementation workflow | Dev |
+| `bmad-code-review` | Thorough code review process | Dev, Quick Flow |
+| `bmad-tech-spec` | Create technical specification | Quick Flow |
+| `bmad-quick-dev` | Rapid implementation workflow | Quick Flow |
+
+### OpenFlow Infrastructure Skills
 
 | Skill | Description |
 |-------|-------------|
-| `agentic-flow` | Executor workflow patterns (sub-agents, reports) |
-| `swarm-orchestration` | Coordinator patterns (parallel executors, merges) |
-| `interactive-validation` | User validation workflow (manual testing) |
-| `reporting-executor` | Report template for Executor |
-| `reporting-quality` | Report template for Quality |
-| `reporting-tester` | Report template for Tester |
-| `reporting-refactoring` | Report template for Refactoring |
-| `reporting-maintainer` | Report template for Maintainer |
 | `clean-code` | Clean code principles (naming, DRY, KISS) |
-| `code-review` | Code review checklist and feedback |
-| `functional-testing` | Qt Quick Test patterns |
-| `git-conventions` | Conventional commits, branching |
-| `notify` | When to use ask_user tool |
-| `qml` | QML/Qt Quick best practices |
-| `qt-cpp` | Qt/C++ patterns and conventions |
-| `testability-patterns` | SOLID, dependency injection |
-| `ui-design-principles` | Visual hierarchy, spacing, colors |
+| `testability-patterns` | SOLID, dependency injection patterns |
+| `git-conventions` | Conventional commits, branching strategy |
+| `notify` | When to use ask_user MCP tool |
 
 ## Commands
 
