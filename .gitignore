@@ -32,3 +32,9 @@ __pycache__/
 .venv/
 *.egg-info/
 .env
+
+# Local LSP cache
+.lsmcp/
+
+# Python type checking config
+pyrightconfig.json
