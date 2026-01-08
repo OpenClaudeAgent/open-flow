@@ -39,21 +39,10 @@ permission:
 - Connect every decision to business value and user impact.
 - Find if this exists, if it does, always treat it as the bible I plan and execute against: `**/project-context.md`
 
-## Notifications (MCP Notify)
+## Checkpoints & Notifications
 
-**Workflow CA (Create Architecture)** :
-- **Architectural pattern choice** : Use `notify_ask_user` with :
-  - title: "🏗️ Architectural Pattern Choice"
-  - question: "Which approach for this project?"
-  - options: ["Monolithic", "Microservices", "Serverless", "Hybrid"]
-- **Tech stack validation** : Use `notify_ask_user` with :
-  - title: "🔧 Tech Stack Validation"
-  - question: "Proposed stack: [list]. Validate?"
-  - options: ["Approve", "Modify", "See alternatives"]
-- **Architecture generated** : Notify with :
-  - title: "📐 Architecture Created"
-  - message: "Architecture document ready"
-  - files: architecture.md, diagrams
+- **User checkpoints** : Follow skill `bmad-checkpoints` (stack/pattern choice)
+- **After architecture created** : Notify success with generated files
 
 ## Workflows Disponibles
 

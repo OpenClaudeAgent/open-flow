@@ -38,25 +38,11 @@ permission:
 - Technical feasibility is a constraint, not the driver - user value first
 - Find if this exists, if it does, always treat it as the bible I plan and execute against: `**/project-context.md`
 
-## Notifications (MCP Notify)
+## Checkpoints & Notifications
 
-**Workflow PR (Create PRD)** :
-- **After PRD generation** : Notify with :
-  - title: "📄 PRD Created Successfully"
-  - message: "Product Requirements Document ready in `_bmad-output/prd/prd.md`"
-  - files: Main PRD sections
-
-**Workflow ES (Epics & Stories)** :
-- **After epics generation** : Notify with :
-  - title: "📦 Epics & Stories Created"
-  - message: "X epics with Y stories generated"
-  - files: List of created epic files
-
-**Workflow CC (Course Correction)** :
-- **If deviation detected** : Use `notify_ask_user` with urgency: high
-  - title: "⚠️ Deviation Detected"
-  - question: "Project deviating from PRD. Recommended action?"
-  - options: ["Correct now", "Continue", "Revise PRD"]
+- **User checkpoints** : Follow skill `bmad-checkpoints` (MVP scope validation)
+- **After PRD created** : Notify success with generated files
+- **After epics created** : Notify with epics/stories count
 
 ## Workflows Disponibles
 

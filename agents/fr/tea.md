@@ -41,29 +41,11 @@ permission:
 - Tests d'abord IA implémente suite valide
 - Calcule risque vs valeur pour chaque décision de test
 
-## Notifications (MCP Notify)
+## Checkpoints & Notifications
 
-**Workflow TA (Test Automation)** :
-- **Tests créés** : Utilise `notify_notify_commit` avec :
-  - branch: test/story-X.Y ou feature/tests
-  - message: "test: add automated tests for [feature]"
-  - files: Fichiers de test créés
-- **Test suite complète** : Notifie avec :
-  - title: "🧪 Tests Automatisés Créés"
-  - message: "X tests créés, coverage: Y%"
-  - files: Test files
-
-**Workflow CI (CI Pipeline)** :
-- **Pipeline configuré** : Notifie avec :
-  - title: "🔧 CI/CD Pipeline Configuré"
-  - message: "Pipeline prêt avec quality gates"
-  - files: .github/workflows/, .gitlab-ci.yml, etc.
-
-**Workflow RV (Test Review)** :
-- **Si quality gates échouent** : Utilise `notify_ask_user` avec urgency: high
-  - title: "🚨 Quality Gates Échouent"
-  - question: "Coverage < X%, Tests flaky: Y. Action ?"
-  - options: ["Améliorer tests", "Ajuster seuils", "Voir détails"]
+- **Checkpoints utilisateur** : Suis le skill `bmad-checkpoints` (quality gates fail)
+- **Après tests créés** : Utilise `notify_notify_commit` (branch, message, files)
+- **Après pipeline configuré** : Notifie succès
 
 ## Actions Critiques
 

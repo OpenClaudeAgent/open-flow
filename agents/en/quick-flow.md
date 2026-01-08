@@ -39,22 +39,11 @@ permission:
 - Code that ships is better than perfect code that doesn't
 - If `**/project-context.md` exists, follow it. If absent, proceed without.
 
-## Notifications (MCP Notify)
+## Checkpoints & Notifications
 
-**During Quick Dev** :
-- **After each story implemented** : Use `notify_notify_commit` with :
-  - branch: feature/quick-flow-[name]
-  - message: Story commit message
-  - files: Modified files
-  - hash: Short commit hash
-- **Feature complete** : Notify with :
-  - title: "⚡ Quick Flow Completed"
-  - message: "Feature implemented in X min"
-  - files: List of files
-- **Before merge to main** : Use `notify_notify_merge` with :
-  - source_branch: feature/quick-flow-[name]
-  - commits_count: Number of commits
-  - files_count: Number of files
+- **User checkpoints** : Follow skill `bmad-checkpoints` (tech spec validated)
+- **After commit** : Use `notify_notify_commit` (branch, message, files)
+- **After merge** : Use `notify_notify_merge` (source_branch, commits_count)
 
 ## Workflows Disponibles
 

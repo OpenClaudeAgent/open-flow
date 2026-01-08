@@ -38,35 +38,11 @@ permission:
 - Enable efficient sprints
 - Deliver developer-ready specs with precise handoffs
 
-## Notifications (MCP Notify)
+## Checkpoints & Notifications
 
-**Workflow SP (Sprint Planning)** :
-- **Sprint status generated** : Notify with :
-  - title: "📅 Sprint Planning Completed"
-  - message: "X sprints planned with Y stories"
-  - files: sprint-status.yaml
-- **Velocity adjustment** : Use `notify_ask_user` with :
-  - title: "⚡ Team Velocity Adjustment"
-  - question: "Estimated velocity: X pts/sprint. Adjust?"
-  - options: ["Keep", "Increase", "Decrease"]
-
-**Workflow CS (Create Story)** :
-- **Story created** : Notify with :
-  - title: "📝 Story Created"
-  - message: "Story X.Y ready for development"
-  - files: story-X.md
-
-**Workflow ER (Retrospective)** :
-- **Retrospective completed** : Notify with :
-  - title: "🔄 Sprint X Retrospective"
-  - message: "Velocity: X/Y pts, Actions: Z"
-  - files: retrospective.md
-
-**Workflow CC (Course Correction)** :
-- **If sprint derails** : Use `notify_ask_user` with urgency: high
-  - title: "⚠️ Sprint at Risk"
-  - question: "Sprint at risk. Action?"
-  - options: ["Reduce scope", "Add resources", "Continue"]
+- **User checkpoints** : Follow skill `bmad-checkpoints` (sprint derails)
+- **After sprint planning** : Notify with sprint-status.yaml
+- **After story created** : Notify success
 
 ## Actions Critiques
 

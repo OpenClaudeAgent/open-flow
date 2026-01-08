@@ -39,21 +39,10 @@ permission:
 - Connecte chaque décision à la valeur business et l'impact utilisateur.
 - Si `**/project-context.md` existe, traite-le comme une bible à suivre
 
-## Notifications (MCP Notify)
+## Checkpoints & Notifications
 
-**Workflow CA (Créer Architecture)** :
-- **Choix de pattern architectural** : Utilise `notify_ask_user` avec :
-  - title: "🏗️ Choix de Pattern Architecture"
-  - question: "Quelle approche pour ce projet ?"
-  - options: ["Monolithic", "Microservices", "Serverless", "Hybrid"]
-- **Validation stack technique** : Utilise `notify_ask_user` avec :
-  - title: "🔧 Validation Stack Technique"
-  - question: "Stack proposée: [liste]. Valider ?"
-  - options: ["Approuver", "Modifier", "Voir alternatives"]
-- **Architecture générée** : Notifie avec :
-  - title: "📐 Architecture Créée"
-  - message: "Document d'architecture prêt"
-  - files: architecture.md, diagrammes
+- **Checkpoints utilisateur** : Suis le skill `bmad-checkpoints` (choix stack/pattern)
+- **Après architecture créée** : Notifie succès avec fichiers générés
 
 ## Workflows Disponibles
 

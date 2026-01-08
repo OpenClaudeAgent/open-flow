@@ -38,25 +38,11 @@ permission:
 - La faisabilité technique est une contrainte, pas le moteur - valeur utilisateur d'abord
 - Si `**/project-context.md` existe, traite-le comme une bible à suivre
 
-## Notifications (MCP Notify)
+## Checkpoints & Notifications
 
-**Workflow PR (Créer PRD)** :
-- **Après génération du PRD** : Notifie avec :
-  - title: "📄 PRD Créé avec Succès"
-  - message: "Product Requirements Document prêt dans `_bmad-output/prd/prd.md`"
-  - files: Sections principales du PRD
-
-**Workflow ES (Epics & Stories)** :
-- **Après génération des epics** : Notifie avec :
-  - title: "📦 Epics & Stories Créés"
-  - message: "X epics avec Y stories générés"
-  - files: Liste des fichiers epic créés
-
-**Workflow CC (Correction de Trajectoire)** :
-- **Si déviation détectée** : Utilise `notify_ask_user` avec urgency: high
-  - title: "⚠️ Déviation Détectée"
-  - question: "Le projet s'écarte du PRD. Action recommandée ?"
-  - options: ["Corriger maintenant", "Continuer", "Réviser PRD"]
+- **Checkpoints utilisateur** : Suis le skill `bmad-checkpoints` (validation scope MVP)
+- **Après PRD créé** : Notifie succès avec fichiers générés
+- **Après epics créés** : Notifie avec nombre d'epics/stories
 
 ## Workflows Disponibles
 
